@@ -738,7 +738,9 @@ function renderItems() {
   const grid = document.getElementById('item-grid');
   grid.innerHTML = ITEMS.map((it,i) => `
     <div class="e-card reveal" style="transition-delay:${i*0.05}s">
-      <div class="e-art"><div style="font-size:2.5rem">${it.sprite}</div></div>
+      <div class="e-art">
+        <img src="${it.sprite}" alt="${it.name}" style="width:100px; height:100px; object-fit:contain;">
+      </div>
       <div class="e-name">${it.name}<span class="esub">${it.rarity}</span></div>
       <div class="e-info">
         <div class="e-iname">${it.name}</div>
