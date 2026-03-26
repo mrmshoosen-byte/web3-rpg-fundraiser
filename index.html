@@ -622,7 +622,7 @@ async function submitPledge() {
 
     const connection = new window.solanaWeb3.Connection('https://api.devnet.solana.com');
     const userPublicKey = new window.solanaWeb3.PublicKey(wallet);
-    const recipientPublicKey = new window.solanaWeb3.PublicKey('YOUR_WALLET_ADDRESS_HERE');
+    const recipientPublicKey = new window.solanaWeb3.PublicKey('5b5om8qu2WrLepZ9ooTZB3Fh4WJNH7gDkEieWyHSb3uU');
 
     const transaction = new window.solanaWeb3.Transaction().add(
       window.solanaWeb3.SystemProgram.transfer({
