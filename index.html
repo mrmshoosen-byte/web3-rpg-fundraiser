@@ -8,128 +8,206 @@
 </head>
 <body>
 
-<header>
-    <nav>
-        <ul>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-logo">⚔️ Chronicles of the Void</div>
+        <ul class="nav-links">
             <li><a href="#hero">Home</a></li>
-            <li><a href="#game-explanation">Game Explanation</a></li>
+            <li><a href="#explanation">Game</a></li>
             <li><a href="#funding">Funding</a></li>
             <li><a href="#champions">Champions</a></li>
             <li><a href="#monsters">Monsters</a></li>
-            <li><a href="#skill-tree">Skill Tree</a></li>
             <li><a href="#roadmap">Roadmap</a></li>
-            <li><a href="#footer">Contact</a></li>
         </ul>
     </nav>
 </header>
 
-<main>
-    <section id="hero">
-        <h1>Welcome to Chronicles of the Void</h1>
-        <p>Your adventure begins here!</p>
-    </section>
+<section id="hero" class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Chronicles of the Void</h1>
+        <p class="hero-sub">A Web3 RPG Fundraiser</p>
+        <p class="hero-desc">Explore the infinite castle. Collect champions. Battle monsters. Own your destiny.</p>
+        <button class="btn-primary" onclick="document.getElementById('funding').scrollIntoView({behavior:'smooth'})">Support Now</button>
+    </div>
+</section>
 
-    <section id="game-explanation">
-        <h2>Game Explanation</h2>
-        <div class="castle-visualization">
-            <img src="castle.png" alt="Castle Visualization">
+<section id="explanation" class="explanation reveal">
+    <h2>How to Play</h2>
+    <div class="explanation-grid">
+        <div class="exp-card">
+            <div class="exp-icon">🏰</div>
+            <h3>The Infinite Castle</h3>
+            <p>Explore endless floors. Each floor brings new challenges and rewards.</p>
         </div>
-        <p>Explore the depths of the universe and uncover hidden secrets.</p>
-    </section>
+        <div class="exp-card">
+            <div class="exp-icon">⚔️</div>
+            <h3>Collect Champions</h3>
+            <p>Build your team from 100+ unique champions, each with special abilities.</p>
+        </div>
+        <div class="exp-card">
+            <div class="exp-icon">👹</div>
+            <h3>Battle Monsters</h3>
+            <p>Defeat 1000+ monsters across seasons. Climb the leaderboard.</p>
+        </div>
+        <div class="exp-card">
+            <div class="exp-icon">🎁</div>
+            <h3>Earn Rewards</h3>
+            <p>Win NFTs, skins, and exclusive perks. Trade with other players.</p>
+        </div>
+    </div>
+</section>
 
-    <section id="funding">
-        <h2>Funding Options</h2>
-        <div class="progress-bar">
-            <div class="progress" style="width: 75%;">75% Funded</div>
-        </div>
-        <div class="tier-cards">
-            <div class="card">
-                <h3>$10 Tier</h3>
-                <p>Basic Access</p>
+<section id="funding" class="funding reveal">
+    <h2>Support the Game</h2>
+    <div class="funding-status">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="prog-fill"></div>
             </div>
-            <div class="card">
-                <h3>$50 Tier</h3>
-                <p>Deluxe Access</p>
+            <p class="progress-text">$42,800 / $100,000 raised • 428 Backers</p>
+        </div>
+    </div>
+    
+    <div class="tier-grid">
+        <div class="tier-card" onclick="openTierModal(0)">
+            <div class="tier-price">$10</div>
+            <div class="tier-name">Adventurer's Oath</div>
+            <div class="tier-badge">Tier I</div>
+            <ul class="tier-perks">
+                <li>✓ Permanent XP Boost</li>
+                <li>✓ 5 Free Skins</li>
+                <li>✓ NFT Airdrop</li>
+                <li>✓ Beta Access</li>
+            </ul>
+            <button class="btn-secondary">Choose Tier</button>
+        </div>
+
+        <div class="tier-card featured" onclick="openTierModal(1)">
+            <div class="tier-badge">Most Popular</div>
+            <div class="tier-price">$50</div>
+            <div class="tier-name">Champion's Covenant</div>
+            <ul class="tier-perks">
+                <li>✓ Everything in Tier I</li>
+                <li>✓ 15 Free Skins</li>
+                <li>✓ Rare NFT Badge</li>
+                <li>✓ Named NPC in Game</li>
+            </ul>
+            <button class="btn-primary">Choose Tier</button>
+        </div>
+
+        <div class="tier-card" onclick="openTierModal(2)">
+            <div class="tier-price">$100</div>
+            <div class="tier-name">Void-Forged Legend</div>
+            <div class="tier-badge">Tier III</div>
+            <ul class="tier-perks">
+                <li>✓ Everything in Tiers I & II</li>
+                <li>✓ 25 Free Skins</li>
+                <li>✓ Legendary NFT</li>
+                <li>✓ Custom Champion</li>
+            </ul>
+            <button class="btn-secondary">Choose Tier</button>
+        </div>
+    </div>
+</section>
+
+<section id="champions" class="champions reveal">
+    <h2>Meet the Champions</h2>
+    <p class="section-sub">10 iconic heroes. 90+ locked in the void.</p>
+    <div id="champ-grid" class="entity-grid"></div>
+</section>
+
+<section id="monsters" class="monsters reveal">
+    <h2>Face the Monsters</h2>
+    <p class="section-sub">10 fearsome foes. 1000+ creatures await.</p>
+    <div id="mon-grid" class="entity-grid"></div>
+</section>
+
+<section id="roadmap" class="roadmap reveal">
+    <h2>Development Roadmap</h2>
+    <div class="roadmap-timeline">
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h3>Q2 2024 - Alpha Launch</h3>
+                <p>Core game mechanics, 10 champions, turn-based combat</p>
             </div>
-            <div class="card">
-                <h3>$100 Tier</h3>
-                <p>Ultimate Access</p>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h3>Q3 2024 - Beta Season 1</h3>
+                <p>Leaderboards, seasonal meta, community events</p>
             </div>
         </div>
-    </section>
-
-    <section id="champions">
-        <h2>Champions</h2>
-        <div class="champions-grid">
-            <div>Snickle</div>
-            <div>Vibhu</div>
-            <div>Cryptopher</div>
-            <div>Rexxar</div>
-            <div>Luna</div>
-            <div>Kai</div>
-            <div>Malachai</div>
-            <div>Raven</div>
-            <div>Emara</div>
-            <div>Thornwick</div>
-            <div>100+ Mystery Card</div>
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h3>Q4 2024 - Official Launch</h3>
+                <p>100+ champions, trading system, multiplayer PvP</p>
+            </div>
         </div>
-    </section>
-
-    <section id="monsters">
-        <h2>Monsters</h2>
-        <div class="monsters-grid">
-            <div>Monster 1</div>
-            <div>Monster 2</div>
-            <div>Monster 3</div>
-            <div>Monster 4</div>
-            <div>Monster 5</div>
-            <div>Monster 6</div>
-            <div>Monster 7</div>
-            <div>Monster 8</div>
-            <div>Monster 9</div>
-            <div>Monster 10</div>
-            <div>1000+ Mystery Card</div>
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h3>2025 - Web3 Features</h3>
+                <p>Solana integration, NFT marketplace, DAO governance</p>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section id="skill-tree">
-        <h2>Skill Tree</h2>
-        <canvas id="skillCanvas"></canvas>
-        <div class="detail-panel">
-            <p>Choose your path wisely!</p>
-        </div>
-    </section>
-
-    <section id="roadmap">
-        <h2>Roadmap</h2>
-        <ol>
-            <li>Phase 1: Concept Development</li>
-            <li>Phase 2: Prototype Launch</li>
-            <li>Phase 3: Beta Testing</li>
-            <li>Phase 4: Official Release</li>
-        </ol>
-    </section>
-</main>
-
-<footer id="footer">
-    <p>Contact us: info@voidadventures.com</p>
+<footer class="footer">
+    <p>© 2024 Chronicles of the Void. Built with ❤️ for adventurers.</p>
+    <p><a href="#">Privacy</a> • <a href="#">Terms</a> • <a href="#">Discord</a></p>
 </footer>
 
-<div class="modal" id="pledgeModal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Pledge Now</h2>
-        <form>
-            <label for="amount">Amount:</label>
-            <input type="text" id="amount" name="amount" required>
-            <label for="contact">Contact Details:</label>
-            <input type="email" id="contact" name="contact" required>
-            <button type="submit">Submit</button>
-        </form>
-        <p>Thank you for your pledge!</p>
+<!-- PLEDGE MODAL -->
+<div id="modal" class="modal">
+    <div class="modal-bg"></div>
+    <div class="modal-box">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+
+        <!-- Step 1: Pledge Amount -->
+        <div id="step-pledge" class="modal-step">
+            <h2 id="m-title">Adventurer's Oath - $10</h2>
+            <p>How much would you like to pledge?</p>
+            <input type="number" id="m-amt" placeholder="Enter amount" min="1" value="10">
+            <button class="btn-primary" onclick="goContact()">Continue</button>
+        </div>
+
+        <!-- Step 2: Contact Info -->
+        <div id="step-contact" class="modal-step" style="display:none">
+            <h2>Your Information</h2>
+            <input type="text" id="c-name" placeholder="Name" required>
+            <input type="email" id="c-email" placeholder="Email" required>
+            <input type="text" id="c-discord" placeholder="Discord (optional)">
+            <input type="text" id="c-twitter" placeholder="Twitter (optional)">
+            <input type="text" id="c-wallet" placeholder="Solana Wallet (will auto-fill)" readonly>
+            <select id="c-source">
+                <option>How did you hear about us?</option>
+                <option>Twitter</option>
+                <option>Discord</option>
+                <option>Reddit</option>
+                <option>Friend</option>
+                <option>Other</option>
+            </select>
+            <div style="display:flex; gap:10px">
+                <button class="btn-secondary" onclick="backPledge()" style="flex:1">Back</button>
+                <button class="btn-primary" onclick="submitPledge()" style="flex:1">Submit Pledge</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Success -->
+        <div id="step-success" class="modal-step" style="display:none">
+            <div class="success-icon">✓</div>
+            <h2>Pledge Received!</h2>
+            <p>Thank you for supporting Chronicles of the Void!</p>
+            <p>Check your email for confirmation and next steps.</p>
+            <button class="btn-primary" onclick="closeModal()">Done</button>
+        </div>
     </div>
 </div>
 
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
