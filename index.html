@@ -558,17 +558,47 @@ window.connectWallet = async () => {
 window.submitPledge = async () => {
   const name = document.getElementById('c-name').value
   const email = document.getElementById('c-email').value
+  const discord = document.getElementById('c-discord').value
   const wallet = document.getElementById('c-wallet').value
+  const source = document.getElementById('c-source').value
+  const amount = document.getElementById('m-amt').value
 
   if (!name || !email) {
     alert('Name and email are required')
     return
   }
 
-  if (!wallet) {
-    const connected = await window.connectWallet()
-    if (!connected) return
+  try {
+    // REQUEST PAYMENT FROM PHANTOM
+    const phantom = window.solana
+    if (!phantom || !phantom.isPhantom) {
+      alert('Phantom wallet not found')
+      return
+    }
+
+    // Send SOL (convert USD to SOL - this is simplified, use real conversion)
+    const solAmount = amount / 200 // Rough conversion, update with real rate
+    
+    const transaction = await phantom.request({
+      method: 'signAndSendTransaction',
+      params: {
+        message: `Pledge $${amount} to Chronicles of the Void`,
+        amount: Math.floor(solAmount * 1000000000) // Convert to lamports
+      }
+    })
+
+    // THEN save to database
+    const { error } = await supabase.from('pledges').insert([{
+      name, email, discord, wallet, source, amount, tier: currentTier, status: 'completed', txHash: transaction.signature
+    }])
+    if (error) throw error
+    
+    document.getElementById('step-contact').style.display = 'none'
+    document.getElementById('step-success').style.display = 'block'
+  } catch (e) {
+    alert('Error: ' + e.message)
   }
+}
 
   // Your existing submitPledge code continues...
 }
