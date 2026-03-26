@@ -215,6 +215,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
     <a href="#monsters">Monsters</a>
     <a href="#skills">Skills</a>
     <a href="#roadmap">Roadmap</a>
+      <a href="#items">Items</a>
   </div>
 </nav>
 
@@ -356,6 +357,15 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
   <h2 class="sec-title">What Dwells in the Void</h2>
   <p class="sec-desc">Ten terrors revealed. The castle houses over 1,000 creatures — each floor a new threat.</p>
   <div class="e-grid" id="mon-grid"></div>
+</section>
+
+        <hr class="hr">
+
+<section id="items" class="sec">
+  <div class="sec-tag">Loot & Gear</div>
+  <h2 class="sec-title">Treasures of the Void</h2>
+  <p class="sec-desc">Legendary items found in the depths. Permanently owned NFTs that grant power, rarity varies from common to one-of-a-kind.</p>
+  <div class="e-grid" id="item-grid"></div>
 </section>
 
 <hr class="hr">
@@ -672,6 +682,19 @@ const MONS = [
   {name:'Lich Lord',role:'Boss',desc:'Ancient sorcerer. Commands legions.',hp:200,dmg:75,sprite:'👑'}
 ];
 
+const ITEMS = [
+  {name:'Iron Sword',role:'Weapon',desc:'Basic blade. Scales with STR.',rarity:'Basic',atk:18,sprite:'⚔️'},
+  {name:'Dragon Scale Armor',role:'Armor',desc:'Forged from ancient scales.',rarity:'Rare',def:25,sprite:'🐉'},
+  {name:'Sapphire Shield',role:'Shield',desc:'A legendary defensive artifact.',rarity:'Legendary',def:30,hp:10,sprite:'🛡️'},
+  {name:'Ring of Vitality',role:'Accessory',desc:'Grants eternal life force.',rarity:'Rare',hp:50,sprite:'💍'},
+  {name:'Amulet of Swiftness',role:'Accessory',desc:'Move with incredible speed.',rarity:'Basic',spd:20,sprite:'✨'},
+  {name:'Berserker\'s Belt',role:'Armor',desc:'Rage intensified. Power unleashed.',rarity:'Rare',atk:22,hp:15,sprite:'⚙️'},
+  {name:'Elixir of Power',role:'Consumable',desc:'One-time boost to all stats.',rarity:'Legendary',atk:35,sprite:'🧪'},
+  {name:'Cloak of Shadows',role:'Armor',desc:'Blend into darkness itself.',rarity:'Basic',eva:18,sprite:'👥'},
+  {name:'Crown of Authority',role:'Helmet',desc:'All stats enhanced equally.',rarity:'Legendary',atk:10,def:10,spd:10,sprite:'👑'},
+  {name:'Vendor\'s Essence',role:'Currency',desc:'Increases gold gains by 50%.',rarity:'Rare',sprite:'💰'}
+];
+            
 function renderChamps() {
   const grid = document.getElementById('champ-grid');
   grid.innerHTML = CHAMPS.map((c,i) => `
@@ -711,6 +734,28 @@ function renderMons() {
   `).join('') + `<div class="mystery-card reveal" style="transition-delay:${MONS.length*0.05}s"><div class="mystery-in"><div class="mq">?</div><div class="mc">1000+</div><div class="ml">Creatures Await</div></div></div>`;
 }
 
+function renderItems() {
+  const grid = document.getElementById('item-grid');
+  grid.innerHTML = ITEMS.map((it,i) => `
+    <div class="e-card reveal" style="transition-delay:${i*0.05}s">
+      <div class="e-art"><div style="font-size:2.5rem">${it.sprite}</div></div>
+      <div class="e-name">${it.name}<span class="esub">${it.rarity}</span></div>
+      <div class="e-info">
+        <div class="e-iname">${it.name}</div>
+        <div class="e-irole">${it.role}</div>
+        <div class="e-idesc">${it.desc}</div>
+        <div class="e-stats">
+          ${it.atk ? `<div class="es"><div class="es-v">${it.atk}</div>ATK</div>` : ''}
+          ${it.def ? `<div class="es"><div class="es-v">${it.def}</div>DEF</div>` : ''}
+          ${it.hp ? `<div class="es"><div class="es-v">${it.hp}</div>HP</div>` : ''}
+          ${it.spd ? `<div class="es"><div class="es-v">${it.spd}</div>SPD</div>` : ''}
+          ${it.eva ? `<div class="es"><div class="es-v">${it.eva}</div>EVA</div>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('') + `<div class="mystery-card reveal" style="transition-delay:${ITEMS.length*0.05}s"><div class="mystery-in"><div class="mq">?</div><div class="mc">1000+</div><div class="ml">Items Await</div></div></div>`;
+}
+
 function setupCastle() {
   const tower = document.getElementById('castle-vis');
   const floors = [
@@ -739,6 +784,7 @@ function observeReveal() {
 document.addEventListener('DOMContentLoaded', () => {
   renderChamps();
   renderMons();
+  renderItems();
   setupCastle();
   observeReveal();
 });
