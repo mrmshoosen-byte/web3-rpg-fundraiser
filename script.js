@@ -7,7 +7,7 @@ const supabase = createClient(
 
 let currentTier = 0, walletConnected = false, userWallet = null
 
-// Connect Phantom Wallet
+
 const connectWallet = async () => {
   const { solana } = window
   if (!solana?.isPhantom) {
@@ -90,7 +90,7 @@ const goContact = () => {
 }
 const backPledge = () => showStep('step-pledge')
 
-// CHAMPION DATA (NO RARITY - Skins have rarity instead)
+
 const CHAMPIONS = [
   {
     name: 'Snickle',
@@ -210,7 +210,6 @@ const renderChampions = () => {
     </div>
   `).join('')
 
-  // Add mystery card
   grid.innerHTML += `
     <div class="mystery-card reveal" style="transition-delay:${CHAMPIONS.length * 0.05}s">
       <div class="mystery-in">
@@ -242,7 +241,6 @@ const renderMonsters = () => {
     </div>
   `).join('')
 
-  // Add mystery card
   grid.innerHTML += `
     <div class="mystery-card reveal" style="transition-delay:${MONSTERS.length * 0.05}s">
       <div class="mystery-in">
