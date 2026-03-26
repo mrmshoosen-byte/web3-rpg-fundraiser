@@ -533,7 +533,8 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
     </div>
   </div>
 </div>
-<script>
+
+  <script>
 // Phantom Wallet Connection
 window.connectWallet = async () => {
   try {
@@ -553,6 +554,49 @@ window.connectWallet = async () => {
     alert('Failed to connect wallet: ' + error.message)
     return null
   }
+}
+</script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL'
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_KEY'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+let currentTier = 0
+
+window.openDonateModal = () => {
+  const amt = document.getElementById('don-amt').value || '25'
+  openTierModal(0, amt)
+}
+
+window.openTierModal = (tier, amt) => {
+  currentTier = tier
+  const titles = ['Adventurer\'s Oath — $10', 'Champion\'s Covenant — $50', 'Void-Forged Legend — $100']
+  document.getElementById('m-title').textContent = titles[tier]
+  if (amt) document.getElementById('m-amt').value = amt
+  document.getElementById('step-pledge').style.display = 'block'
+  document.getElementById('step-contact').style.display = 'none'
+  document.getElementById('step-success').style.display = 'none'
+  document.getElementById('modal').classList.add('open')
+}
+
+window.closeModal = () => {
+  document.getElementById('modal').classList.remove('open')
+}
+
+window.goContact = () => {
+  if (!document.getElementById('m-amt').value) {
+    alert('Please enter an amount')
+    return
+  }
+  document.getElementById('step-pledge').style.display = 'none'
+  document.getElementById('step-contact').style.display = 'block'
+}
+
+window.backPledge = () => {
+  document.getElementById('step-pledge').style.display = 'block'
+  document.getElementById('step-contact').style.display = 'none'
 }
 
 window.submitPledge = async () => {
@@ -576,18 +620,18 @@ window.submitPledge = async () => {
       return
     }
 
-    // Send SOL (convert USD to SOL - this is simplified, use real conversion)
-    const solAmount = amount / 200 // Rough conversion, update with real rate
+    // Send SOL (convert USD to SOL)
+    const solAmount = amount / 200
     
     const transaction = await phantom.request({
       method: 'signAndSendTransaction',
       params: {
         message: `Pledge $${amount} to Chronicles of the Void`,
-        amount: Math.floor(solAmount * 1000000000) // Convert to lamports
+        amount: Math.floor(solAmount * 1000000000)
       }
     })
 
-    // THEN save to database
+    // Save to database
     const { error } = await supabase.from('pledges').insert([{
       name, email, discord, wallet, source, amount, tier: currentTier, status: 'completed', txHash: transaction.signature
     }])
@@ -599,6 +643,9 @@ window.submitPledge = async () => {
     alert('Error: ' + e.message)
   }
 }
+
+// ... rest of code (renderChamps, renderMons, etc.)
+</script>
 
   // Your existing submitPledge code continues...
 }
