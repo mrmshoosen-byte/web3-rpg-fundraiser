@@ -36,7 +36,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .sec-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,3vw,2.4rem);font-weight:700;color:var(--text-bright);text-align:center;margin-bottom:.9rem}
 .sec-desc{text-align:center;color:var(--text-dim);font-size:.78rem;line-height:1.8;max-width:540px;margin:0 auto 3rem}
 .hr{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border-strong),transparent);max-width:1200px;margin:0 auto}
-/* GAME */
 .game-layout{display:grid;grid-template-columns:1fr 360px;gap:3.5rem;align-items:start}
 .game-text h3{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;color:var(--gold);margin-bottom:.9rem}
 .game-text p{font-size:.76rem;line-height:1.95;color:var(--text-dim);margin-bottom:1.1rem}
@@ -55,7 +54,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .fl.boss .fl-n{color:var(--ember)}
 .fl.event{border-left:2px solid rgba(201,168,76,.35);color:var(--gold)}
 .fl.cur{background:rgba(74,222,128,.06);border-left:2px solid rgba(74,222,128,.5);color:var(--green-term)}
-/* FUND */
 #fund{max-width:860px}
 .f-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2.2rem}
 .f-stat{background:var(--bg-panel);padding:1.4rem;text-align:center}
@@ -76,7 +74,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .don-btn:hover{background:var(--gold-bright)}
 .sol-note{display:flex;align-items:center;gap:.65rem;padding:.7rem .9rem;background:rgba(153,69,255,.06);border:1px solid rgba(153,69,255,.18);margin-top:.9rem;font-size:.65rem;color:var(--text-dim)}
 .sdot{width:6px;height:6px;background:var(--sol);border-radius:50%;flex-shrink:0;animation:pg 2s infinite}
-/* TIERS */
 .tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
 .tier-card{background:var(--bg-card);border:1px solid var(--border);padding:1.8rem 1.6rem;position:relative;transition:all .3s;cursor:pointer}
 .tier-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--tc,var(--gold-dim));transition:height .3s}
@@ -99,7 +96,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .pb.a{background:rgba(153,69,255,.15);color:var(--sol)}
 .t-cta{width:100%;padding:.82rem;background:transparent;color:var(--tc,var(--gold));border:1px solid var(--tc,var(--gold));font-family:'Share Tech Mono',monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .25s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
 .t-cta:hover{background:var(--tc,var(--gold));color:#0C0E14}
-/* ENTITY CARDS */
 .e-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:1.1rem}
 .e-card{background:var(--bg-card);border:1px solid var(--border);aspect-ratio:3/4;position:relative;overflow:hidden;cursor:pointer;transition:all .3s}
 .e-card:hover{border-color:var(--border-strong);transform:translateY(-4px)}
@@ -108,7 +104,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .e-art{position:absolute;inset:0;transition:all .4s;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .e-art-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.025) 1px,transparent 1px);background-size:18px 18px}
 .pix-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.pix-c{image-rendering:pixelated;image-rendering:crisp-edges}
 .e-cls{position:absolute;top:.7rem;left:.7rem;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;padding:.18rem .45rem;border:1px solid;z-index:2}
 .e-name{position:absolute;bottom:0;left:0;right:0;padding:.55rem .7rem .45rem;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--text-bright);background:linear-gradient(0deg,rgba(6,7,10,.95) 0%,transparent 100%);z-index:2}
 .e-name .esub{display:block;font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--text-dim);font-weight:400;letter-spacing:.1em;margin-top:.08rem}
@@ -119,8 +114,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .e-stats{display:flex;gap:.42rem;flex-wrap:wrap}
 .es{font-size:.56rem;color:var(--text-dim);display:flex;flex-direction:column;align-items:center;gap:.12rem}
 .es-v{font-family:'Cinzel',serif;font-size:.7rem;font-weight:600}
-.es-b{width:26px;height:2px;background:var(--border);overflow:hidden}
-.es-f{height:100%}
 .mystery-card{background:var(--bg-deep);border:1px dashed rgba(201,168,76,.25);aspect-ratio:3/4;position:relative;cursor:pointer;transition:border-color .3s}
 .mystery-card:hover{border-color:rgba(201,168,76,.5)}
 .mystery-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.65rem}
@@ -128,7 +121,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .mc{font-family:'Cinzel',serif;font-size:.82rem;color:var(--gold-dim);letter-spacing:.14em;transition:color .3s}
 .ml{font-size:.52rem;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);text-align:center;padding:0 1rem}
 .mystery-card:hover .mq{color:rgba(201,168,76,.45)}.mystery-card:hover .mc{color:var(--gold)}
-/* SKILL TREE */
+#skills{max-width:1000px}
 .sk-picker{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.2rem}
 .sk-btn{padding:.45rem .9rem;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .sk-btn:hover,.sk-btn.active{border-color:var(--border-strong);color:var(--gold);background:rgba(201,168,76,.07)}
@@ -145,7 +138,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .sk-dr{display:flex;justify-content:space-between;font-size:.63rem;padding:.22rem 0;border-bottom:1px solid rgba(201,168,76,.06)}
 .sk-dl{color:var(--text-dim)}.sk-dv{color:var(--gold)}
 .sk-note{text-align:center;margin-top:1.3rem;font-size:.62rem;color:var(--text-dim);letter-spacing:.1em}
-/* ROADMAP */
 #roadmap{max-width:840px}
 .rm-list{display:flex;flex-direction:column;position:relative}
 .rm-list::before{content:'';position:absolute;left:96px;top:24px;bottom:24px;width:1px;background:var(--border)}
@@ -160,7 +152,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);
 .s-active{color:var(--green-term);border-color:rgba(74,222,128,.3)}
 .s-up{color:var(--gold-dim);border-color:var(--border)}
 .s-fut{color:var(--text-dim);border-color:rgba(122,112,96,.2)}
-/* LORE STRIP */
 .lore-strip{background:var(--bg-panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.4rem 0;overflow:hidden}
 .lore-track{display:flex;gap:3.5rem;animation:marquee 28s linear infinite;white-space:nowrap;width:max-content}
 .lore-item{font-size:.62rem;letter-spacing:.23em;text-transform:uppercase;color:var(--gold-dim)}
@@ -171,7 +162,6 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
 .f-links a{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color .2s}
 .f-links a:hover{color:var(--gold)}
 .f-copy{font-size:.58rem;color:var(--text-dim);opacity:.45;letter-spacing:.1em}
-/* MODAL */
 .mo{display:none;position:fixed;inset:0;background:rgba(6,7,10,.92);z-index:200;align-items:center;justify-content:center;padding:1.5rem}
 .mo.open{display:flex}
 .mb{background:var(--bg-panel);border:1px solid var(--border-strong);max-width:510px;width:100%;padding:2.2rem;animation:fadeUp .4s ease;position:relative;max-height:90vh;overflow-y:auto}
@@ -204,7 +194,6 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
 .s-msg{font-size:.7rem;color:var(--text-dim);line-height:1.85}
 .cursor{display:inline-block;width:2px;height:1em;background:var(--gold);vertical-align:middle;animation:pg 1s infinite;margin-left:4px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes shimmer{0%{transform:translateX(-40px)}100%{transform:translateX(40px)}}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes pg{0%,100%{opacity:1}50%{opacity:.35}}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
@@ -233,7 +222,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
   <div class="eyebrow">⬡ Web3 Text-Based RPG · Built on Solana · The Infinite Castle Awaits</div>
   <h1 class="hero-title">Chronicles<br>of the <span class="accent">Void</span></h1>
   <div class="hero-sub">The Realm Awaits Its Champions</div>
-  <p class="hero-desc">An immersive, fully on-chain text RPG where every choice is permanent, every item is yours, and the fate of entire kingdoms rests in your hands. Help forge the world — and claim your place in it.<span class="cursor"></span></p>
+  <p class="hero-desc">An immersive, fully on-chain text RPG where every choice is permanent, every item is yours, and the fate of entire kingdoms rests in your hands. Help forge the world — and claim your place in it.</p>
   <div class="hero-btns">
     <a href="#fund" class="btn-p">Fund the Realm</a>
     <a href="#game" class="btn-s">How It Works</a>
@@ -242,13 +231,12 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
 
 <div class="lore-strip">
   <div class="lore-track">
-    <span class="lore-item">100+ Champions</span><span class="lore-item">Infinite Castle</span><span class="lore-item">On-Chain Ownership</span><span class="lore-item">1000+ Monsters</span><span class="lore-item">50+ Skills Per Hero</span><span class="lore-item">Solana Powered</span><span class="lore-item">NFT Airdrops</span><span class="lore-item">Roguelike Depth</span><span class="lore-item">100+ Champions</span><span class="lore-item">Infinite Castle</span><span class="lore-item">On-Chain Ownership</span><span class="lore-item">1000+ Monsters</span><span class="lore-item">50+ Skills Per Hero</span><span class="lore-item">Solana Powered</span><span class="lore-item">NFT Airdrops</span><span class="lore-item">Roguelike Depth</span>
+    <span class="lore-item">100+ Champions</span><span class="lore-item">Infinite Castle</span><span class="lore-item">On-Chain Ownership</span><span class="lore-item">1000+ Monsters</span><span class="lore-item">50+ Skills Per Hero</span><span class="lore-item">Solana Powered</span><span class="lore-item">NFT Airdrops</span><span class="lore-item">Roguelike Depth</span><span class="lore-item">100+ Champions</span><span class="lore-item">Infinite Castle</span>
   </div>
 </div>
 
 <hr class="hr">
 
-<!-- GAME SECTION -->
 <section id="game" class="sec">
   <div class="sec-tag">The Game</div>
   <h2 class="sec-title">Enter the Infinite Castle</h2>
@@ -257,14 +245,10 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
     <div class="game-text">
       <h3>One Castle. Infinite Stories.</h3>
       <p>Choose your champion from a roster of 100+ heroes, each with a unique 50+ skill tree. Enter the Void Castle — a dungeon that stretches infinitely upward. Each floor is a new text-driven encounter with monsters, traps, merchants, and mysteries your opponents haven't faced.</p>
-      <p>Combat is calculated, not mashed. Your build, your decisions, your timing — all matter. Die, and your run ends. But your on-chain items survive. Your cosmetics persist. Your reputation in the leaderboard stands.</p>
-      <p>Every 10 floors a Boss looms — massively powerful encounters that require the right build and strategy to overcome. Between floors, random events scatter: a wandering merchant, a cursed altar, a prisoner with intel, a collapsed floor revealing a secret wing.</p>
       <div class="game-feats">
-        <div class="gf"><div class="gf-icon">⚔</div><div><strong>Turn-Based Text Combat</strong>Choose your actions each turn — Attack, Skill, Item, Flee. Status effects, combos, and build synergies reward mastery.</div></div>
-        <div class="gf"><div class="gf-icon">🏰</div><div><strong>Procedural Floors</strong>No two runs share the same layout. Monster compositions and event triggers shift every ascent.</div></div>
-        <div class="gf"><div class="gf-icon">◈</div><div><strong>On-Chain Ownership</strong>Your items, skins, and rare drops live on Solana. Die in the dungeon — keep your gear. Trade it, equip it again.</div></div>
-        <div class="gf"><div class="gf-icon">✦</div><div><strong>Seasonal Meta</strong>Every season shifts the castle. New boss modifiers, hazards, exclusive loot tables, and leaderboard rewards.</div></div>
-        <div class="gf"><div class="gf-icon">?</div><div><strong>Random Events</strong>Merchants, cursed altars, strange strangers, collapsing floors — the castle is alive. Some events are gifts. Most are not.</div></div>
+        <div class="gf"><div class="gf-icon">⚔</div><div><strong>Turn-Based Combat</strong>Choose your actions — Attack, Skill, Item, Flee. Status effects reward mastery.</div></div>
+        <div class="gf"><div class="gf-icon">🏰</div><div><strong>Procedural Floors</strong>No two runs share the same layout. Monsters and events shift every ascent.</div></div>
+        <div class="gf"><div class="gf-icon">◈</div><div><strong>On-Chain Ownership</strong>Your items live on Solana. Die in the dungeon — keep your gear.</div></div>
       </div>
     </div>
     <div>
@@ -277,7 +261,6 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
 
 <hr class="hr">
 
-<!-- FUND -->
 <section id="fund" class="sec">
   <div class="sec-tag">Fund the Realm</div>
   <h2 class="sec-title">Help Forge the Void</h2>
@@ -289,7 +272,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
   </div>
   <div class="prog-box reveal">
     <div class="prog-hdr"><span class="prog-lbl">Funding Progress</span><span class="prog-amt">42.8% of $10,000 goal</span></div>
-    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:42.8%"></div></div>
     <div class="prog-miles"><span>$0</span><span>$2,500</span><span>$5,000</span><span>$7,500</span><span>$10,000</span></div>
   </div>
   <div class="reveal">
@@ -298,17 +281,16 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
       <div class="sol-badge">◎ SOL</div>
       <button class="don-btn" onclick="openDonateModal()">Donate Now</button>
     </div>
-    <div class="sol-note"><div class="sdot"></div>Transactions processed on Solana — fast, low-fee, permanent. Wallet connection required at checkout.</div>
+    <div class="sol-note"><div class="sdot"></div>Transactions processed on Solana — fast, low-fee, permanent.</div>
   </div>
 </section>
 
 <hr class="hr">
 
-<!-- TIERS -->
 <section id="tiers" class="sec">
   <div class="sec-tag">Backer Tiers</div>
   <h2 class="sec-title">Choose Your Oath</h2>
-  <p class="sec-desc">Select a tier or donate any amount. All rewards are locked on-chain forever. Every backer is immortalised in the Void.</p>
+  <p class="sec-desc">Select a tier or donate any amount. All rewards are locked on-chain forever.</p>
   <div class="tier-grid">
     <div class="tier-card reveal" style="--tc:#7EAD72" onclick="openTierModal(1)">
       <div class="t-rank">Tier I</div>
@@ -316,16 +298,15 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
       <div class="t-psub">or equivalent in SOL</div>
       <div class="t-title">Adventurer's Oath</div>
       <ul class="t-perks">
-        <li class="hl">Permanent XP Boost <span class="pb b">ALWAYS ACTIVE</span></li>
+        <li class="hl">Permanent XP Boost</li>
         <li>All base characters permanently unlocked</li>
-        <li>Beta testing access — shape the game</li>
-        <li>5 free random skins on launch <span class="pb b">BASIC</span></li>
-        <li class="hl">Exclusive Tier I NFT Airdrop on launch <span class="pb a">◎ NFT</span></li>
-        <li class="hl">★ Immortalised — name inscribed in the Backer Hall of Legends, etched into the castle walls forever</li>
+        <li>5 free random skins on launch</li>
+        <li>Exclusive Tier I NFT Airdrop</li>
+        <li class="hl">★ Immortalised in Backer Hall of Legends</li>
       </ul>
       <button class="t-cta" style="--tc:#7EAD72">Pledge $10 →</button>
     </div>
-    <div class="tier-card ft reveal" style="--tc:var(--rare);transition-delay:.1s" onclick="openTierModal(2)">
+    <div class="tier-card ft reveal" style="--tc:var(--rare)" onclick="openTierModal(2)">
       <div class="t-badge" style="background:var(--rare)">Most Popular</div>
       <div class="t-rank">Tier II</div>
       <div class="t-price" style="color:var(--rare)">$50</div>
@@ -333,26 +314,24 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
       <div class="t-title">Champion's Covenant</div>
       <ul class="t-perks">
         <li class="hl">Everything in Tier I</li>
-        <li>10 free basic skins at launch <span class="pb b">BASIC ×10</span></li>
-        <li>5 free rare skins at launch <span class="pb r">RARE ×5</span></li>
-        <li>Priority beta access + backer nameplate</li>
-        <li class="hl">Rare NFT Airdrop — limited edition champion badge <span class="pb a">◎ RARE NFT</span></li>
-        <li class="hl">★ Immortalised — a named NPC written into the castle lore with your story</li>
+        <li>10 free basic + 5 free rare skins</li>
+        <li>Priority beta access</li>
+        <li class="hl">Rare NFT Airdrop</li>
+        <li class="hl">★ Named NPC in castle lore</li>
       </ul>
       <button class="t-cta" style="--tc:var(--rare)">Pledge $50 →</button>
     </div>
-    <div class="tier-card reveal" style="--tc:var(--legendary);transition-delay:.2s" onclick="openTierModal(3)">
+    <div class="tier-card reveal" style="--tc:var(--legendary)" onclick="openTierModal(3)">
       <div class="t-rank">Tier III</div>
       <div class="t-price" style="color:var(--legendary)">$100</div>
       <div class="t-psub">or equivalent in SOL</div>
       <div class="t-title">Void-Forged Legend</div>
       <ul class="t-perks">
         <li class="hl">Everything in Tiers I & II</li>
-        <li>10 free basic + 10 free rare skins <span class="pb r">RARE ×10</span></li>
-        <li>5 free legendary skins <span class="pb l">LEGENDARY ×5</span></li>
-        <li class="hl">1-of-1 Legendary Genesis NFT Airdrop <span class="pb a">◎ LEGENDARY</span></li>
-        <li class="hl">★ A playable champion designed after YOU — your name, likeness, and lore</li>
-        <li class="hl">★ Immortalised permanently — your champion lives and fights in the castle forever</li>
+        <li>25 free skins (basic, rare, legendary)</li>
+        <li class="hl">1-of-1 Legendary Genesis NFT</li>
+        <li class="hl">★ Custom champion designed after YOU</li>
+        <li class="hl">★ Forever immortalised in the castle</li>
       </ul>
       <button class="t-cta" style="--tc:var(--legendary)">Pledge $100 →</button>
     </div>
@@ -361,55 +340,33 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
 
 <hr class="hr">
 
-<!-- CHAMPIONS -->
 <section id="champions" class="sec">
   <div class="sec-tag">The Champions</div>
   <h2 class="sec-title">Who Will Answer the Call?</h2>
-  <p class="sec-desc">Ten champions revealed. Hover to learn their story. The Void holds 90 more — each with a unique build and skill tree.</p>
+  <p class="sec-desc">Ten champions revealed. The Void holds 90 more — each with a unique build and skill tree.</p>
   <div class="e-grid" id="champ-grid"></div>
 </section>
 
 <hr class="hr">
 
-<!-- MONSTERS -->
 <section id="monsters" class="sec">
   <div class="sec-tag">The Enemies</div>
   <h2 class="sec-title">What Dwells in the Void</h2>
-  <p class="sec-desc">Ten terrors revealed. The castle houses over 1,000 creatures — each floor a new threat, each boss a new nightmare.</p>
+  <p class="sec-desc">Ten terrors revealed. The castle houses over 1,000 creatures — each floor a new threat.</p>
   <div class="e-grid" id="mon-grid"></div>
 </section>
 
 <hr class="hr">
 
-<!-- SKILL TREE -->
-<section id="skills" class="sec">
-  <div class="sec-tag">Skill Trees</div>
-  <h2 class="sec-title">50+ Skills Per Champion</h2>
-  <p class="sec-desc">Every champion has a deep branching skill tree. Unlock passives, actives, and devastating ultimates. No two builds are ever the same.</p>
-  <div class="sk-picker reveal" id="sk-picker"></div>
-  <div class="sk-layout reveal">
-    <div class="sk-wrap">
-      <canvas class="sk-canvas" id="sk-canvas" height="460"></canvas>
-    </div>
-    <div class="sk-detail" id="sk-detail">
-      <div class="sk-empty">Hover a node to inspect a skill</div>
-    </div>
-  </div>
-  <p class="sk-note reveal">◆ Preview: 15 skills shown · Each champion has 50+ unique skills · Unlocked with in-game XP across 5 tiers</p>
-</section>
-
-<hr class="hr">
-
-<!-- ROADMAP -->
 <section id="roadmap" class="sec">
   <div class="sec-tag">The Path Forward</div>
   <h2 class="sec-title">Roadmap of the Realm</h2>
   <p class="sec-desc">A living document — updated as the Void evolves.</p>
   <div class="rm-list">
-    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase I</div><div><div class="rm-ctitle">Crowdfund & World Forge</div><div class="rm-cdesc">Campaign live. Core lore, champion design, skill tree architecture, on-chain framework. All backer NFT airdrops reserved. Contact details collected from backers.</div><span class="rm-status s-active">Active Now</span></div></div>
-    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase II</div><div><div class="rm-ctitle">Beta Realm Opens</div><div class="rm-cdesc">Closed beta for Tier I+ backers. Core combat loop, first 10 champions + 50 monsters, full skill trees, Solana item ownership live.</div><span class="rm-status s-up">Q3 2025</span></div></div>
-    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase III</div><div><div class="rm-ctitle">Public Launch + NFT Airdrops</div><div class="rm-cdesc">Full release with 50 champions, 300+ monsters, NFT skin marketplace, clan system, seasonal raids. All backer airdrops distributed.</div><span class="rm-status s-up">Q4 2025</span></div></div>
-    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase IV</div><div><div class="rm-ctitle">The Full Void — 100+ Champions, 1000+ Monsters</div><div class="rm-cdesc">Complete rosters, guild wars, on-chain governance, cross-game item compatibility. The Void becomes self-sustaining and community-driven.</div><span class="rm-status s-fut">2026</span></div></div>
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase I</div><div><div class="rm-ctitle">Crowdfund & World Forge</div><div class="rm-cdesc">Campaign live. Core lore, champion design, skill trees, on-chain framework.</div><span class="rm-status s-active">Active Now</span></div></div>
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase II</div><div><div class="rm-ctitle">Beta Realm Opens</div><div class="rm-cdesc">Closed beta for Tier I+ backers. Core combat loop, first 10 champions, skill trees live.</div><span class="rm-status s-up">Q3 2025</span></div></div>
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase III</div><div><div class="rm-ctitle">Public Launch + NFT Airdrops</div><div class="rm-cdesc">Full release with 50 champions, 300+ monsters, NFT marketplace, clan system.</div><span class="rm-status s-up">Q4 2025</span></div></div>
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase IV</div><div><div class="rm-ctitle">The Full Void</div><div class="rm-cdesc">100+ Champions, 1000+ Monsters, guild wars, on-chain governance.</div><span class="rm-status s-fut">2026</span></div></div>
   </div>
 </section>
 
@@ -419,7 +376,6 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
   <div class="f-copy">© 2025 Chronicles of the Void — All on-chain assets are owned by their holders</div>
 </footer>
 
-<!-- MODAL -->
 <div class="mo" id="modal">
   <div class="mb">
     <button class="m-close" onclick="closeModal()">✕</button>
@@ -440,8 +396,8 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
       <div class="m-slbl">Step 2 — Contact Info</div>
       <div class="m-field"><label>Full Name *</label><input class="m-inp" id="c-name" placeholder="Your name" type="text"></div>
       <div class="m-field"><label>Email Address *</label><input class="m-inp" id="c-email" placeholder="you@example.com" type="email"></div>
-      <div class="m-field"><label>Discord Handle</label><input class="m-inp" id="c-discord" placeholder="YourName#0000 (optional)" type="text"></div>
-      <div class="m-field"><label>Solana Wallet Address</label><input class="m-inp" id="c-wallet" placeholder="Auto-filled on wallet connect..." type="text"></div>
+      <div class="m-field"><label>Discord Handle</label><input class="m-inp" id="c-discord" placeholder="YourName#0000" type="text"></div>
+      <div class="m-field"><label>Solana Wallet</label><input class="m-inp" id="c-wallet" placeholder="Auto-filled on wallet connect..." type="text"></div>
       <div class="m-field"><label>How did you find us?</label><input class="m-inp" id="c-source" placeholder="Twitter, Discord, friend..." type="text"></div>
       <div class="m-btns">
         <button class="m-cta sec" onclick="backPledge()" style="flex:1">← Back</button>
@@ -452,27 +408,178 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
       <div class="success-p">
         <div class="s-icon">✦</div>
         <div class="s-title">Pledge Received — You Are Immortalised</div>
-        <div class="s-msg">Welcome to the Chronicles of the Void.<br><br>We'll reach out within 48 hours to confirm your backer rewards, NFT airdrop details, and beta access.<br><br>Watch your email and Discord for the call.</div>
+        <div class="s-msg">Welcome to the Chronicles of the Void.<br><br>We'll reach out within 48 hours to confirm your backer rewards and NFT airdrop.<br><br>Watch your email for the call.</div>
         <button class="m-cta" style="margin-top:1.5rem" onclick="closeModal()">Return to the Realm</button>
       </div>
     </div>
   </div>
 </div>
 
-<script>
-// ==========================================
-// PIXEL ART SPRITE DATA (12cols x 16rows, 2-3 frames, 4px scale)
-// 0=transparent, 1=skin, 2=primary, 3=secondary, 4=hair, 5=weapon, 6=dark, 7=eye/accent, 8=glow
-// ==========================================
-const CHAMP_PIX={
-  rogue:[['000044440000','004444440000','044411440000','044417440000','044411440000','004444440000','002222220000','022252220000','022222220000','003222300000','003300330000','003300330000','006600660000','000000000000','000000000000','000000000000'],['000044440000','004444440000','044411440000','044417440000','044411440000','004444440000','002222220000','052222220000','022222220000','003222300000','000330033000','003300330000','000600660600','000000000000','000000000000','000000000000']],
-  mage:[['000044440000','004411440000','044411440000','044417440000','044411440000','000882880000','002882220000','022222250000','002222250000','002222250000','000222000000','000222000000','000222000000','000660000000','000000000000','000000000000'],['000044440000','004411440000','044411440000','044417440000','044411440000','008888800000','008882220000','022222250000','002222250000','002222250000','000222000000','000222000000','000222000000','000660000000','000000000000','000000000000']],
-  warrior:[['000033330000','003322230000','003222230000','003272730000','003222230000','022222222500','022332232500','022222222550','002222222000','002332320000','003300330000','003300330000','006600660000','000000000000','000000000000','000000000000'],['000033330000','003322230000','003222230000','003272730000','003222230000','022222255500','022332232000','022222222000','002222222000','002332320000','000330033000','003300330000','060600066000','000000000000','000000000000','000000000000']],
-  berserker:[['000444440000','004411440000','044411440000','044417440000','044411440000','022222220000','022222222500','555222222550','055522222000','002333320000','002300320000','003300330000','006600660000','000000000000','000000000000','000000000000'],['000444440000','004411440000','044411440000','044417440000','044411440000','022222220000','022222220000','055555222000','005555222000','002333320000','000230032000','003300330000','006000660000','000000000000','000000000000','000000000000']],
-  monk:[['000044440000','004411440000','044411440000','044417440000','044411440000','004444440000','022222220000','022222220000','022222220000','022222220000','001100110000','001100110000','000110011000','000660066000','000000000000','000000000000'],['000044440000','004411440000','044411440000','044417440000','044411440000','004444440000','020222220000','022222222000','022222220000','022222220000','001100110000','001100110000','001100000000','006600060000','000000000000','000000000000']],
-  reaper:[['000044440000','004444440000','044411440000','044477440000','044444440000','004444440000','044222240000','055222240000','055222240000','005522240000','000222240000','000222220000','000002200000','000006000000','000000000000','000000000000'],['000044440000','004444440000','044411440000','044477440000','044444440000','004444440000','044222240000','044222255000','044222055000','000222555000','000222240000','000222220000','000002200000','000006000000','000000000000','000000000000']]
-};
-const MON_PIX={
-  spider:[['660000000660','066666666660','066622226600','066627726600','066622226600','666622226660','060666666606','006066666660','000066660000','000060060000','000000000000','000000000000','000000000000','000000000000','000000000000','000000000000'],['606000000606','066666666660','066622226600','066627726600','066622226600','666622226660','660666666066','006660006660','000060060000','000006006000','000000000000','000000000000','000000000000','000000000000','000000000000','000000000000']],
-  skeleton:[['000033330000','003171730000','003737330000','000333330000','003330333000','003333333000','003330333000','003330333000','000030300000','000030300000','000030300000','000033300000','000303030000','000000000000','000000000000','000000000000'],['000033330000','003171730000','003737330000','000333330000','003330333000','003333333000','003330333000','003330333000','000030300000','000030300000','000003030000','000000330000','000303000300','000000000000','000000000000','000000000000']],
-  wraith:[['000044440000','004444444000','044477444000','044444444000','004444440000','044888880000','048888884000','004888840000','000488800000','000048800000','000004880000','000000480000','
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL'
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_KEY'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+let currentTier = 0
+
+window.openDonateModal = () => {
+  const amt = document.getElementById('don-amt').value || '25'
+  openTierModal(0, amt)
+}
+
+window.openTierModal = (tier, amt) => {
+  currentTier = tier
+  const titles = ['Adventurer\'s Oath — $10', 'Champion\'s Covenant — $50', 'Void-Forged Legend — $100']
+  document.getElementById('m-title').textContent = titles[tier]
+  if (amt) document.getElementById('m-amt').value = amt
+  document.getElementById('step-pledge').style.display = 'block'
+  document.getElementById('step-contact').style.display = 'none'
+  document.getElementById('step-success').style.display = 'none'
+  document.getElementById('modal').classList.add('open')
+}
+
+window.closeModal = () => {
+  document.getElementById('modal').classList.remove('open')
+}
+
+window.goContact = () => {
+  if (!document.getElementById('m-amt').value) {
+    alert('Please enter an amount')
+    return
+  }
+  document.getElementById('step-pledge').style.display = 'none'
+  document.getElementById('step-contact').style.display = 'block'
+}
+
+window.backPledge = () => {
+  document.getElementById('step-pledge').style.display = 'block'
+  document.getElementById('step-contact').style.display = 'none'
+}
+
+window.submitPledge = async () => {
+  const name = document.getElementById('c-name').value
+  const email = document.getElementById('c-email').value
+  const discord = document.getElementById('c-discord').value
+  const wallet = document.getElementById('c-wallet').value
+  const source = document.getElementById('c-source').value
+  const amount = document.getElementById('m-amt').value
+
+  if (!name || !email) {
+    alert('Name and email are required')
+    return
+  }
+
+  try {
+    const { error } = await supabase.from('pledges').insert([{
+      name, email, discord, wallet, source, amount, tier: currentTier, status: 'pending'
+    }])
+    if (error) throw error
+    
+    document.getElementById('step-contact').style.display = 'none'
+    document.getElementById('step-success').style.display = 'block'
+  } catch (e) {
+    alert('Error: ' + e.message)
+  }
+}
+
+const CHAMPS = [
+  {name:'Snickle',role:'Rogue',desc:'Once the kingdom\'s most notorious gambler.',stats:{dmg:85,spd:95,def:60,hp:120},sprite:'⚔️'},
+  {name:'Vibhu',role:'Knight',desc:'Sworn protector of the Crystal Realm.',stats:{dmg:75,spd:60,def:95,hp:160},sprite:'🛡️'},
+  {name:'Cryptopher',role:'Mage',desc:'Void Sage. Commands the fabric of reality.',stats:{dmg:100,spd:80,def:50,hp:100},sprite:'🔮'},
+  {name:'Rexxar',role:'Berserker',desc:'Strength incarnate. Insatiable hunger.',stats:{dmg:110,spd:70,def:70,hp:180},sprite:'⚡'},
+  {name:'Luna',role:'Ranger',desc:'Swift as night wind. Arrows never miss.',stats:{dmg:90,spd:92,def:65,hp:110},sprite:'🏹'},
+  {name:'Kai',role:'Monk',desc:'Balanced between yin and yang.',stats:{dmg:80,spd:88,def:75,hp:130},sprite:'🥋'},
+  {name:'Malachai',role:'Paladin',desc:'Clad in holy gold. Divine protector.',stats:{dmg:70,spd:65,def:100,hp:175},sprite:'✨'},
+  {name:'Raven',role:'Reaper',desc:'Collector of final breaths.',stats:{dmg:105,spd:85,def:55,hp:115},sprite:'💀'},
+  {name:'Emara',role:'Sorceress',desc:'Chaos and order. Bends magic to will.',stats:{dmg:95,spd:82,def:48,hp:105},sprite:'🌪️'},
+  {name:'Thornwick',role:'Druid',desc:'One with nature\'s fury.',stats:{dmg:75,spd:70,def:80,hp:150},sprite:'🌿'}
+]
+
+const MONS = [
+  {name:'Void Specter',role:'Ghost',desc:'Wraith of pure void. Drains life.',hp:45,dmg:35,sprite:'👻'},
+  {name:'Skeletal Archer',role:'Undead',desc:'Bones reanimated by dark magic.',hp:60,dmg:40,sprite:'🏹'},
+  {name:'Shadow Spider',role:'Beast',desc:'Eight legs. Web binds strongest.',hp:75,dmg:45,sprite:'🕷️'},
+  {name:'Stone Sentinel',role:'Construct',desc:'Animated rock. Crushes all.',hp:110,dmg:50,sprite:'⚙️'},
+  {name:'Flame Wyrm',role:'Dragon',desc:'Serpent of living fire.',hp:95,dmg:55,sprite:'🐉'},
+  {name:'Corrupted Golem',role:'Construct',desc:'Magic twisted. Regenerates.',hp:140,dmg:48,sprite:'🗿'},
+  {name:'Plague Rat Swarm',role:'Beast',desc:'Hundreds as one. Poison.',hp:70,dmg:42,sprite:'🐀'},
+  {name:'Phantom Knight',role:'Undead',desc:'Ghost warrior. Haunts eternally.',hp:85,dmg:52,sprite:'⚔️'},
+  {name:'Void Tentacle',role:'Eldritch',desc:'From beyond. Unknowable.',hp:100,dmg:58,sprite:'🐙'},
+  {name:'Lich Lord',role:'Boss',desc:'Ancient sorcerer. Commands legions.',hp:200,dmg:75,sprite:'👑'}
+]
+
+function renderChamps() {
+  const grid = document.getElementById('champ-grid')
+  grid.innerHTML = CHAMPS.map((c,i) => `
+    <div class="e-card reveal" style="transition-delay:${i*0.05}s">
+      <div class="e-art"><div style="font-size:2.5rem">${c.sprite}</div></div>
+      <div class="e-name">${c.name}<span class="esub">${c.role}</span></div>
+      <div class="e-info">
+        <div class="e-iname">${c.name}</div>
+        <div class="e-irole">${c.role}</div>
+        <div class="e-idesc">${c.desc}</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">${c.stats.dmg}</div>DMG</div>
+          <div class="es"><div class="es-v">${c.stats.spd}</div>SPD</div>
+          <div class="es"><div class="es-v">${c.stats.def}</div>DEF</div>
+        </div>
+      </div>
+    </div>
+  `).join('') + `<div class="mystery-card reveal" style="transition-delay:${CHAMPS.length*0.05}s"><div class="mystery-in"><div class="mq">?</div><div class="mc">90+</div><div class="ml">Champions Locked</div></div></div>`
+}
+
+function renderMons() {
+  const grid = document.getElementById('mon-grid')
+  grid.innerHTML = MONS.map((m,i) => `
+    <div class="e-card reveal" style="transition-delay:${i*0.05}s">
+      <div class="e-art"><div style="font-size:2.5rem">${m.sprite}</div></div>
+      <div class="e-name">${m.name}<span class="esub">${m.role}</span></div>
+      <div class="e-info">
+        <div class="e-iname">${m.name}</div>
+        <div class="e-irole">${m.role}</div>
+        <div class="e-idesc">${m.desc}</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">${m.hp}</div>HP</div>
+          <div class="es"><div class="es-v">${m.dmg}</div>DMG</div>
+        </div>
+      </div>
+    </div>
+  `).join('') + `<div class="mystery-card reveal" style="transition-delay:${MONS.length*0.05}s"><div class="mystery-in"><div class="mq">?</div><div class="mc">1000+</div><div class="ml">Creatures Await</div></div></div>`
+}
+
+function setupCastle() {
+  const tower = document.getElementById('castle-vis')
+  const floors = [
+    {n:1,i:'◈',t:'Void Specter'},
+    {n:2,i:'◈',t:'Skeletal Archer'},
+    {n:3,i:'?',t:'Cursed Altar'},
+    {n:4,i:'◈',t:'Shadow Spider'},
+    {n:5,i:'◈',t:'Flame Wyrm'},
+    {n:6,i:'✦',t:'Merchant Tavern'},
+    {n:7,i:'◈',t:'Stone Sentinel'},
+    {n:8,i:'◈',t:'Corrupted Golem'},
+    {n:9,i:'◈',t:'Plague Rats'},
+    {n:10,i:'★',t:'Phantom Knight'}
+  ]
+  const html = floors.map(f => `<div class="fl${f.n===10?' boss':''}"><div class="fl-n">FL ${f.n}</div><div class="fl-i">${f.i}</div><div>${f.t}</div></div>`).join('')
+  tower.innerHTML = tower.innerHTML.replace('</div>', html + '</div>')
+}
+
+function observeReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => e.isIntersecting && e.target.classList.add('visible'))
+  }, {threshold:0.1})
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderChamps()
+  renderMons()
+  setupCastle()
+  observeReveal()
+})
+</script>
+</body>
+</html>
