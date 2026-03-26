@@ -199,6 +199,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
 .reveal.visible{opacity:1;transform:none}
 @media(max-width:900px){.game-layout,.sk-layout{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr}.e-grid{grid-template-columns:repeat(2,1fr)}.f-stats{grid-template-columns:1fr}nav{padding:0 1rem}.nav-links{gap:.9rem}}
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.js"></script>
 </style>
 </head>
 <body>
@@ -534,7 +535,9 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
   </div>
 </div>
 
-  <script>
+ <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.js"></script>
+
+<script>
 // Phantom Wallet Connection
 window.connectWallet = async () => {
   try {
@@ -556,6 +559,7 @@ window.connectWallet = async () => {
   }
 }
 </script>
+
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
@@ -613,33 +617,48 @@ window.submitPledge = async () => {
   }
 
   try {
-    // REQUEST PAYMENT FROM PHANTOM
     const phantom = window.solana
     if (!phantom || !phantom.isPhantom) {
       alert('Phantom wallet not found')
       return
     }
 
-    // Send SOL (convert USD to SOL)
+    // Convert USD to SOL (approximate rate)
     const solAmount = amount / 200
-    
-    const transaction = await phantom.request({
-      method: 'signAndSendTransaction',
-      params: {
-        message: `Pledge $${amount} to Chronicles of the Void`,
-        amount: Math.floor(solAmount * 1000000000)
-      }
-    })
+    const lamports = Math.floor(solAmount * 1000000000)
+
+    // Create transaction
+    const connection = new window.solanaWeb3.Connection('https://api.devnet.solana.com')
+    const userPublicKey = new window.solanaWeb3.PublicKey(wallet)
+    const recipientPublicKey = new window.solanaWeb3.PublicKey('YOUR_WALLET_ADDRESS_HERE') // Replace this!
+
+    const transaction = new window.solanaWeb3.Transaction().add(
+      window.solanaWeb3.SystemProgram.transfer({
+        fromPubkey: userPublicKey,
+        toPubkey: recipientPublicKey,
+        lamports: lamports
+      })
+    )
+
+    transaction.feePayer = userPublicKey
+    transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
+
+    // Sign and send with Phantom
+    const signedTransaction = await phantom.signAndSendTransaction(transaction)
+
+    console.log('Transaction signature:', signedTransaction.signature)
+    alert(`Payment of $${amount} received! Tx: ${signedTransaction.signature}`)
 
     // Save to database
     const { error } = await supabase.from('pledges').insert([{
-      name, email, discord, wallet, source, amount, tier: currentTier, status: 'completed', txHash: transaction.signature
+      name, email, discord, wallet, source, amount, tier: currentTier, status: 'completed', txHash: signedTransaction.signature
     }])
     if (error) throw error
     
     document.getElementById('step-contact').style.display = 'none'
     document.getElementById('step-success').style.display = 'block'
   } catch (e) {
+    console.error('Transaction error:', e)
     alert('Error: ' + e.message)
   }
 }
@@ -647,78 +666,7 @@ window.submitPledge = async () => {
 // ... rest of code (renderChamps, renderMons, etc.)
 </script>
 
-  // Your existing submitPledge code continues...
-}
 
-  </script>
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL'
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_KEY'
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-let currentTier = 0
-
-window.openDonateModal = () => {
-  const amt = document.getElementById('don-amt').value || '25'
-  openTierModal(0, amt)
-}
-
-window.openTierModal = (tier, amt) => {
-  currentTier = tier
-  const titles = ['Adventurer\'s Oath — $10', 'Champion\'s Covenant — $50', 'Void-Forged Legend — $100']
-  document.getElementById('m-title').textContent = titles[tier]
-  if (amt) document.getElementById('m-amt').value = amt
-  document.getElementById('step-pledge').style.display = 'block'
-  document.getElementById('step-contact').style.display = 'none'
-  document.getElementById('step-success').style.display = 'none'
-  document.getElementById('modal').classList.add('open')
-}
-
-window.closeModal = () => {
-  document.getElementById('modal').classList.remove('open')
-}
-
-window.goContact = () => {
-  if (!document.getElementById('m-amt').value) {
-    alert('Please enter an amount')
-    return
-  }
-  document.getElementById('step-pledge').style.display = 'none'
-  document.getElementById('step-contact').style.display = 'block'
-}
-
-window.backPledge = () => {
-  document.getElementById('step-pledge').style.display = 'block'
-  document.getElementById('step-contact').style.display = 'none'
-}
-
-window.submitPledge = async () => {
-  const name = document.getElementById('c-name').value
-  const email = document.getElementById('c-email').value
-  const discord = document.getElementById('c-discord').value
-  const wallet = document.getElementById('c-wallet').value
-  const source = document.getElementById('c-source').value
-  const amount = document.getElementById('m-amt').value
-
-  if (!name || !email) {
-    alert('Name and email are required')
-    return
-  }
-
-  try {
-    const { error } = await supabase.from('pledges').insert([{
-      name, email, discord, wallet, source, amount, tier: currentTier, status: 'pending'
-    }])
-    if (error) throw error
-    
-    document.getElementById('step-contact').style.display = 'none'
-    document.getElementById('step-success').style.display = 'block'
-  } catch (e) {
-    alert('Error: ' + e.message)
-  }
-}
 
 const CHAMPS = [
   {name:'Snickle',role:'Rogue',desc:'Once the kingdom\'s most notorious gambler.',stats:{dmg:85,spd:95,def:60,hp:120},sprite:'⚔️'},
