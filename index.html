@@ -3,80 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chronicles of the Void Fundraiser</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        header { background: #333; color: #fff; padding: 10px 20px; text-align: center; }
-        section { padding: 20px; }
-        footer { text-align: center; padding: 10px 20px; background: #333; color: #fff; }
-        form { margin-top: 20px; }
-    </style>
+    <title>Chronicles of the Void</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Chronicles of the Void Fundraiser</h1>
-        <nav>
-            <a href="#champions">Champions</a> | 
-            <a href="#monsters">Monsters</a> | 
-            <a href="#skills">Skill Trees</a> | 
-            <a href="#donation">Donation System</a> | 
-            <a href="#tiers">Tier System</a> | 
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#game-explanation">Game Explanation</a></li>
+            <li><a href="#funding">Funding</a></li>
+            <li><a href="#champions">Champions</a></li>
+            <li><a href="#monsters">Monsters</a></li>
+            <li><a href="#skill-tree">Skill Tree</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+            <li><a href="#footer">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section id="hero">
+        <h1>Welcome to Chronicles of the Void</h1>
+        <p>Your adventure begins here!</p>
+    </section>
+
+    <section id="game-explanation">
+        <h2>Game Explanation</h2>
+        <div class="castle-visualization">
+            <img src="castle.png" alt="Castle Visualization">
+        </div>
+        <p>Explore the depths of the universe and uncover hidden secrets.</p>
+    </section>
+
+    <section id="funding">
+        <h2>Funding Options</h2>
+        <div class="progress-bar">
+            <div class="progress" style="width: 75%;">75% Funded</div>
+        </div>
+        <div class="tier-cards">
+            <div class="card">
+                <h3>$10 Tier</h3>
+                <p>Basic Access</p>
+            </div>
+            <div class="card">
+                <h3>$50 Tier</h3>
+                <p>Deluxe Access</p>
+            </div>
+            <div class="card">
+                <h3>$100 Tier</h3>
+                <p>Ultimate Access</p>
+            </div>
+        </div>
+    </section>
 
     <section id="champions">
         <h2>Champions</h2>
-        <p>Meet our champions:</p>
-        <ul>
-            <li>Snickle</li>
-            <li>Vibhu</li>
-            <li>Cryptopher</li>
-            <li>Champion 4</li>
-            <li>Champion 5</li>
-            <li>Champion 6</li>
-            <li>Champion 7</li>
-            <li>Champion 8</li>
-            <li>Champion 9</li>
-            <li>Champion 10</li>
-        </ul>
+        <div class="champions-grid">
+            <div>Snickle</div>
+            <div>Vibhu</div>
+            <div>Cryptopher</div>
+            <div>Rexxar</div>
+            <div>Luna</div>
+            <div>Kai</div>
+            <div>Malachai</div>
+            <div>Raven</div>
+            <div>Emara</div>
+            <div>Thornwick</div>
+            <div>100+ Mystery Card</div>
+        </div>
     </section>
 
     <section id="monsters">
         <h2>Monsters</h2>
-        <p>Discover the monsters you will encounter.</p>
+        <div class="monsters-grid">
+            <div>Monster 1</div>
+            <div>Monster 2</div>
+            <div>Monster 3</div>
+            <div>Monster 4</div>
+            <div>Monster 5</div>
+            <div>Monster 6</div>
+            <div>Monster 7</div>
+            <div>Monster 8</div>
+            <div>Monster 9</div>
+            <div>Monster 10</div>
+            <div>1000+ Mystery Card</div>
+        </div>
     </section>
 
-    <section id="skills">
-        <h2>Skill Trees</h2>
-        <p>Explore the various skill trees available for our champions.</p>
+    <section id="skill-tree">
+        <h2>Skill Tree</h2>
+        <canvas id="skillCanvas"></canvas>
+        <div class="detail-panel">
+            <p>Choose your path wisely!</p>
+        </div>
     </section>
 
-    <section id="donation">
-        <h2>Donation System</h2>
-        <p>Support us by donating with Solana integration.</p>
+    <section id="roadmap">
+        <h2>Roadmap</h2>
+        <ol>
+            <li>Phase 1: Concept Development</li>
+            <li>Phase 2: Prototype Launch</li>
+            <li>Phase 3: Beta Testing</li>
+            <li>Phase 4: Official Release</li>
+        </ol>
     </section>
+</main>
 
-    <section id="tiers">
-        <h2>Tier System</h2>
-        <p>Learn about our different tiers of support.</p>
-    </section>
+<footer id="footer">
+    <p>Contact us: info@voidadventures.com</p>
+</footer>
 
-    <section id="contact">
-        <h2>Contact Us</h2>
+<div class="modal" id="pledgeModal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Pledge Now</h2>
         <form>
-            <label for="name">Name:</label><br>
-            <input type="text" id="name" name="name"><br>
-            <label for="email">Email:</label><br>
-            <input type="email" id="email" name="email"><br>
-            <label for="message">Message:</label><br>
-            <textarea id="message" name="message"></textarea><br>
-            <input type="submit" value="Submit">
+            <label for="amount">Amount:</label>
+            <input type="text" id="amount" name="amount" required>
+            <label for="contact">Contact Details:</label>
+            <input type="email" id="contact" name="contact" required>
+            <button type="submit">Submit</button>
         </form>
-    </section>
+        <p>Thank you for your pledge!</p>
+    </div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 Chronicles of the Void Fundraiser. All Rights Reserved.</p>
-    </footer>
+<script src="script.js"></script>
 </body>
 </html>
