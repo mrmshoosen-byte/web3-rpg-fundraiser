@@ -536,8 +536,6 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
   </div>
 </div>
 
- <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.js"></script>
-
 <script>
 // Phantom Wallet Connection
 window.connectWallet = async () => {
@@ -664,11 +662,10 @@ window.submitPledge = async () => {
   }
 }
 
-// ... rest of code (renderChamps, renderMons, etc.)
-
 
 </script>
 
+<script>
 const CHAMPS = [
   {name:'Snickle',role:'Rogue',desc:'Once the kingdom\'s most notorious gambler.',stats:{dmg:85,spd:95,def:60,hp:120},sprite:'⚔️'},
   {name:'Vibhu',role:'Knight',desc:'Sworn protector of the Crystal Realm.',stats:{dmg:75,spd:60,def:95,hp:160},sprite:'🛡️'},
@@ -768,6 +765,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-<script src="path/to/script.js"></script>
-
-</body>
