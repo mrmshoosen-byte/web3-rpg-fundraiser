@@ -1,46 +1,754 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web3 RPG Fundraiser</title>
-    <script type="module">
-        // Keep Phantom wallet and Supabase code in this module
-        // ... Your Phantom wallet and Supabase code goes here ...
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONICLES OF THE VOID — Fund the Realm</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.js"></script>
+<style>
+:root{--gold:#C9A84C;--gold-bright:#F0C060;--gold-dim:#7A6230;--ember:#E8612A;--bg-void:#06070A;--bg-deep:#0C0E14;--bg-panel:#11141C;--bg-card:#161A24;--text-main:#D8CDB8;--text-dim:#7A7060;--text-bright:#EDE5D0;--border:rgba(201,168,76,.18);--border-strong:rgba(201,168,76,.45);--green-term:#4ADE80;--rare:#8B5CF6;--legendary:#F59E0B;--sol:#9945FF}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg-void);color:var(--text-main);font-family:'Share Tech Mono',monospace;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.35}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:9998}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px}
+.nav-logo{font-family:'Cinzel Decorative',serif;font-size:.82rem;font-weight:700;color:var(--gold);letter-spacing:.12em;white-space:nowrap}
+.nav-logo span{color:var(--ember)}
+.nav-links{display:flex;gap:1.4rem;flex-wrap:wrap}
+.nav-links a{color:var(--text-dim);text-decoration:none;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:8rem 2rem 4rem;text-align:center;overflow:hidden}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)}
+.hero-glow{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.eyebrow{font-size:.63rem;letter-spacing:.38em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:1.5rem;animation:fadeUp 1s ease forwards;opacity:0}
+.hero-title{font-family:'Cinzel Decorative',serif;font-size:clamp(2.4rem,7vw,6rem);font-weight:900;line-height:1.1;color:var(--text-bright);margin-bottom:.4rem;animation:fadeUp 1s .2s ease forwards;opacity:0}
+.hero-title .accent{color:var(--gold)}
+.hero-sub{font-family:'Cinzel Decorative',serif;font-size:clamp(.75rem,2vw,1.15rem);font-weight:400;color:var(--gold-dim);letter-spacing:.25em;margin-bottom:2rem;animation:fadeUp 1s .35s ease forwards;opacity:0}
+.hero-desc{max-width:580px;font-size:.83rem;line-height:1.9;color:var(--text-dim);margin-bottom:3rem;animation:fadeUp 1s .5s ease forwards;opacity:0}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;animation:fadeUp 1s .65s ease forwards;opacity:0}
+.btn-p{padding:.85rem 2.2rem;background:var(--gold);color:#0C0E14;font-family:'Share Tech Mono',monospace;font-size:.73rem;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;transition:all .25s;text-decoration:none;display:inline-block;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+.btn-p:hover{background:var(--gold-bright);transform:translateY(-2px)}
+.btn-s{padding:.85rem 2.2rem;background:transparent;color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:.73rem;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--border-strong);cursor:pointer;transition:all .25s;text-decoration:none;display:inline-block;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+.btn-s:hover{background:rgba(201,168,76,.08);transform:translateY(-2px)}
+.sec{padding:5.5rem 2rem;max-width:1200px;margin:0 auto}
+.sec-tag{font-size:.58rem;letter-spacing:.45em;color:var(--gold-dim);text-transform:uppercase;display:flex;align-items:center;gap:1rem;margin-bottom:.75rem}
+.sec-tag::before,.sec-tag::after{content:'';height:1px;background:var(--border);flex:1}
+.sec-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,3vw,2.4rem);font-weight:700;color:var(--text-bright);text-align:center;margin-bottom:.9rem}
+.sec-desc{text-align:center;color:var(--text-dim);font-size:.78rem;line-height:1.8;max-width:540px;margin:0 auto 3rem}
+.hr{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border-strong),transparent);max-width:1200px;margin:0 auto}
+.game-layout{display:grid;grid-template-columns:1fr 360px;gap:3.5rem;align-items:start}
+.game-text h3{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;color:var(--gold);margin-bottom:.9rem}
+.game-text p{font-size:.76rem;line-height:1.95;color:var(--text-dim);margin-bottom:1.1rem}
+.game-feats{display:flex;flex-direction:column;gap:.7rem;margin-top:1.2rem}
+.gf{display:flex;gap:.7rem;align-items:flex-start;font-size:.7rem;color:var(--text-main);line-height:1.6}
+.gf-icon{width:24px;height:24px;flex-shrink:0;background:rgba(201,168,76,.08);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--gold);margin-top:1px}
+.gf strong{color:var(--gold-bright);display:block;font-size:.66rem;letter-spacing:.08em;margin-bottom:.08rem}
+.castle-tower{background:var(--bg-panel);border:1px solid var(--border);padding:1.25rem .9rem;max-height:500px;overflow-y:auto}
+.castle-tower::-webkit-scrollbar{width:3px}.castle-tower::-webkit-scrollbar-thumb{background:var(--gold-dim)}
+.ct-header{text-align:center;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:1rem;padding-bottom:.65rem;border-bottom:1px solid var(--border)}
+.fl{display:flex;align-items:center;gap:.6rem;padding:.28rem .4rem;margin-bottom:1px;font-size:.62rem;color:var(--text-dim);transition:all .2s;border-left:2px solid transparent}
+.fl:hover{background:rgba(201,168,76,.05);border-left-color:var(--gold-dim);color:var(--text-main)}
+.fl-n{width:32px;text-align:right;color:var(--gold-dim);font-size:.58rem;flex-shrink:0}
+.fl-i{width:16px;text-align:center;font-size:.65rem}
+.fl.boss{background:rgba(232,97,42,.06);border-left:2px solid rgba(232,97,42,.5);color:var(--ember)}
+.fl.boss .fl-n{color:var(--ember)}
+.fl.event{border-left:2px solid rgba(201,168,76,.35);color:var(--gold)}
+.fl.cur{background:rgba(74,222,128,.06);border-left:2px solid rgba(74,222,128,.5);color:var(--green-term)}
+#fund{max-width:860px}
+.f-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2.2rem}
+.f-stat{background:var(--bg-panel);padding:1.4rem;text-align:center}
+.f-val{font-family:'Cinzel',serif;font-size:1.7rem;font-weight:700;color:var(--gold);display:block}
+.f-lbl{font-size:.58rem;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase;margin-top:.2rem;display:block}
+.prog-box{background:var(--bg-panel);border:1px solid var(--border);padding:1.8rem;margin-bottom:2.2rem}
+.prog-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.1rem}
+.prog-lbl{font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim)}
+.prog-amt{font-family:'Cinzel',serif;font-size:.95rem;color:var(--gold)}
+.prog-track{height:10px;background:rgba(201,168,76,.08);border:1px solid var(--border);overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold),var(--gold-bright));width:0%;transition:width 2s cubic-bezier(.25,1,.5,1)}
+.prog-miles{display:flex;justify-content:space-between;margin-top:.65rem;font-size:.58rem;color:var(--text-dim)}
+.don-row{display:grid;grid-template-columns:1fr auto auto;border:1px solid var(--border-strong);overflow:hidden}
+.don-input{background:var(--bg-card);border:none;outline:none;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:.82rem;padding:.85rem 1.1rem;width:100%}
+.don-input::placeholder{color:var(--text-dim)}
+.sol-badge{background:rgba(153,69,255,.14);border-left:1px solid var(--border);display:flex;align-items:center;padding:0 .9rem;color:var(--sol);font-size:.72rem;white-space:nowrap}
+.don-btn{background:var(--gold);color:#0C0E14;border:none;padding:0 1.6rem;font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.don-btn:hover{background:var(--gold-bright)}
+.sol-note{display:flex;align-items:center;gap:.65rem;padding:.7rem .9rem;background:rgba(153,69,255,.06);border:1px solid rgba(153,69,255,.18);margin-top:.9rem;font-size:.65rem;color:var(--text-dim)}
+.sdot{width:6px;height:6px;background:var(--sol);border-radius:50%;flex-shrink:0;animation:pg 2s infinite}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.tier-card{background:var(--bg-card);border:1px solid var(--border);padding:1.8rem 1.6rem;position:relative;transition:all .3s;cursor:pointer}
+.tier-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--tc,var(--gold-dim));transition:height .3s}
+.tier-card:hover{border-color:var(--border-strong);transform:translateY(-4px)}
+.tier-card:hover::before{height:5px}
+.tier-card.ft{border-color:var(--border-strong)}
+.t-badge{position:absolute;top:-1px;right:1.4rem;font-size:.53rem;letter-spacing:.18em;text-transform:uppercase;padding:.22rem .65rem;background:var(--tc,var(--gold));color:#0C0E14}
+.t-rank{font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.35rem}
+.t-price{font-family:'Cinzel',serif;font-size:2.6rem;font-weight:700;color:var(--tc,var(--gold));line-height:1;margin-bottom:.18rem}
+.t-psub{font-size:.62rem;color:var(--text-dim);letter-spacing:.1em;margin-bottom:1.3rem}
+.t-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:var(--text-bright);margin-bottom:1.3rem;padding-bottom:.9rem;border-bottom:1px solid var(--border)}
+.t-perks{list-style:none;display:flex;flex-direction:column;gap:.58rem;margin-bottom:1.8rem}
+.t-perks li{font-size:.7rem;color:var(--text-dim);line-height:1.6;display:flex;gap:.55rem;align-items:flex-start}
+.t-perks li::before{content:'›';color:var(--tc,var(--gold));flex-shrink:0;font-size:.88rem;line-height:1.4}
+.t-perks li.hl{color:var(--text-main)}
+.pb{display:inline-block;font-size:.56rem;padding:.08rem .38rem;border-radius:2px;margin-left:.28rem;vertical-align:middle}
+.pb.b{background:rgba(74,222,128,.12);color:var(--green-term)}
+.pb.r{background:rgba(139,92,246,.15);color:var(--rare)}
+.pb.l{background:rgba(245,158,11,.15);color:var(--legendary)}
+.pb.a{background:rgba(153,69,255,.15);color:var(--sol)}
+.t-cta{width:100%;padding:.82rem;background:transparent;color:var(--tc,var(--gold));border:1px solid var(--tc,var(--gold));font-family:'Share Tech Mono',monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .25s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+.t-cta:hover{background:var(--tc,var(--gold));color:#0C0E14}
+.e-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:1.1rem}
+.e-card{background:var(--bg-card);border:1px solid var(--border);aspect-ratio:3/4;position:relative;overflow:hidden;cursor:pointer;transition:all .3s}
+.e-card:hover{border-color:var(--border-strong);transform:translateY(-4px)}
+.e-card:hover .e-info{transform:translateY(0);opacity:1}
+.e-card:hover .e-art{filter:brightness(.42)}
+.e-art{position:absolute;inset:0;transition:all .4s;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.e-art-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.025) 1px,transparent 1px);background-size:18px 18px}
+.pix-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.e-cls{position:absolute;top:.7rem;left:.7rem;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;padding:.18rem .45rem;border:1px solid;z-index:2}
+.e-name{position:absolute;bottom:0;left:0;right:0;padding:.55rem .7rem .45rem;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--text-bright);background:linear-gradient(0deg,rgba(6,7,10,.95) 0%,transparent 100%);z-index:2}
+.e-name .esub{display:block;font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--text-dim);font-weight:400;letter-spacing:.1em;margin-top:.08rem}
+.e-info{position:absolute;inset:0;z-index:3;padding:.9rem;display:flex;flex-direction:column;justify-content:flex-end;transform:translateY(8px);opacity:0;transition:all .35s ease}
+.e-iname{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;margin-bottom:.22rem}
+.e-irole{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.55rem}
+.e-idesc{font-size:.62rem;color:var(--text-main);line-height:1.7;margin-bottom:.55rem}
+.e-stats{display:flex;gap:.42rem;flex-wrap:wrap}
+.es{font-size:.56rem;color:var(--text-dim);display:flex;flex-direction:column;align-items:center;gap:.12rem}
+.es-v{font-family:'Cinzel',serif;font-size:.7rem;font-weight:600}
+.mystery-card{background:var(--bg-deep);border:1px dashed rgba(201,168,76,.25);aspect-ratio:3/4;position:relative;cursor:pointer;transition:border-color .3s}
+.mystery-card:hover{border-color:rgba(201,168,76,.5)}
+.mystery-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.65rem}
+.mq{font-family:'Cinzel Decorative',serif;font-size:3.8rem;font-weight:900;color:rgba(201,168,76,.16);line-height:1;transition:color .3s}
+.mc{font-family:'Cinzel',serif;font-size:.82rem;color:var(--gold-dim);letter-spacing:.14em;transition:color .3s}
+.ml{font-size:.52rem;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);text-align:center;padding:0 1rem}
+.mystery-card:hover .mq{color:rgba(201,168,76,.45)}.mystery-card:hover .mc{color:var(--gold)}
+#skills{max-width:1000px}
+.sk-picker{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.2rem}
+.sk-btn{padding:.45rem .9rem;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.sk-btn:hover,.sk-btn.active{border-color:var(--border-strong);color:var(--gold);background:rgba(201,168,76,.07)}
+.sk-layout{display:grid;grid-template-columns:1fr 270px;gap:1.8rem;align-items:start}
+.sk-wrap{background:var(--bg-panel);border:1px solid var(--border);padding:1.3rem;position:relative}
+.sk-canvas{width:100%;cursor:pointer;display:block}
+.sk-detail{background:var(--bg-card);border:1px solid var(--border);padding:1.4rem;min-height:300px}
+.sk-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:260px;color:var(--text-dim);font-size:.67rem;letter-spacing:.14em;text-align:center;gap:.65rem}
+.sk-empty::before{content:'◆';color:var(--border-strong);font-size:1.4rem}
+.sk-dname{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:700;color:var(--gold);margin-bottom:.22rem}
+.sk-dtype{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.9rem;padding-bottom:.7rem;border-bottom:1px solid var(--border)}
+.sk-ddesc{font-size:.7rem;line-height:1.8;color:var(--text-main);margin-bottom:.9rem}
+.sk-dstats{display:flex;flex-direction:column;gap:.38rem}
+.sk-dr{display:flex;justify-content:space-between;font-size:.63rem;padding:.22rem 0;border-bottom:1px solid rgba(201,168,76,.06)}
+.sk-dl{color:var(--text-dim)}.sk-dv{color:var(--gold)}
+.sk-note{text-align:center;margin-top:1.3rem;font-size:.62rem;color:var(--text-dim);letter-spacing:.1em}
+#roadmap{max-width:840px}
+.rm-list{display:flex;flex-direction:column;position:relative}
+.rm-list::before{content:'';position:absolute;left:96px;top:24px;bottom:24px;width:1px;background:var(--border)}
+.rm-item{display:grid;grid-template-columns:96px 1fr;gap:1.8rem;padding:1.4rem 0;align-items:start;border-bottom:1px solid rgba(201,168,76,.07);position:relative}
+.rm-item:last-child{border-bottom:none}
+.rm-phase{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);text-align:right;padding-top:.14rem}
+.rm-dot{position:absolute;left:96px;width:8px;height:8px;background:var(--bg-deep);border:1px solid var(--border-strong);border-radius:50%;transform:translate(-4px,6px);transition:background .3s}
+.rm-item:hover .rm-dot{background:var(--gold)}
+.rm-ctitle{font-family:'Cinzel',serif;font-size:.92rem;font-weight:600;color:var(--text-bright);margin-bottom:.38rem}
+.rm-cdesc{font-size:.7rem;color:var(--text-dim);line-height:1.7}
+.rm-status{display:inline-block;font-size:.53rem;letter-spacing:.14em;text-transform:uppercase;padding:.13rem .48rem;border:1px solid;margin-top:.45rem}
+.s-active{color:var(--green-term);border-color:rgba(74,222,128,.3)}
+.s-up{color:var(--gold-dim);border-color:var(--border)}
+.s-fut{color:var(--text-dim);border-color:rgba(122,112,96,.2)}
+.lore-strip{background:var(--bg-panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.4rem 0;overflow:hidden}
+.lore-track{display:flex;gap:3.5rem;animation:marquee 28s linear infinite;white-space:nowrap;width:max-content}
+.lore-item{font-size:.62rem;letter-spacing:.23em;text-transform:uppercase;color:var(--gold-dim)}
+.lore-item::before{content:'◆  ';color:var(--gold)}
+footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
+.f-logo{font-family:'Cinzel Decorative',serif;font-size:.82rem;font-weight:700;color:var(--gold-dim);letter-spacing:.14em;margin-bottom:.9rem}
+.f-links{display:flex;gap:1.8rem;justify-content:center;margin-bottom:1.8rem;flex-wrap:wrap}
+.f-links a{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color .2s}
+.f-links a:hover{color:var(--gold)}
+.f-copy{font-size:.58rem;color:var(--text-dim);opacity:.45;letter-spacing:.1em}
+.mo{display:none;position:fixed;inset:0;background:rgba(6,7,10,.92);z-index:200;align-items:center;justify-content:center;padding:1.5rem}
+.mo.open{display:flex}
+.mb{background:var(--bg-panel);border:1px solid var(--border-strong);max-width:510px;width:100%;padding:2.2rem;animation:fadeUp .4s ease;position:relative;max-height:90vh;overflow-y:auto}
+.mb::-webkit-scrollbar{width:3px}.mb::-webkit-scrollbar-thumb{background:var(--gold-dim)}
+.m-title{font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:var(--gold);margin-bottom:.22rem}
+.m-sub{font-size:.67rem;color:var(--text-dim);margin-bottom:1.3rem;letter-spacing:.1em}
+.m-close{position:absolute;top:1.1rem;right:1.1rem;background:none;border:none;color:var(--text-dim);font-size:1.1rem;cursor:pointer;transition:color .2s;font-family:'Share Tech Mono',monospace}
+.m-close:hover{color:var(--gold)}
+.m-perks{list-style:none;display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.3rem;padding-bottom:1.3rem;border-bottom:1px solid var(--border)}
+.m-perks li{font-size:.68rem;color:var(--text-main);display:flex;gap:.45rem;align-items:flex-start;line-height:1.6}
+.m-perks li::before{content:'✦';color:var(--gold);flex-shrink:0;font-size:.58rem;margin-top:.2rem}
+.m-slbl{font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.m-slbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.m-field{margin-bottom:.78rem}
+.m-field label{display:block;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem}
+.m-inp{background:var(--bg-card);border:1px solid var(--border);outline:none;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:.78rem;padding:.7rem .9rem;width:100%;transition:border-color .2s}
+.m-inp:focus{border-color:var(--border-strong)}
+.m-inp::placeholder{color:var(--text-dim)}
+.m-irow{display:flex;gap:0;border:1px solid var(--border-strong);overflow:hidden;margin-bottom:.78rem}
+.m-ipl{background:var(--bg-card);border:none;outline:none;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:.78rem;padding:.72rem .9rem;flex:1}
+.m-sol{background:rgba(153,69,255,.1);border-left:1px solid var(--border);display:flex;align-items:center;padding:0 .8rem;color:var(--sol);font-size:.68rem}
+.m-cta{width:100%;padding:.85rem;background:var(--gold);color:#0C0E14;border:none;font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);margin-top:.45rem}
+.m-cta:hover{background:var(--gold-bright)}
+.m-cta.sec{background:transparent;color:var(--gold);border:1px solid var(--gold-dim)}
+.m-cta.sec:hover{background:rgba(201,168,76,.1)}
+.m-btns{display:flex;gap:.7rem;margin-top:.45rem}
+.success-p{text-align:center;padding:1.5rem 0}
+.s-icon{font-size:1.8rem;margin-bottom:.9rem;color:var(--green-term)}
+.s-title{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--gold);margin-bottom:.45rem}
+.s-msg{font-size:.7rem;color:var(--text-dim);line-height:1.85}
+.cursor{display:inline-block;width:2px;height:1em;background:var(--gold);vertical-align:middle;animation:pg 1s infinite;margin-left:4px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes pg{0%,100%{opacity:1}50%{opacity:.35}}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){.game-layout,.sk-layout{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr}.e-grid{grid-template-columns:repeat(2,1fr)}.f-stats{grid-template-columns:1fr}nav{padding:0 1rem}.nav-links{gap:.9rem}}
+</style>
 </head>
-<body>
-    <button onclick="openTierModal()">Open Tier Modal</button>
-    <button onclick="openDonateModal()">Open Donate Modal</button>
-    <button onclick="closeModal()">Close Modal</button>
-    <button onclick="goContact()">Contact</button>
-    <button onclick="backPledge()">Back Pledge</button>
-    <button onclick="submitPledge()">Submit Pledge</button>
-    
-    <script>
-        function openTierModal() {
-            // Implementation of openTierModal
-        }
-        
-        function openDonateModal() {
-            // Implementation of openDonateModal
-        }
-        
-        function closeModal() {
-            // Implementation of closeModal
-        }
-        
-        function goContact() {
-            // Implementation of goContact
-        }
-        
-        function backPledge() {
-            // Implementation of backPledge
-        }
-        
-        function submitPledge() {
-            // Implementation of submitPledge
-        }
-    </script>
+
+    <body>
+
+<nav>
+  <div class="nav-logo">CHRONICLES<span>◆</span>VOID</div>
+  <div class="nav-links">
+    <a href="#game">The Game</a>
+    <a href="#fund">Fund</a>
+    <a href="#tiers">Tiers</a>
+    <a href="#champions">Champions</a>
+    <a href="#monsters">Monsters</a>
+    <a href="#skills">Skills</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="eyebrow">⬡ Web3 Text-Based RPG · Built on Solana · The Infinite Castle Awaits</div>
+  <h1 class="hero-title">Chronicles<br>of the <span class="accent">Void</span></h1>
+  <div class="hero-sub">The Realm Awaits Its Champions</div>
+  <p class="hero-desc">An immersive, fully on-chain text RPG where every choice is permanent, every item is yours, and the fate of entire kingdoms rests in your hands. Help forge the world — and claim your place in it.</p>
+  <div class="hero-btns">
+    <a href="#fund" class="btn-p">Fund the Realm</a>
+    <a href="#game" class="btn-s">How It Works</a>
+  </div>
+</div>
+
+<div class="lore-strip">
+  <div class="lore-track">
+    <span class="lore-item">100+ Champions</span><span class="lore-item">Infinite Castle</span><span class="lore-item">On-Chain Ownership</span><span class="lore-item">1000+ Monsters</span><span class="lore-item">50+ Skills Per Hero</span><span class="lore-item">Solana Powered</span><span class="lore-item">NFT Airdrops</span><span class="lore-item">Roguelike Depth</span><span class="lore-item">100+ Champions</span><span class="lore-item">Infinite Castle</span>
+  </div>
+</div>
+
+<hr class="hr">
+
+<section id="game" class="sec">
+  <div class="sec-tag">The Game</div>
+  <h2 class="sec-title">Enter the Infinite Castle</h2>
+  <p class="sec-desc">A dungeon with no ceiling. Every run is different. Every death leaves a mark. Every triumph is yours — permanently on-chain.</p>
+  <div class="game-layout reveal">
+    <div class="game-text">
+      <h3>One Castle. Infinite Stories.</h3>
+      <p>Choose your champion from a roster of 100+ heroes, each with a unique 50+ skill tree. Enter the Void Castle — a dungeon that stretches infinitely upward. Each floor is a new text-driven encounter with monsters, traps, merchants, and mysteries your opponents haven't faced.</p>
+      <div class="game-feats">
+        <div class="gf"><div class="gf-icon">⚔</div><div><strong>Turn-Based Combat</strong>Choose your actions — Attack, Skill, Item, Flee. Status effects reward mastery.</div></div>
+        <div class="gf"><div class="gf-icon">🏰</div><div><strong>Procedural Floors</strong>No two runs share the same layout. Monsters and events shift every ascent.</div></div>
+        <div class="gf"><div class="gf-icon">◈</div><div><strong>On-Chain Ownership</strong>Your items live on Solana. Die in the dungeon — keep your gear.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="castle-tower" id="castle-vis">
+        <div class="ct-header">⬆ The Void Castle — Floor Log</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<section id="fund" class="sec">
+  <div class="sec-tag">Fund the Realm</div>
+  <h2 class="sec-title">Help Forge the Void</h2>
+  <p class="sec-desc">Every contribution shapes the world. Donate in SOL and claim your eternal place in the Chronicles.</p>
+  <div class="f-stats reveal">
+    <div class="f-stat"><span class="f-val">$4,280</span><span class="f-lbl">Raised so far</span></div>
+    <div class="f-stat"><span class="f-val">183</span><span class="f-lbl">Realm Backers</span></div>
+    <div class="f-stat"><span class="f-val">47</span><span class="f-lbl">Days Remaining</span></div>
+  </div>
+  <div class="prog-box reveal">
+    <div class="prog-hdr"><span class="prog-lbl">Funding Progress</span><span class="prog-amt">42.8% of $10,000 goal</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:42.8%"></div></div>
+    <div class="prog-miles"><span>$0</span><span>$2,500</span><span>$5,000</span><span>$7,500</span><span>$10,000</span></div>
+  </div>
+  <div class="reveal">
+    <div class="don-row">
+      <input class="don-input" id="don-amt" type="number" placeholder="Enter custom amount (USD)" min="1">
+      <div class="sol-badge">◎ SOL</div>
+      <button class="don-btn" onclick="openDonateModal()">Donate Now</button>
+    </div>
+    <div class="sol-note"><div class="sdot"></div>Transactions processed on Solana — fast, low-fee, permanent.</div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<section id="tiers" class="sec">
+  <div class="sec-tag">Backer Tiers</div>
+  <h2 class="sec-title">Choose Your Oath</h2>
+  <p class="sec-desc">Select a tier or donate any amount. All rewards are locked on-chain forever.</p>
+  <div class="tier-grid">
+    <div class="tier-card reveal" style="--tc:#7EAD72" onclick="openTierModal(1)">
+      <div class="t-rank">Tier I</div>
+      <div class="t-price">$10</div>
+      <div class="t-psub">or equivalent in SOL</div>
+      <div class="t-title">Adventurer's Oath</div>
+      <ul class="t-perks">
+        <li class="hl">Permanent XP Boost</li>
+        <li>All base characters permanently unlocked</li>
+        <li>5 free random skins on launch</li>
+        <li>Exclusive Tier I NFT Airdrop</li>
+        <li class="hl">★ Immortalised in Backer Hall of Legends</li>
+      </ul>
+      <button class="t-cta" style="--tc:#7EAD72">Pledge $10 →</button>
+    </div>
+    <div class="tier-card ft reveal" style="--tc:var(--rare)" onclick="openTierModal(2)">
+      <div class="t-badge" style="background:var(--rare)">Most Popular</div>
+      <div class="t-rank">Tier II</div>
+      <div class="t-price" style="color:var(--rare)">$50</div>
+      <div class="t-psub">or equivalent in SOL</div>
+      <div class="t-title">Champion's Covenant</div>
+      <ul class="t-perks">
+        <li class="hl">Everything in Tier I</li>
+        <li>10 free basic + 5 free rare skins</li>
+        <li>Priority beta access</li>
+        <li class="hl">Rare NFT Airdrop</li>
+        <li class="hl">★ Named NPC in castle lore</li>
+      </ul>
+      <button class="t-cta" style="--tc:var(--rare)">Pledge $50 →</button>
+    </div>
+    <div class="tier-card reveal" style="--tc:var(--legendary)" onclick="openTierModal(3)">
+      <div class="t-rank">Tier III</div>
+      <div class="t-price" style="color:var(--legendary)">$100</div>
+      <div class="t-psub">or equivalent in SOL</div>
+      <div class="t-title">Void-Forged Legend</div>
+      <ul class="t-perks">
+        <li class="hl">Everything in Tiers I & II</li>
+        <li>25 free skins (basic, rare, legendary)</li>
+        <li class="hl">1-of-1 Legendary Genesis NFT</li>
+        <li class="hl">★ Custom champion designed after YOU</li>
+        <li class="hl">★ Forever immortalised in the castle</li>
+      </ul>
+      <button class="t-cta" style="--tc:var(--legendary)">Pledge $100 →</button>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<section id="champions" class="sec">
+  <div class="sec-tag">The Champions</div>
+  <h2 class="sec-title">Who Will Answer the Call?</h2>
+  <p class="sec-desc">Ten champions revealed. The Void holds 90 more — each with a unique build and skill tree.</p>
+  <div class="e-grid" id="champ-grid"></div>
+</section>
+
+<hr class="hr">
+
+<section id="monsters" class="sec">
+  <div class="sec-tag">The Enemies</div>
+  <h2 class="sec-title">What Dwells in the Void</h2>
+  <p class="sec-desc">Ten terrors revealed. The castle houses over 1,000 creatures — each floor a new threat.</p>
+  <div class="e-grid" id="mon-grid"></div>
+</section>
+
+<hr class="hr">
+
+<section id="skills" class="sec">
+  <div class="sec-tag">50+ Skills</div>
+  <h2 class="sec-title">Master Your Arsenal</h2>
+  <p class="sec-desc">Every champion wields 50+ unique abilities. Active powers, passive bonuses, and devastating ultimates — forge your playstyle.</p>
+  <div class="e-grid">
+    <div class="e-card reveal" style="transition-delay:0s">
+      <div class="e-art"><div style="font-size:2.5rem">⚔️</div></div>
+      <div class="e-name">Slash<span class="esub">Active</span></div>
+      <div class="e-info">
+        <div class="e-iname">Slash</div>
+        <div class="e-irole">Active</div>
+        <div class="e-idesc">Basic melee attack. Scales with STR.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">8</div>DMG</div>
+          <div class="es"><div class="es-v">1</div>CD</div>
+        </div>
+      </div>
+    </div>
+    <div class="e-card reveal" style="transition-delay:0.05s">
+      <div class="e-art"><div style="font-size:2.5rem">🔮</div></div>
+      <div class="e-name">Fireball<span class="esub">Active</span></div>
+      <div class="e-info">
+        <div class="e-iname">Fireball</div>
+        <div class="e-irole">Active</div>
+        <div class="e-idesc">AOE spell. Burns enemies for 3 turns.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">15</div>DMG</div>
+          <div class="es"><div class="es-v">3</div>CD</div>
+        </div>
+      </div>
+    </div>
+    <div class="e-card reveal" style="transition-delay:0.1s">
+      <div class="e-art"><div style="font-size:2.5rem">🛡️</div></div>
+      <div class="e-name">Fortify<span class="esub">Passive</span></div>
+      <div class="e-info">
+        <div class="e-iname">Fortify</div>
+        <div class="e-irole">Passive</div>
+        <div class="e-idesc">+15% DEF. Stacks with armor.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">+15%</div>DEF</div>
+        </div>
+      </div>
+    </div>
+    <div class="e-card reveal" style="transition-delay:0.15s">
+      <div class="e-art"><div style="font-size:2.5rem">⚡</div></div>
+      <div class="e-name">Lightning Strike<span class="esub">Ultimate</span></div>
+      <div class="e-info">
+        <div class="e-iname">Lightning Strike</div>
+        <div class="e-irole">Ultimate</div>
+        <div class="e-idesc">Devastating bolt. Paralyzes for 2 turns.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">40</div>DMG</div>
+          <div class="es"><div class="es-v">8</div>CD</div>
+        </div>
+      </div>
+    </div>
+    <div class="e-card reveal" style="transition-delay:0.2s">
+      <div class="e-art"><div style="font-size:2.5rem">🌪️</div></div>
+      <div class="e-name">Whirlwind<span class="esub">Active</span></div>
+      <div class="e-info">
+        <div class="e-iname">Whirlwind</div>
+        <div class="e-irole">Active</div>
+        <div class="e-idesc">Hit all enemies. Low cooldown.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">12</div>DMG</div>
+          <div class="es"><div class="es-v">2</div>CD</div>
+        </div>
+      </div>
+    </div>
+    <div class="e-card reveal" style="transition-delay:0.25s">
+      <div class="e-art"><div style="font-size:2.5rem">🥋</div></div>
+      <div class="e-name">Dodge Master<span class="esub">Passive</span></div>
+      <div class="e-info">
+        <div class="e-iname">Dodge Master</div>
+        <div class="e-irole">Passive</div>
+        <div class="e-idesc">+10% evasion. Critical hits reset cooldown.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">+10%</div>EVA</div>
+        </div>
+      </div>
+    </div>
+    <div class="e-card reveal" style="transition-delay:0.3s">
+      <div class="e-art"><div style="font-size:2.5rem">💀</div></div>
+      <div class="e-name">Death Mark<span class="esub">Ultimate</span></div>
+      <div class="e-info">
+        <div class="e-iname">Death Mark</div>
+        <div class="e-irole">Ultimate</div>
+        <div class="e-idesc">Enemies take 50% more damage for 4 turns.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">50%</div>AMP</div>
+          <div class="es"><div class="es-v">10</div>CD</div>
+        </div>
+      </div>
+    </div>
+    <div class="e-card reveal" style="transition-delay:0.35s">
+      <div class="e-art"><div style="font-size:2.5rem">✨</div></div>
+      <div class="e-name">Backstab<span class="esub">Active</span></div>
+      <div class="e-info">
+        <div class="e-iname">Backstab</div>
+        <div class="e-irole">Active</div>
+        <div class="e-idesc">2x damage if enemy hasn't acted. Critical.</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">20</div>DMG</div>
+          <div class="es"><div class="es-v">4</div>CD</div>
+        </div>
+      </div>
+    </div>
+    <div class="mystery-card reveal" style="transition-delay:0.4s">
+      <div class="mystery-in">
+        <div class="mq">?</div>
+        <div class="mc">50+</div>
+        <div class="ml">Skills Locked</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<section id="roadmap" class="sec">
+  <div class="sec-tag">The Path Forward</div>
+  <h2 class="sec-title">Roadmap of the Realm</h2>
+  <p class="sec-desc">A living document — updated as the Void evolves.</p>
+  <div class="rm-list">
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase I</div><div><div class="rm-ctitle">Crowdfund & World Forge</div><div class="rm-cdesc">Campaign live. Core lore, champion design, skill trees, on-chain framework.</div><span class="rm-status s-active">Active Now</span></div></div>
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase II</div><div><div class="rm-ctitle">Beta Realm Opens</div><div class="rm-cdesc">Closed beta for Tier I+ backers. Core combat loop, first 10 champions, skill trees live.</div><span class="rm-status s-up">Q3 2025</span></div></div>
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase III</div><div><div class="rm-ctitle">Public Launch + NFT Airdrops</div><div class="rm-cdesc">Full release with 50 champions, 300+ monsters, NFT marketplace, clan system.</div><span class="rm-status s-up">Q4 2025</span></div></div>
+    <div class="rm-item reveal"><div class="rm-dot"></div><div class="rm-phase">Phase IV</div><div><div class="rm-ctitle">The Full Void</div><div class="rm-cdesc">100+ Champions, 1000+ Monsters, guild wars, on-chain governance.</div><span class="rm-status s-fut">2026</span></div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo">Chronicles of the Void</div>
+  <div class="f-links"><a href="#">Twitter / X</a><a href="#">Discord</a><a href="#">Whitepaper</a><a href="#">Contact</a></div>
+  <div class="f-copy">© 2025 Chronicles of the Void — All on-chain assets are owned by their holders</div>
+</footer>
+
+<div class="mo" id="modal">
+  <div class="mb">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div id="step-pledge">
+      <div class="m-title" id="m-title">Forge Your Pledge</div>
+      <div class="m-sub" id="m-sub">Any amount powers the Void</div>
+      <ul class="m-perks" id="m-perks"></ul>
+      <div class="m-slbl">Step 1 — Set Amount</div>
+      <div class="m-irow">
+        <input class="m-ipl" id="m-amt" type="number" placeholder="Amount (USD)" min="1">
+        <div class="m-sol">◎ SOL</div>
+      </div>
+      <button class="m-cta" onclick="goContact()">Continue → Contact Details</button>
+    </div>
+    <div id="step-contact" style="display:none">
+      <div class="m-title">Your Details</div>
+      <div class="m-sub">So we can reach out with your backer rewards & NFT airdrop</div>
+      <div class="m-slbl">Step 2 — Contact Info</div>
+      <div class="m-field"><label>Full Name *</label><input class="m-inp" id="c-name" placeholder="Your name" type="text"></div>
+      <div class="m-field"><label>Email Address *</label><input class="m-inp" id="c-email" placeholder="you@example.com" type="email"></div>
+      <div class="m-field"><label>Discord Handle</label><input class="m-inp" id="c-discord" placeholder="YourName#0000" type="text"></div>
+      <div class="m-field"><label>Solana Wallet</label><input class="m-inp" id="c-wallet" placeholder="Auto-filled on wallet connect..." type="text"></div>
+      <div class="m-field"><label>How did you find us?</label><input class="m-inp" id="c-source" placeholder="Twitter, Discord, friend..." type="text"></div>
+      <div class="m-btns">
+        <button class="m-cta sec" onclick="backPledge()" style="flex:1">← Back</button>
+        <button class="m-cta" onclick="connectWallet().then(() => submitPledge())" style="flex:2">Connect Wallet & Pledge →</button>
+      </div>
+    </div>
+    <div id="step-success" style="display:none">
+      <div class="success-p">
+        <div class="s-icon">✦</div>
+        <div class="s-title">Pledge Received — You Are Immortalised</div>
+        <div class="s-msg">Welcome to the Chronicles of the Void.<br><br>We'll reach out within 48 hours to confirm your backer rewards and NFT airdrop.<br><br>Watch your email for the call.</div>
+        <button class="m-cta" style="margin-top:1.5rem" onclick="closeModal()">Return to the Realm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <script>
+// ========================================
+// GLOBAL FUNCTIONS - NOT IN MODULE
+// These are accessible from onclick attributes
+// ========================================
+
+let currentTier = 0;
+
+function openDonateModal() {
+  const amt = document.getElementById('don-amt').value || '25';
+  openTierModal(0, amt);
+}
+
+function openTierModal(tier, amt) {
+  currentTier = tier;
+  const titles = ['Adventurer\'s Oath — $10', 'Champion\'s Covenant — $50', 'Void-Forged Legend — $100'];
+  document.getElementById('m-title').textContent = titles[tier];
+  if (amt) document.getElementById('m-amt').value = amt;
+  document.getElementById('step-pledge').style.display = 'block';
+  document.getElementById('step-contact').style.display = 'none';
+  document.getElementById('step-success').style.display = 'none';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function goContact() {
+  if (!document.getElementById('m-amt').value) {
+    alert('Please enter an amount');
+    return;
+  }
+  document.getElementById('step-pledge').style.display = 'none';
+  document.getElementById('step-contact').style.display = 'block';
+}
+
+function backPledge() {
+  document.getElementById('step-pledge').style.display = 'block';
+  document.getElementById('step-contact').style.display = 'none';
+}
+
+async function connectWallet() {
+  try {
+    const phantom = window.solana;
+    if (!phantom || !phantom.isPhantom) {
+      alert('Phantom wallet not found. Install it from phantom.app');
+      return null;
+    }
+    const response = await phantom.connect();
+    const walletAddress = response.publicKey.toString();
+    document.getElementById('c-wallet').value = walletAddress;
+    console.log('Connected:', walletAddress);
+    return walletAddress;
+  } catch (error) {
+    console.error('Wallet connection failed:', error);
+    alert('Failed to connect wallet: ' + error.message);
+    return null;
+  }
+}
+
+async function submitPledge() {
+  const name = document.getElementById('c-name').value;
+  const email = document.getElementById('c-email').value;
+  const discord = document.getElementById('c-discord').value;
+  const wallet = document.getElementById('c-wallet').value;
+  const source = document.getElementById('c-source').value;
+  const amount = document.getElementById('m-amt').value;
+
+  if (!name || !email) {
+    alert('Name and email are required');
+    return;
+  }
+
+  try {
+    const phantom = window.solana;
+    if (!phantom || !phantom.isPhantom) {
+      alert('Phantom wallet not found');
+      return;
+    }
+
+    const solAmount = amount / 200;
+    const lamports = Math.floor(solAmount * 1000000000);
+
+    const connection = new window.solanaWeb3.Connection('https://api.devnet.solana.com');
+    const userPublicKey = new window.solanaWeb3.PublicKey(wallet);
+    const recipientPublicKey = new window.solanaWeb3.PublicKey('YOUR_WALLET_ADDRESS_HERE');
+
+    const transaction = new window.solanaWeb3.Transaction().add(
+      window.solanaWeb3.SystemProgram.transfer({
+        fromPubkey: userPublicKey,
+        toPubkey: recipientPublicKey,
+        lamports: lamports
+      })
+    );
+
+    transaction.feePayer = userPublicKey;
+    transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+    const signedTransaction = await phantom.signAndSendTransaction(transaction);
+
+    console.log('Transaction signature:', signedTransaction.signature);
+    alert(`Payment of $${amount} received! Tx: ${signedTransaction.signature}`);
+
+    document.getElementById('step-contact').style.display = 'none';
+    document.getElementById('step-success').style.display = 'block';
+  } catch (e) {
+    console.error('Transaction error:', e);
+    alert('Error: ' + e.message);
+  }
+}
+
+// ========================================
+// CHAMPIONS AND MONSTERS DATA
+// ========================================
+
+const CHAMPS = [
+  {name:'Snickle',role:'Rogue',desc:'Once the kingdom\'s most notorious gambler.',stats:{dmg:85,spd:95,def:60,hp:120},sprite:'⚔️'},
+  {name:'Vibhu',role:'Knight',desc:'Sworn protector of the Crystal Realm.',stats:{dmg:75,spd:60,def:95,hp:160},sprite:'🛡️'},
+  {name:'Cryptopher',role:'Mage',desc:'Void Sage. Commands the fabric of reality.',stats:{dmg:100,spd:80,def:50,hp:100},sprite:'🔮'},
+  {name:'Rexxar',role:'Berserker',desc:'Strength incarnate. Insatiable hunger.',stats:{dmg:110,spd:70,def:70,hp:180},sprite:'⚡'},
+  {name:'Luna',role:'Ranger',desc:'Swift as night wind. Arrows never miss.',stats:{dmg:90,spd:92,def:65,hp:110},sprite:'🏹'},
+  {name:'Kai',role:'Monk',desc:'Balanced between yin and yang.',stats:{dmg:80,spd:88,def:75,hp:130},sprite:'🥋'},
+  {name:'Malachai',role:'Paladin',desc:'Clad in holy gold. Divine protector.',stats:{dmg:70,spd:65,def:100,hp:175},sprite:'✨'},
+  {name:'Raven',role:'Reaper',desc:'Collector of final breaths.',stats:{dmg:105,spd:85,def:55,hp:115},sprite:'💀'},
+  {name:'Emara',role:'Sorceress',desc:'Chaos and order. Bends magic to will.',stats:{dmg:95,spd:82,def:48,hp:105},sprite:'🌪️'},
+  {name:'Thornwick',role:'Druid',desc:'One with nature\'s fury.',stats:{dmg:75,spd:70,def:80,hp:150},sprite:'🌿'}
+];
+
+const MONS = [
+  {name:'Void Specter',role:'Ghost',desc:'Wraith of pure void. Drains life.',hp:45,dmg:35,sprite:'👻'},
+  {name:'Skeletal Archer',role:'Undead',desc:'Bones reanimated by dark magic.',hp:60,dmg:40,sprite:'🏹'},
+  {name:'Shadow Spider',role:'Beast',desc:'Eight legs. Web binds strongest.',hp:75,dmg:45,sprite:'🕷️'},
+  {name:'Stone Sentinel',role:'Construct',desc:'Animated rock. Crushes all.',hp:110,dmg:50,sprite:'⚙️'},
+  {name:'Flame Wyrm',role:'Dragon',desc:'Serpent of living fire.',hp:95,dmg:55,sprite:'🐉'},
+  {name:'Corrupted Golem',role:'Construct',desc:'Magic twisted. Regenerates.',hp:140,dmg:48,sprite:'🗿'},
+  {name:'Plague Rat Swarm',role:'Beast',desc:'Hundreds as one. Poison.',hp:70,dmg:42,sprite:'🐀'},
+  {name:'Phantom Knight',role:'Undead',desc:'Ghost warrior. Haunts eternally.',hp:85,dmg:52,sprite:'⚔️'},
+  {name:'Void Tentacle',role:'Eldritch',desc:'From beyond. Unknowable.',hp:100,dmg:58,sprite:'🐙'},
+  {name:'Lich Lord',role:'Boss',desc:'Ancient sorcerer. Commands legions.',hp:200,dmg:75,sprite:'👑'}
+];
+
+function renderChamps() {
+  const grid = document.getElementById('champ-grid');
+  grid.innerHTML = CHAMPS.map((c,i) => `
+    <div class="e-card reveal" style="transition-delay:${i*0.05}s">
+      <div class="e-art"><div style="font-size:2.5rem">${c.sprite}</div></div>
+      <div class="e-name">${c.name}<span class="esub">${c.role}</span></div>
+      <div class="e-info">
+        <div class="e-iname">${c.name}</div>
+        <div class="e-irole">${c.role}</div>
+        <div class="e-idesc">${c.desc}</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">${c.stats.dmg}</div>DMG</div>
+          <div class="es"><div class="es-v">${c.stats.spd}</div>SPD</div>
+          <div class="es"><div class="es-v">${c.stats.def}</div>DEF</div>
+        </div>
+      </div>
+    </div>
+  `).join('') + `<div class="mystery-card reveal" style="transition-delay:${CHAMPS.length*0.05}s"><div class="mystery-in"><div class="mq">?</div><div class="mc">90+</div><div class="ml">Champions Locked</div></div></div>`;
+}
+
+function renderMons() {
+  const grid = document.getElementById('mon-grid');
+  grid.innerHTML = MONS.map((m,i) => `
+    <div class="e-card reveal" style="transition-delay:${i*0.05}s">
+      <div class="e-art"><div style="font-size:2.5rem">${m.sprite}</div></div>
+      <div class="e-name">${m.name}<span class="esub">${m.role}</span></div>
+      <div class="e-info">
+        <div class="e-iname">${m.name}</div>
+        <div class="e-irole">${m.role}</div>
+        <div class="e-idesc">${m.desc}</div>
+        <div class="e-stats">
+          <div class="es"><div class="es-v">${m.hp}</div>HP</div>
+          <div class="es"><div class="es-v">${m.dmg}</div>DMG</div>
+        </div>
+      </div>
+    </div>
+  `).join('') + `<div class="mystery-card reveal" style="transition-delay:${MONS.length*0.05}s"><div class="mystery-in"><div class="mq">?</div><div class="mc">1000+</div><div class="ml">Creatures Await</div></div></div>`;
+}
+
+function setupCastle() {
+  const tower = document.getElementById('castle-vis');
+  const floors = [
+    {n:1,i:'◈',t:'Void Specter'},
+    {n:2,i:'◈',t:'Skeletal Archer'},
+    {n:3,i:'?',t:'Cursed Altar'},
+    {n:4,i:'◈',t:'Shadow Spider'},
+    {n:5,i:'◈',t:'Flame Wyrm'},
+    {n:6,i:'✦',t:'Merchant Tavern'},
+    {n:7,i:'◈',t:'Stone Sentinel'},
+    {n:8,i:'◈',t:'Corrupted Golem'},
+    {n:9,i:'◈',t:'Plague Rats'},
+    {n:10,i:'★',t:'Phantom Knight'}
+  ];
+  const html = floors.map(f => `<div class="fl${f.n===10?' boss':''}"><div class="fl-n">FL ${f.n}</div><div class="fl-i">${f.i}</div><div>${f.t}</div></div>`).join('');
+  tower.innerHTML = tower.innerHTML.replace('</div>', html + '</div>');
+}
+
+function observeReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => e.isIntersecting && e.target.classList.add('visible'));
+  }, {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderChamps();
+  renderMons();
+  setupCastle();
+  observeReveal();
+});
+</script>
+
 </body>
 </html>
