@@ -520,7 +520,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
       <div class="m-field"><label>How did you find us?</label><input class="m-inp" id="c-source" placeholder="Twitter, Discord, friend..." type="text"></div>
       <div class="m-btns">
         <button class="m-cta sec" onclick="backPledge()" style="flex:1">← Back</button>
-        <button class="m-cta" onclick="submitPledge()" style="flex:2">Connect Wallet & Pledge →</button>
+        <button class="m-cta" onclick="window.connectWallet().then(() => submitPledge())" style="flex:2">Connect Wallet & Pledge →</button>
       </div>
     </div>
     <div id="step-success" style="display:none">
