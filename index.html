@@ -550,7 +550,35 @@ document.getElementById('step-success').style.display = 'block';
   console.error('Transaction error:', e);
   showModalMessage('Transaction Failed', `Error: ${e.message}`, 'error');
 }
+}
 
+function showModalMessage(title, message, type) {
+  const modal = document.getElementById('modal');
+  const mb = document.querySelector('.mb');
+  
+  let icon = '✦';
+  let color = 'var(--gold)';
+  
+  if (type === 'success') {
+    icon = '✦';
+    color = 'var(--green-term)';
+  } else if (type === 'error') {
+    icon = '✕';
+    color = 'var(--ember)';
+  }
+  
+  const messageHTML = `
+    <div style="text-align:center;padding:2.5rem 1.5rem;">
+      <div style="font-size:2.5rem;margin-bottom:1.5rem;color:${color};">${icon}</div>
+      <div style="font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:var(--gold);margin-bottom:0.8rem;">${title}</div>
+      <div style="font-size:.75rem;color:var(--text-dim);line-height:1.8;margin-bottom:2rem;">${message}</div>
+      <button class="m-cta" onclick="closeModal()" style="width:100%;max-width:300px;">Close</button>
+    </div>
+  `;
+  
+  mb.innerHTML = messageHTML;
+  modal.classList.add('open');
+}
 const CHAMPS = [
   {name:'Snickle',role:'Rogue',desc:'Once the kingdom\'s most notorious gambler.',stats:{dmg:85,spd:95,def:60,hp:120},sprite:'https://imgur.com/xzdBwTg.png'},
   {name:'Vibhu',role:'Knight',desc:'Sworn protector of the Crystal Realm.',stats:{dmg:75,spd:60,def:95,hp:160},sprite:'https://imgur.com/6PW269O.png'},
