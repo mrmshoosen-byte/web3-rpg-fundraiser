@@ -541,17 +541,15 @@ async function submitPledge() {
 
     const signedTransaction = await phantom.signAndSendTransaction(transaction);
 
-    console.log('Transaction signature:', signedTransaction.signature);
-    alert(`Payment of $${amount} received! Tx: ${signedTransaction.signature}`);
+   console.log('Transaction signature:', signedTransaction.signature);
+showModalMessage('Success!', `Payment of $${amount} received!<br><br>Tx: ${signedTransaction.signature}`, 'success');
 
-    document.getElementById('step-contact').style.display = 'none';
-    document.getElementById('step-success').style.display = 'block';
-  } catch (e) {
-    console.error('Transaction error:', e);
-    alert('Error: ' + e.message);
-  }
+document.getElementById('step-contact').style.display = 'none';
+document.getElementById('step-success').style.display = 'block';
+ } catch (e) {
+  console.error('Transaction error:', e);
+  showModalMessage('Transaction Failed', `Error: ${e.message}`, 'error');
 }
-
 
 const CHAMPS = [
   {name:'Snickle',role:'Rogue',desc:'Once the kingdom\'s most notorious gambler.',stats:{dmg:85,spd:95,def:60,hp:120},sprite:'https://imgur.com/xzdBwTg.png'},
