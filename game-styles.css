@@ -1,37 +1,31 @@
-.battle-screen {
-  display: grid;
-  grid-template-areas:
-    "enemy-zone battle-log"
-    "enemy-zone action-bar"
-    "player-zone action-bar";
-  grid-template-columns: 1fr 300px;
-  grid-template-rows: auto 1fr 100px;
-  height: 100vh;
+.dark-fantasy-theme {
+  background-color: #000000;
+  color: #FFD700;
 }
 
-.enemy-zone {
-  grid-area: enemy-zone;
-  background-color: #f8f8f8;
+.dark-fantasy-theme .container {
+  background-color: #1a1a1a;
+  border: 1px solid #FFD700;
 }
 
-.battle-log {
-  grid-area: battle-log;
-  background-color: #fff;
-  border-left: 2px solid #ccc;
-  padding: 10px;
-  overflow-y: auto;
+.dark-fantasy-theme .button {
+  background-color: #FFD700;
+  color: #000000;
+  border-radius: 5px;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
 }
 
-.player-zone {
-  grid-area: player-zone;
-  background-color: #e8e8e8;
-  padding: 10px;
-}
-
-.action-bar {
-  grid-area: action-bar;
+.pokemon-gen2-battle {
   display: flex;
-  flex-direction: column;
-  background-color: #e0e0e0;
-  padding: 10px;
+  align-items: center;
+  justify-content: space-between;
+  background: url('battle-background.png');
+}
+
+.pokemon-gen2-battle .battle-screen {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
 }
