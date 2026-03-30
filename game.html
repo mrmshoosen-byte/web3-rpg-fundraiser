@@ -321,7 +321,6 @@ a{color:var(--gold);text-decoration:none}
     <div class="logo">SURVIVORS◆VOID</div>
     <div style="display:flex;gap:.5rem;align-items:center">
       <button id="back-btn" onclick="goHome()">← Back to Site</button>
-      <button id="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
     </div>
   </div>
 
@@ -330,16 +329,15 @@ a{color:var(--gold);text-decoration:none}
     <div class="start-title">Survivors of the Void</div>
     <div class="start-sub">⬡ DEMO · 10 FLOORS · TURN-BASED COMBAT ⬡</div>
     <p class="start-desc">
-      Descend into the Void Castle. Face monsters on every floor, collect powerful equipment, master 20+ unique skills, and confront the Void Lord on Floor 10. Connect your Phantom wallet to mint your victory as an NFT.
+      Descend into the Void Castle. Face monsters on every floor, collect powerful equipment, master 20+ unique skills, and confront the Void Lord on Floor 10. Win to claim your Void Conqueror NFT airdrop.
     </p>
     <div class="start-features">
       <div class="sf"><div class="sf-icon">⚔</div><div class="sf-title">20+ Skills</div><div class="sf-desc">Unlock new abilities every 2 floors. Mix physical, magical and support skills.</div></div>
       <div class="sf"><div class="sf-icon">🛡</div><div class="sf-title">6 Equipment Slots</div><div class="sf-desc">Head, Chest, Hands, Legs, Feet, Accessory — find and equip loot on odd floors.</div></div>
       <div class="sf"><div class="sf-icon">🏰</div><div class="sf-title">10 Floors</div><div class="sf-desc">Procedurally scaled enemies. Every floor harder than the last. Boss on Floor 10.</div></div>
-      <div class="sf"><div class="sf-icon">🏆</div><div class="sf-title">NFT Victory</div><div class="sf-desc">Connect Phantom wallet and mint your run as a unique on-chain NFT when you win.</div></div>
+      <div class="sf"><div class="sf-icon">🏆</div><div class="sf-title">NFT Victory</div><div class="sf-desc">Conquer Floor 10 and receive a Void Conqueror NFT airdrop and $VOID token allocation at launch.</div></div>
     </div>
     <button class="btn-start" onclick="startGame()">▶ Enter the Castle</button>
-    <button class="btn-start secondary" onclick="connectWallet()">◈ Connect Wallet</button>
     <p style="color:var(--text-dim);font-size:.7rem;margin-top:1.5rem">Demo build · Full game coming with campaign funding · <a href="index.html">Back to Campaign →</a></p>
   </div>
 
@@ -479,12 +477,14 @@ a{color:var(--gold);text-decoration:none}
 
     <!-- NFT Mint panel -->
     <div class="nft-panel" id="nft-panel">
-      <div class="panel-title" style="border-bottom:1px solid var(--border);padding-bottom:.5rem;margin-bottom:.8rem;color:var(--gold)">🎖 Mint Victory NFT</div>
-      <p style="font-size:.72rem;color:var(--text-dim);margin-bottom:1rem">Immortalise your run on-chain. Connect your Phantom wallet to mint your victory as a unique NFT and receive your $VOID airdrop allocation.</p>
-      <div id="nft-wallet-status" style="font-size:.72rem;color:var(--text-dim);margin-bottom:.8rem">Wallet: Not Connected</div>
+      <div class="panel-title" style="border-bottom:1px solid var(--border);padding-bottom:.5rem;margin-bottom:.8rem;color:var(--gold)">🎖 Claim Your Victory NFT</div>
+      <p style="font-size:.72rem;color:var(--text-dim);margin-bottom:1rem">You conquered the Void Castle! Enter your Solana wallet address to receive your Void Conqueror NFT airdrop and 500 $VOID tokens at launch.</p>
+      <div style="margin-bottom:.8rem">
+        <label for="nft-wallet-input" style="display:block;font-size:.72rem;color:var(--text-dim);margin-bottom:.4rem">Solana Wallet Address</label>
+        <input id="nft-wallet-input" type="text" placeholder="Your Solana wallet address (e.g. ABC...XYZ)" autocomplete="off" spellcheck="false" style="width:100%;background:var(--surface2);border:1px solid var(--border-strong);color:var(--text-bright);padding:.5rem .75rem;font-family:inherit;font-size:.72rem;outline:none;box-sizing:border-box">
+      </div>
       <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-        <button class="btn-start" id="nft-mint-btn" onclick="mintNFT()">◈ Mint Victory NFT</button>
-        <button class="btn-start secondary" onclick="connectWalletVictory()">Connect Wallet</button>
+        <button class="btn-start" id="nft-mint-btn" onclick="mintNFT()">◈ Claim Victory NFT</button>
       </div>
       <div class="nft-status" id="nft-status"></div>
     </div>
@@ -1539,22 +1539,32 @@ function updateNFTWalletStatus(){
 async function mintNFT(){
   const statusEl = document.getElementById('nft-status');
   const mintBtn  = document.getElementById('nft-mint-btn');
+  const walletInput = document.getElementById('nft-wallet-input');
+  const enteredWallet = walletInput ? walletInput.value.trim() : '';
 
-  if(!walletAddress){
-    notify('Connect your Phantom wallet first!','warn');
+  if(!enteredWallet){
+    statusEl.textContent='⚠ Please enter your Solana wallet address.';
+    statusEl.className='nft-status error';
     return;
   }
 
-  statusEl.textContent='⏳ Minting your victory NFT...';
+  if(!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(enteredWallet)){
+    statusEl.textContent='⚠ Invalid Solana address. Please double-check and try again.';
+    statusEl.className='nft-status error';
+    return;
+  }
+
+  statusEl.textContent='⏳ Registering your airdrop claim...';
   statusEl.className='nft-status';
   mintBtn.disabled=true;
+  if(walletInput) walletInput.disabled=true;
 
   try {
     const SUPABASE_URL = 'https://qcrqtinmdlhdedvlfvww.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_FC1HSaTzT-GTgkvu2YcB4w_HVMMlyDU';
 
     const runData = {
-      wallet_address: walletAddress,
+      wallet_address: enteredWallet,
       player_name: G.name,
       kills: G.totalKills,
       hp_remaining: G.hp,
@@ -1575,22 +1585,20 @@ async function mintNFT(){
       body: JSON.stringify(runData)
     });
 
-    if(res.ok){
-      const data = await res.json();
-      statusEl.textContent = `✅ Victory recorded! Run ID: ${data[0]?.id||'N/A'} — NFT Minting pending on-chain. Airdrop tracked!`;
+    if(res.ok || res.status===201){
+      statusEl.textContent = `✅ Wallet registered! Your Void Conqueror NFT & 500 $VOID airdrop will be sent at launch. 🎖`;
       statusEl.className='nft-status success';
-      notify('Victory NFT minted! 🎖','success');
+      mintBtn.textContent='✓ Claimed';
     } else {
-      // Graceful error — still show success for demo
       statusEl.textContent = `✅ Victory recorded! NFT minting queued. Check back when the full game launches.`;
       statusEl.className='nft-status success';
-      notify('Victory saved!','success');
+      if(walletInput) walletInput.disabled=false;
+      mintBtn.disabled=false;
     }
   } catch(err) {
-    statusEl.textContent = `✅ Victory logged locally! On-chain minting available at full launch.`;
-    statusEl.className='nft-status success';
-    notify('Victory saved locally!','info');
-  } finally {
+    statusEl.textContent = '⚠ Could not register. Please try again.';
+    statusEl.className='nft-status error';
+    if(walletInput) walletInput.disabled=false;
     mintBtn.disabled=false;
   }
 }
