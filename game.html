@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crystal Realm -- Story Mode | Survivors of the Void</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game-styles.css">
+</head>
+<body>
+
+<!-- ── Navigation ─────────────────────────────────── -->
+<nav class="game-nav">
+  <a href="index.html" class="game-nav-logo">SURVIVORS <span>OF THE VOID</span></a>
+  <a href="index.html" class="game-nav-back">← Back to Main</a>
+</nav>
+
+<!-- ── Main Game Container ─────────────────────────── -->
+<div id="game-container">
+  <!-- All screens are rendered here by game.js -->
+  <div class="screen" id="loading-screen" style="text-align:center;padding-top:4rem;">
+    <div class="loading-spinner">⚔ ENTERING THE REALM ⚔</div>
+  </div>
+</div>
+
+<!-- Scripts loaded in order: utilities, then game logic -->
+<script src="game-db.js"></script>
+<script src="game-wallet.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
