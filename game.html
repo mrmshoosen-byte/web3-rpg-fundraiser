@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Screen</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #battle-screen {
+            display: flex;
+            flex: 1;
+        }
+        #player-platform {
+            width: 50%;
+            background-color: lightblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #enemy-platform {
+            width: 50%;
+            background-color: lightcoral;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #battle-log {
+            flex-basis: 30%;
+            background-color: lightgray;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        #action-bar {
+            flex-basis: 60px;
+            background-color: #333;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Battle Screen</h1>
+    <div id="battle-screen">
+        <div id="player-platform">
+            <h2>Player</h2>
+        </div>
+        <div id="enemy-platform">
+            <h2>Enemy</h2>
+        </div>
+    </div>
+    <div id="battle-log">
+        <h3>Battle Log</h3>
+        <p>Log of actions will appear here...</p>
+    </div>
+    <div id="action-bar">
+        <button>Attack</button>
+        <button>Defend</button>
+        <button>Use Item</button>
+    </div>
+</body>
+</html>
