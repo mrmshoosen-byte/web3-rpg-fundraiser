@@ -167,7 +167,6 @@ a{color:var(--gold);text-decoration:none}
 .act-btn.use-skill:hover:not(:disabled){background:#0a0f20;border-color:#7AAEFF}
 .act-btn.use-item{border-color:var(--green);color:var(--green)}
 .act-btn.use-item:hover:not(:disabled){background:#0a140a}
-.act-btn.flee{border-color:var(--text-dim)}
 
 /* Status effects */
 .status-row{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem}
@@ -439,7 +438,6 @@ a{color:var(--gold);text-decoration:none}
           <button class="act-btn" id="btn-attack" onclick="doAttack()">⚔ Attack</button>
           <button class="act-btn use-skill" id="btn-skill" onclick="openSkillPopup()">✨ Skill</button>
           <button class="act-btn use-item" id="btn-item" onclick="useItem()">🧪 Potion (<span id="potion-count">3</span>)</button>
-          <button class="act-btn flee" id="btn-flee" onclick="tryFlee()">🏃 Flee</button>
         </div>
 
       </div>
@@ -956,21 +954,6 @@ function useItem(){
   endPlayerTurn();
 }
 
-function tryFlee(){
-  if(!G.playerTurn||G.battleEnded) return;
-  if(G.floor===10){ notify('Cannot flee from the boss!','warn'); return; }
-  setActionsEnabled(false);
-  const chance = Math.min(0.5, G.spd / (G.spd + G.enemyAtk) + 0.2);
-  if(Math.random() < chance){
-    log(`🏃 You fled successfully! The floor is skipped.`,'system');
-    G.floorsDone.push(G.floor);
-    if(G.floor < 10){ setTimeout(()=>nextFloor(), 800); }
-  } else {
-    log(`🏃 Flee failed! The enemy strikes back!`,'enemy');
-    endPlayerTurn();
-  }
-}
-
 // ═══════════════════════════════════════════════════════
 //  TURN MANAGEMENT
 // ═══════════════════════════════════════════════════════
@@ -1458,7 +1441,7 @@ function buildFloorDots(){
 }
 
 function setActionsEnabled(enabled){
-  ['btn-attack','btn-skill','btn-item','btn-flee'].forEach(id=>{
+  ['btn-attack','btn-skill','btn-item'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.disabled=!enabled;
   });
