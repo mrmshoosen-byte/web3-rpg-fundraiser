@@ -1,0 +1,31 @@
+.battle-ui {
+    background-color: #D2E3E2;
+    border-radius: 10px;
+    border: 2px solid #7D9B9C;
+    padding: 20px;
+}
+
+.battle-header {
+    font-family: 'Pokémon Font', cursive;
+    color: #FF5733;
+    font-size: 24px;
+    text-align: center;
+}
+
+.battle-text {
+    font-family: 'Pokémon Font', cursive;
+    color: #333;
+    font-size: 16px;
+}
+
+.button {
+    background-color: #FFB300;
+    border: 2px solid #FFBB33;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #FFEB3B;
+}
