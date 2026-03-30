@@ -50,26 +50,6 @@
       text-decoration: none;
     }
     .topbar-right { display: flex; gap: .8rem; align-items: center; }
-    .wallet-btn {
-      padding: .5rem 1.2rem;
-      background: transparent;
-      color: var(--gold);
-      border: 1px solid var(--border-strong);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: .7rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .2s;
-      clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
-    }
-    .wallet-btn:hover { background: rgba(201,168,76,.1); }
-    .wallet-btn.connected { color: var(--green); border-color: var(--green); }
-    .wallet-addr {
-      font-size: .65rem;
-      color: var(--gold-dim);
-      display: none;
-    }
     .back-link {
       color: var(--gold-dim);
       text-decoration: none;
@@ -524,6 +504,37 @@
     .mint-status.error { color: var(--red); }
     .mint-status.loading { color: var(--gold-dim); }
 
+    .airdrop-form {
+      margin-top: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      width: 100%;
+    }
+    .airdrop-label {
+      font-size: .72rem;
+      color: var(--text-dim);
+      text-align: center;
+      max-width: 480px;
+    }
+    .airdrop-label strong { color: var(--gold); }
+    .airdrop-input {
+      width: 100%;
+      max-width: 480px;
+      padding: .65rem 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border-strong);
+      color: var(--text-bright);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .72rem;
+      letter-spacing: .04em;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .airdrop-input::placeholder { color: var(--text-dim); }
+    .airdrop-input:focus { border-color: var(--gold); }
+
     /* Responsive */
     @media(max-width:480px){
       .skills-grid { grid-template-columns: 1fr 1fr; }
@@ -647,8 +658,6 @@
 <div class="topbar">
   <a href="index.html" class="topbar-logo">⚔ Survivors of the Void</a>
   <div class="topbar-right">
-    <span class="wallet-addr" id="walletAddr"></span>
-    <button class="wallet-btn" id="walletBtn" onclick="connectWallet()">Connect Wallet</button>
     <a href="index.html" class="back-link">← Back to Site</a>
   </div>
 </div>
@@ -835,9 +844,13 @@
       <div class="reward-row"><span>NFT Reward</span><span class="reward-val">🎖 Void Conqueror Badge</span></div>
       <div class="reward-row"><span>Airdrop</span><span class="reward-val">500 $VOID tokens</span></div>
     </div>
-    <div class="result-btns">
-      <button class="btn-mint" id="mintBtn" onclick="mintNFT()">Mint NFT Victory Badge</button>
-      <button class="btn-play-again" onclick="resetGame()">Play Again</button>
+    <div class="airdrop-form" id="airdropForm">
+      <p class="airdrop-label">🎖 Enter your Solana wallet address to receive your <strong>Void Conqueror NFT</strong> airdrop at launch:</p>
+      <input class="airdrop-input" id="airdropWallet" type="text" placeholder="Your Solana wallet address (e.g. ABC...XYZ)" autocomplete="off" spellcheck="false" />
+      <div class="result-btns" style="margin-top:.8rem">
+        <button class="btn-mint" id="mintBtn" onclick="claimAirdrop()">🚀 Claim NFT Airdrop</button>
+        <button class="btn-play-again" onclick="resetGame()">Play Again</button>
+      </div>
     </div>
     <div class="mint-status" id="mintStatus"></div>
   </div>
@@ -959,35 +972,7 @@ let state = {
   unlockedSkills: [],  // skill IDs unlocked so far
   lootCount: 0,
   skillsUnlockedCount: 0,
-  walletAddr: null,
 };
-
-/* ═══════════════════════════════════════════════════════════════════
-   WALLET
-═══════════════════════════════════════════════════════════════════ */
-async function connectWallet() {
-  const btn = document.getElementById('walletBtn');
-  try {
-    if (typeof window.solana === 'undefined' || !window.solana.isPhantom) {
-      alert('Phantom wallet not found!\n\nPlease install Phantom at https://phantom.app and refresh.');
-      return;
-    }
-    btn.textContent = 'Connecting…';
-    const resp = await window.solana.connect();
-    const addr = resp.publicKey.toString();
-    state.walletAddr = addr;
-    const short = addr.slice(0, 4) + '…' + addr.slice(-4);
-    btn.textContent = '✓ ' + short;
-    btn.classList.add('connected');
-    document.getElementById('walletAddr').textContent = short;
-    document.getElementById('walletAddr').style.display = 'inline';
-    addLog('🔗 Phantom wallet connected: ' + short, 'system');
-  } catch (err) {
-    btn.textContent = 'Connect Wallet';
-    console.error('Wallet error:', err);
-    if (err.code === 4001) addLog('⚠ Wallet connection cancelled.', 'system');
-  }
-}
 
 /* ═══════════════════════════════════════════════════════════════════
    CHAMPION SELECT
@@ -1470,25 +1455,35 @@ function resetGame() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   NFT MINTING (Supabase)
+   NFT AIRDROP CLAIM (Supabase)
 ═══════════════════════════════════════════════════════════════════ */
-async function mintNFT() {
+async function claimAirdrop() {
   const btn = document.getElementById('mintBtn');
   const status = document.getElementById('mintStatus');
-  status.className = 'mint-status loading';
-  status.textContent = '⏳ Connecting to Supabase…';
-  btn.disabled = true;
+  const walletInput = document.getElementById('airdropWallet');
+  const walletAddr = walletInput ? walletInput.value.trim() : '';
 
-  if (!state.walletAddr) {
+  if (!walletAddr) {
     status.className = 'mint-status error';
-    status.textContent = '⚠ Please connect your Phantom wallet first.';
-    btn.disabled = false;
+    status.textContent = '⚠ Please enter your Solana wallet address.';
     return;
   }
 
+  // Basic Solana address validation: base58 characters, 32–44 chars
+  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(walletAddr)) {
+    status.className = 'mint-status error';
+    status.textContent = '⚠ Invalid Solana address. Please double-check and try again.';
+    return;
+  }
+
+  status.className = 'mint-status loading';
+  status.textContent = '⏳ Registering your airdrop claim…';
+  btn.disabled = true;
+  if (walletInput) walletInput.disabled = true;
+
   try {
     const payload = {
-      wallet_address: state.walletAddr,
+      wallet_address: walletAddr,
       champion: state.champion.name,
       floor_reached: state.floor,
       equipment_count: state.lootCount,
@@ -1510,22 +1505,23 @@ async function mintNFT() {
 
     if (res.ok || res.status === 201) {
       status.className = 'mint-status success';
-      status.textContent = '✅ NFT minted! Void Conqueror Badge added to your wallet. Airdrop: 500 $VOID';
-      btn.textContent = '✓ Minted';
+      status.textContent = '✅ Wallet registered! Your Void Conqueror NFT & 500 $VOID airdrop will be sent at launch. 🎖';
+      btn.textContent = '✓ Claimed';
+      if (walletInput) walletInput.disabled = true;
     } else {
       const errText = await res.text();
       console.error('Supabase error:', errText);
       status.className = 'mint-status error';
-      status.textContent = '⚠ Mint recorded locally. Backend may need setup. Check console.';
+      status.textContent = '⚠ Could not register. Please try again.';
       btn.disabled = false;
-      btn.textContent = 'Retry Mint';
+      if (walletInput) walletInput.disabled = false;
     }
   } catch (err) {
-    console.error('Mint error:', err);
+    console.error('Claim error:', err);
     status.className = 'mint-status error';
-    status.textContent = '⚠ Network error. Mint logged locally. Victory confirmed! 🏆';
+    status.textContent = '⚠ Network error. Please try again.';
     btn.disabled = false;
-    btn.textContent = 'Retry Mint';
+    if (walletInput) walletInput.disabled = false;
   }
 }
 
