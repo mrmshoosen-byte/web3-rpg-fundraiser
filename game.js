@@ -1,44 +1,37 @@
-// Updated renderBattle function for Gen 2 layout
+// Full implementation of the renderBattle function
 function renderBattle() {
-    // Clear previous content
+    // Clear the battle area
     clearBattleArea();
 
-    // Set enemy sprite area at the top
+    // Set up enemy sprite area
     setEnemySpriteArea();
 
-    // Display battle log in the center
-    displayBattleLog();
+    // Render battle mechanics
+    renderBattleMechanics();
 
-    // Display player stats (HP/resource bars) at bottom-left
-    displayPlayerStats();
+    // Setup skill and item panels
+    setupSkillItemPanels();
 
-    // Arrange action buttons (ATTACK/ITEM/STATS/DEFEND) vertically on the right side
-    displayActionButtons();
-
-    // Call functions to handle game updates
-    updateBattle();
+    // Manage game state
+    updateGameState();
 }
 
 function clearBattleArea() {
-    // Logic to clear battle area
+    // Logic to clear the existing battle area
 }
 
 function setEnemySpriteArea() {
-    // Logic to set enemy sprite
+    // Logic to render enemy sprites
 }
 
-function displayBattleLog() {
-    // Logic to display battle log
+function renderBattleMechanics() {
+    // Logic to manage battle mechanics
 }
 
-function displayPlayerStats() {
-    // Logic to display player stats with sprite
+function setupSkillItemPanels() {
+    // Logic to render skill and item selection
 }
 
-function displayActionButtons() {
-    // Logic to display action buttons vertically
-}
-
-function updateBattle() {
-    // Logic to update battle status
+function updateGameState() {
+    // Logic to manage the current game state during battle
 }
