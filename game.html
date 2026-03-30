@@ -69,6 +69,27 @@ a{color:var(--gold);text-decoration:none}
 .stat-bar.mp{background:var(--mp-color)}
 .stat-val{font-size:.7rem;color:var(--text-bright);width:60px;text-align:right}
 
+/* Player portrait */
+.player-portrait{width:100%;height:90px;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:.7rem;background:#080a10}
+.player-portrait img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+
+/* Champion pick */
+#champ-pick-screen{display:none;padding:2rem 1rem}
+#champ-pick-screen.active{display:block}
+.cp-title{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--gold-bright);text-align:center;margin-bottom:.3rem}
+.cp-sub{text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:1.5rem}
+.cp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.8rem;max-width:900px;margin:0 auto 1.5rem}
+.cp-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .2s}
+.cp-card:hover{border-color:var(--gold-dim);transform:translateY(-3px);box-shadow:0 4px 16px rgba(201,168,76,.15)}
+.cp-card.selected{border-color:var(--gold);box-shadow:0 0 12px rgba(201,168,76,.3)}
+.cp-img{width:100%;height:110px;object-fit:cover;object-position:center top;display:block}
+.cp-info{padding:.5rem .6rem}
+.cp-name{font-size:.75rem;color:var(--text-bright);font-family:'Cinzel',serif}
+.cp-role{font-size:.62rem;color:var(--gold-dim);margin-bottom:.3rem}
+.cp-stats{display:flex;gap:.3rem;flex-wrap:wrap}
+.cp-stat{font-size:.6rem;color:var(--text-dim)}
+.cp-stat span{color:var(--text-bright)}
+
 .stat-num-row{display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-dim);margin-bottom:.35rem}
 .stat-num-row span{color:var(--text-bright)}
 
@@ -112,7 +133,9 @@ a{color:var(--gold);text-decoration:none}
 
 /* Enemy display */
 .enemy-display{display:flex;align-items:flex-start;gap:1rem;padding:1rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem}
-.enemy-art{font-size:3.5rem;line-height:1;flex-shrink:0;text-shadow:0 0 20px rgba(255,80,80,.3)}
+.enemy-art{width:100px;height:100px;flex-shrink:0;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border);background:#080a10}
+.enemy-art img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.enemy-art.boss-art{width:120px;height:120px;border-color:var(--red);box-shadow:0 0 16px rgba(224,80,80,.35)}
 .enemy-info{flex:1}
 .enemy-name{font-family:'Cinzel',serif;font-size:1rem;color:var(--text-bright);margin-bottom:.3rem}
 .enemy-name.boss-name{color:var(--red);font-size:1.15rem}
@@ -321,6 +344,17 @@ a{color:var(--gold);text-decoration:none}
     <p style="color:var(--text-dim);font-size:.7rem;margin-top:1.5rem">Demo build · Full game coming with campaign funding · <a href="index.html">Back to Campaign →</a></p>
   </div>
 
+  <!-- ════════════ CHAMPION PICK SCREEN ════════════ -->
+  <div id="champ-pick-screen" class="screen">
+    <div class="cp-title">Choose Your Champion</div>
+    <p class="cp-sub">Each champion has unique stat scaling. Pick your playstyle, then enter the castle.</p>
+    <div class="cp-grid" id="cp-grid"></div>
+    <div style="text-align:center">
+      <button class="btn-start" onclick="enterCastle()">▶ Enter the Castle</button>
+      <button class="btn-start secondary" onclick="showScreen('start-screen')" style="margin-left:.5rem">← Back</button>
+    </div>
+  </div>
+
   <!-- ════════════ GAME SCREEN ════════════ -->
   <div id="game-screen" class="screen">
 
@@ -330,7 +364,8 @@ a{color:var(--gold);text-decoration:none}
       <!-- Player stats -->
       <div class="panel" id="player-panel">
         <div class="panel-title">⚔ Champion</div>
-        <div style="color:var(--text-bright);font-size:.8rem;margin-bottom:.6rem" id="player-name">Void Walker</div>
+        <div class="player-portrait"><img id="player-portrait-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;border-radius:4px;"></div>
+        <div style="color:var(--text-bright);font-size:.78rem;margin-bottom:.6rem" id="player-name">Void Walker</div>
 
         <div class="stat-row">
           <div class="stat-label">HP</div>
@@ -382,7 +417,7 @@ a{color:var(--gold);text-decoration:none}
 
         <!-- Enemy -->
         <div class="enemy-display" id="enemy-display">
-          <div class="enemy-art" id="enemy-art">👹</div>
+          <div class="enemy-art" id="enemy-art"><img id="enemy-art-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;border-radius:4px;"></div>
           <div class="enemy-info">
             <div class="enemy-name" id="enemy-name">Void Slime</div>
             <div class="enemy-desc" id="enemy-desc">A pulsing mass of dark energy.</div>
@@ -457,7 +492,7 @@ a{color:var(--gold);text-decoration:none}
     </div>
 
     <div class="vic-actions">
-      <button class="btn-start" onclick="startGame()">▶ Play Again</button>
+      <button class="btn-start" onclick="startGame()">▶ Choose Champion</button>
       <button class="btn-start secondary" onclick="goHome()">← Campaign Site</button>
     </div>
 
@@ -477,7 +512,7 @@ a{color:var(--gold);text-decoration:none}
     </div>
     <p style="color:var(--text-dim);font-size:.75rem;margin-bottom:1.5rem">The Void will remember your attempt. Venture forth again?</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <button class="btn-start" onclick="startGame()">▶ Try Again</button>
+      <button class="btn-start" onclick="startGame()">▶ Choose Champion</button>
       <button class="btn-start secondary" onclick="goHome()">← Campaign Site</button>
     </div>
   </div>
@@ -526,18 +561,31 @@ const SKILLS = [
   { id:'sacrifice',name:'Blood Pact',      icon:'🩸',  cost:0,  unlockFloor:6, type:'physical', dmgMult:2.5, desc:'Spend 20% HP to deal 2.5× ATK damage.',  effect:'sacrifice' },
 ];
 
+const CHAMPS = [
+  {name:'Snickle',    role:'Rogue',     desc:"Once the kingdom's most notorious gambler.",       stats:{dmg:85,spd:95,def:60,hp:120}, sprite:'https://i.imgur.com/xzdBwTg.png'},
+  {name:'Vibhu',      role:'Knight',    desc:'Sworn protector of Solania.',                      stats:{dmg:75,spd:60,def:95,hp:160}, sprite:'https://i.imgur.com/6PW269O.png'},
+  {name:'Cryptopher', role:'Mage',      desc:'Void Sage. Commands the fabric of reality.',       stats:{dmg:100,spd:80,def:50,hp:100},sprite:'https://i.imgur.com/6fq9zML.png'},
+  {name:'Rexxar',     role:'Berserker', desc:'Strength incarnate. Insatiable hunger.',           stats:{dmg:110,spd:70,def:70,hp:180},sprite:'https://i.imgur.com/ErgZiF9.png'},
+  {name:'Luna',       role:'Ranger',    desc:"Swift as night wind. Arrows never miss.",          stats:{dmg:90,spd:92,def:65,hp:110}, sprite:'https://i.imgur.com/s0Djzjy.png'},
+  {name:'Kai',        role:'Monk',      desc:'Balanced between yin and yang.',                   stats:{dmg:80,spd:88,def:75,hp:130}, sprite:'https://i.imgur.com/QcIEICc.png'},
+  {name:'Malachai',   role:'Paladin',   desc:'Clad in holy gold. Divine protector.',             stats:{dmg:70,spd:65,def:100,hp:175},sprite:'https://i.imgur.com/AyPCPY2.png'},
+  {name:'Raven',      role:'Reaper',    desc:'Collector of final breaths.',                      stats:{dmg:105,spd:85,def:55,hp:115},sprite:'https://i.imgur.com/ozqxvph.png'},
+  {name:'Emara',      role:'Sorceress', desc:'Chaos and order. Bends magic to will.',            stats:{dmg:95,spd:82,def:48,hp:105}, sprite:'https://i.imgur.com/sU1RKCL.png'},
+  {name:'Thornwick',  role:'Druid',     desc:"One with nature's fury.",                          stats:{dmg:75,spd:70,def:80,hp:150}, sprite:'https://i.imgur.com/aElBzhW.png'},
+];
+
 const ENEMIES = [
-  { name:'Void Slime',    icon:'🫧', tier:1, hpMult:0.5, atkMult:0.7, defMult:0.6, desc:'A pulsing mass of dark energy. Weak but numerous.' },
-  { name:'Shadow Rat',    icon:'🐀', tier:1, hpMult:0.55,atkMult:0.8, defMult:0.5, desc:'Scurries through the shadows, biting viciously.' },
-  { name:'Bone Archer',   icon:'💀', tier:2, hpMult:0.75,atkMult:0.9, defMult:0.7, desc:'Undead marksman with deadly precision.' },
-  { name:'Void Golem',    icon:'🪨', tier:2, hpMult:1.2, atkMult:0.8, defMult:1.4, desc:'Rock-hard construct summoned from the abyss.' },
-  { name:'Cursed Knight', icon:'⚔', tier:3, hpMult:1.0, atkMult:1.1, defMult:1.0, desc:'A once-noble warrior corrupted by void energy.' },
-  { name:'Hex Witch',     icon:'🧙', tier:3, hpMult:0.8, atkMult:1.3, defMult:0.7, desc:'Casts dark spells and status ailments.' },
-  { name:'Void Drake',    icon:'🐉', tier:4, hpMult:1.3, atkMult:1.2, defMult:1.1, desc:'A lesser dragon infused with void essence.' },
-  { name:'Shadow Titan',  icon:'👥', tier:4, hpMult:1.5, atkMult:1.1, defMult:1.3, desc:'Massive shadow construct of immense power.' },
-  { name:'Lich King',     icon:'💀', tier:5, hpMult:1.4, atkMult:1.4, defMult:1.0, desc:'Ancient undead sorcerer of terrible power.' },
+  { name:'Void Specter',     role:'Ghost',    tier:1, hpMult:0.50, atkMult:0.70, defMult:0.55, desc:'Wraith of pure void. Drains life from the living.',      sprite:'https://i.imgur.com/ohxY61h.png' },
+  { name:'Skeletal Archer',  role:'Undead',   tier:1, hpMult:0.60, atkMult:0.85, defMult:0.65, desc:'Bones reanimated by dark magic. Deadly aim.',            sprite:'https://i.imgur.com/BsTvtP2.png' },
+  { name:'Shadow Spider',    role:'Beast',    tier:2, hpMult:0.75, atkMult:0.95, defMult:0.70, desc:'Eight legs. Its web binds even the strongest warrior.',   sprite:'https://i.imgur.com/NpX69DR.png' },
+  { name:'Stone Sentinel',   role:'Construct',tier:2, hpMult:1.20, atkMult:0.80, defMult:1.40, desc:'Animated rock. Crushes all beneath its immense weight.',  sprite:'https://i.imgur.com/mKiiOxO.png' },
+  { name:'Flame Wyrm',       role:'Dragon',   tier:3, hpMult:0.95, atkMult:1.20, defMult:1.00, desc:'Serpent of living fire. Its breath melts iron.',          sprite:'https://i.imgur.com/YZNIdfD.png' },
+  { name:'Corrupted Golem',  role:'Construct',tier:3, hpMult:1.40, atkMult:0.90, defMult:1.30, desc:'Magic twisted beyond repair. Regenerates each turn.',     sprite:'https://i.imgur.com/5EPLLAa.png' },
+  { name:'Plague Rat Swarm', role:'Beast',    tier:4, hpMult:0.70, atkMult:1.10, defMult:0.80, desc:'Hundreds acting as one. Their bite carries deadly poison.',sprite:'https://i.imgur.com/cqMLuHv.png' },
+  { name:'Phantom Knight',   role:'Undead',   tier:4, hpMult:1.10, atkMult:1.25, defMult:1.10, desc:'Ghost warrior. Haunts the castle eternally.',             sprite:'https://i.imgur.com/q3bTx17.png' },
+  { name:'Void Tentacle',    role:'Eldritch', tier:5, hpMult:1.40, atkMult:1.40, defMult:1.00, desc:'From beyond reality. Unknowable. Unstoppable.',           sprite:'https://i.imgur.com/2KfY9O4.png' },
   // BOSS
-  { name:'Void Lord Malachar', icon:'👁', tier:10, hpMult:3.5, atkMult:2.0, defMult:1.5, desc:'The ruler of the Void Castle. Ancient. Malevolent. Hungry.', isBoss:true },
+  { name:'Lich Lord',        role:'Boss',     tier:10,hpMult:3.50, atkMult:2.00, defMult:1.50, desc:'Ancient sorcerer who commands legions of the undead. The castle\'s true master.', sprite:'https://i.imgur.com/pdkQoeO.png', isBoss:true },
 ];
 
 const EQUIPMENT_TEMPLATES = [
@@ -581,16 +629,26 @@ const SLOT_ORDER  = ['head','chest','hands','legs','feet','acc'];
 // ═══════════════════════════════════════════════════════
 let G = {};
 
-function defaultState(){
+function defaultState(champ){
+  // Scale champion stats from index.html to game stats
+  const c = champ || CHAMPS[0];
+  const baseHp  = Math.round(c.stats.hp / 120 * 200);
+  const baseAtk = Math.round(c.stats.dmg / 100 * 20);
+  const baseDef = Math.round(c.stats.def / 100 * 12);
+  const baseSpd = Math.round(c.stats.spd / 100 * 16);
+  const baseCrit= 10 + Math.round(c.stats.spd / 100 * 10);
+
   return {
     // Player
-    name:'Void Walker',
-    baseHp:200, baseAtk:18, baseDef:8, baseSpd:12, baseCrit:15, baseMp:80,
-    hp:200, mp:80,
-    maxHp:200, maxMp:80,
-    atk:18, def:8, spd:12, crit:15,
+    name: c.name,
+    role: c.role,
+    sprite: c.sprite,
+    baseHp, baseAtk, baseDef, baseSpd, baseCrit, baseMp:80,
+    hp: baseHp, mp: 80,
+    maxHp: baseHp, maxMp: 80,
+    atk: baseAtk, def: baseDef, spd: baseSpd, crit: baseCrit,
     equipment:{ head:null, chest:null, hands:null, legs:null, feet:null, acc:null },
-    statuses:{},    // name:{turns,val}
+    statuses:{},
     potions:3,
     kills:0,
     unlockedSkills:['slash','defend','focus'],
@@ -607,7 +665,7 @@ function defaultState(){
     floorsDone:[],
     pendingLoot:null,
     pendingUnlocks:[],
-    gamePhase:'start',  // start|battle|loot|unlock|victory|gameover
+    gamePhase:'start',
     battleEnded:false,
     playerTurn:true,
 
@@ -632,15 +690,62 @@ function goHome(){ window.location.href='index.html'; }
 //  GAME INIT
 // ═══════════════════════════════════════════════════════
 function startGame(){
-  G = defaultState();
+  showScreen('champ-pick-screen');
+  buildChampionPicker();
+}
+
+let _selectedChamp = CHAMPS[0];
+
+function buildChampionPicker(){
+  _selectedChamp = CHAMPS[0];
+  const grid = document.getElementById('cp-grid');
+  grid.innerHTML = '';
+  CHAMPS.forEach((c,i)=>{
+    const card = document.createElement('div');
+    card.className='cp-card'+(i===0?' selected':'');
+    card.id='cp-card-'+i;
+    card.innerHTML=`
+      <img class="cp-img" src="${c.sprite}" alt="${c.name}" loading="lazy">
+      <div class="cp-info">
+        <div class="cp-name">${c.name}</div>
+        <div class="cp-role">${c.role}</div>
+        <div class="cp-stats">
+          <div class="cp-stat">ATK <span>${c.stats.dmg}</span></div>
+          <div class="cp-stat">DEF <span>${c.stats.def}</span></div>
+          <div class="cp-stat">SPD <span>${c.stats.spd}</span></div>
+          <div class="cp-stat">HP <span>${c.stats.hp}</span></div>
+        </div>
+      </div>`;
+    card.onclick=()=>selectChampion(c, i);
+    grid.appendChild(card);
+  });
+}
+
+function selectChampion(champ, idx){
+  _selectedChamp = champ;
+  document.querySelectorAll('.cp-card').forEach((el,i)=>{
+    el.classList.toggle('selected', i===idx);
+  });
+}
+
+function enterCastle(){
+  G = defaultState(_selectedChamp);
   recalcStats();
   G.hp = G.maxHp; G.mp = G.maxMp;
   buildFloorDots();
   renderEquipment();
   renderSkills();
+  updatePlayerPortrait();
   clearLog();
   showScreen('game-screen');
   beginFloor(1);
+}
+
+function updatePlayerPortrait(){
+  const img = document.getElementById('player-portrait-img');
+  if(img && G.sprite){ img.src=G.sprite; img.alt=G.name; }
+  const nameEl = document.getElementById('player-name');
+  if(nameEl) nameEl.textContent = `${G.name} · ${G.role}`;
 }
 
 function recalcStats(){
@@ -701,7 +806,7 @@ function beginFloor(floor){
   clearLog();
   if(isBoss){
     log(`─── FLOOR ${floor} — BOSS BATTLE ───`, 'boss');
-    log(`${enemy.icon} ${enemy.name} emerges from the darkness!`, 'boss');
+    log(`💀 ${enemy.name} emerges from the darkness!`, 'boss');
     log(`"${bossQuote()}"`, 'boss');
   } else {
     log(`─── FLOOR ${floor} ───`, 'system');
@@ -945,12 +1050,12 @@ function enemyTurn(){
     if(chosen==='burn_p'){ G.statuses.burn={turns:2,val:Math.floor(G.maxHp*0.05)}; log(`🔥 ${G.enemy.name} sets you ablaze!`,'enemy'); }
     else if(chosen==='poison_p'){ G.statuses.poison={turns:3,val:Math.floor(G.maxHp*0.06)}; log(`🐍 ${G.enemy.name} poisons you!`,'enemy'); }
     else { G.statuses.slow={turns:2}; log(`⚡ ${G.enemy.name} slows your movements!`,'enemy'); }
-    if(reduced>0) log(`${G.enemy.icon} ${G.enemy.name} hits you for ${reduced}!`,'enemy');
+    if(reduced>0) log(`👊 ${G.enemy.name} hits you for ${reduced}!`,'enemy');
   } else if(action==='heavy'){
-    log(`${G.enemy.icon} ${G.enemy.name} uses a HEAVY STRIKE for ${reduced}!`,'enemy');
+    log(`💢 ${G.enemy.name} uses a HEAVY STRIKE for ${reduced}!`,'enemy');
   } else {
     if(isCrit) log(`💥 ${G.enemy.name} lands a critical hit for ${reduced}!`,'enemy');
-    else log(`${G.enemy.icon} ${G.enemy.name} attacks you for ${reduced}!`,'enemy');
+    else log(`👊 ${G.enemy.name} attacks you for ${reduced}!`,'enemy');
   }
   floatDmg(`-${reduced}`,'player-dmg');
 
@@ -1249,11 +1354,16 @@ function updateStatsUI(){
 function updateEnemyUI(){
   if(!G.enemy) return;
   const pct = Math.max(0, G.enemyHp/G.enemyMaxHp*100);
-  document.getElementById('enemy-art').textContent = G.enemy.icon;
+  const artEl = document.getElementById('enemy-art');
+  const img   = document.getElementById('enemy-art-img');
+  if(img){ img.src=G.enemy.sprite||''; img.alt=G.enemy.name; }
+  artEl.className = 'enemy-art' + (G.enemy.isBoss?' boss-art':'');
   const nameEl = document.getElementById('enemy-name');
   nameEl.textContent = G.enemy.name;
   nameEl.className = 'enemy-name' + (G.enemy.isBoss?' boss-name':'');
-  document.getElementById('enemy-desc').textContent = G.enemy.desc;
+  document.getElementById('enemy-desc').textContent = G.enemy.isBoss
+    ? `[${G.enemy.role}] ${G.enemy.desc}`
+    : `[${G.enemy.role}] ${G.enemy.desc}`;
   document.getElementById('enemy-hp-bar').style.width = pct+'%';
   document.getElementById('enemy-hp-val').textContent = `${G.enemyHp}/${G.enemyMaxHp}`;
 }
