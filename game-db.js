@@ -6,8 +6,8 @@
 (function (global) {
   'use strict';
 
-  const SUPABASE_URL = (global.SUPABASE_URL) || '';
-  const SUPABASE_KEY = (global.SUPABASE_ANON_KEY) || '';
+  const SUPABASE_URL  = (global.SUPABASE_URL)      || '';
+  const SUPABASE_KEY  = (global.SUPABASE_ANON_KEY) || '';  /* global uses ANON_KEY suffix */
 
   let supabase = null;
 

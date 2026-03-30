@@ -83,10 +83,11 @@
     }
     /* Simulate network latency */
     await new Promise((r) => setTimeout(r, 1800));
-    /* Generate a fake transaction signature */
+    /* Solana transaction signatures are 88 base58-encoded characters */
+    const SOLANA_TX_SIG_LENGTH = 88;
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz123456789';
     let txId = '';
-    for (let i = 0; i < 88; i++) {
+    for (let i = 0; i < SOLANA_TX_SIG_LENGTH; i++) {
       txId += chars[Math.floor(Math.random() * chars.length)];
     }
     console.info('[game-wallet] Mock mint → wallet:', walletAddress, '| skin:', skinData, '| tx:', txId);

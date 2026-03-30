@@ -185,6 +185,12 @@ const gameState = {
    UTILITY HELPERS
 ═══════════════════════════════════════════════════════════════ */
 
+/* ── Balance constants ──────────────────────────────── */
+const DODGE_AGI_DIVISOR      = 200;  /* AGI / this = dodge chance (capped naturally) */
+const PHYSICAL_DEF_DIVISOR   = 300;  /* DEF / this = physical damage reduction       */
+const MAGIC_DEF_DIVISOR      = 400;  /* DEF / this = magic damage reduction          */
+const MAX_DAMAGE_REDUCTION   = 0.5;  /* cap: 50% damage reduction from defense       */
+
 function rng(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)); }
@@ -194,7 +200,7 @@ function rollRarity() {
   let r = Math.random() * total;
   for (let i = 0; i < RARITIES.length; i++) {
     r -= RARITY_WEIGHTS[i];
-    if (r <= 0) return RARITIES[i];
+    if (r < 0) return RARITIES[i];
   }
   return RARITIES[0];
 }
@@ -733,11 +739,12 @@ function selectCharacter(id) {
   gameState.enemyStatusEffects = [];
   gameState.battleLog = [];
 
-  /* Set HP to computed value (base + equipment) */
+  /* Set HP to fully-computed max (base stats + equipment bonuses) */
   computeStats();
-  gameState.character.baseStats.hp = gameState.stats.maxHp || gameState.stats.hp || template.baseStats.hp;
-  gameState.character.baseStats.maxHp = gameState.character.baseStats.hp;
-  gameState.stats.hp = gameState.character.baseStats.hp;
+  const computedMaxHp = gameState.stats.hp;
+  gameState.character.baseStats.maxHp = computedMaxHp;
+  gameState.character.baseStats.hp    = computedMaxHp;
+  gameState.stats.hp                  = computedMaxHp;
 
   gameState.phase = 'info';
   renderCharInfo();
@@ -914,7 +921,7 @@ function useSkill(skillId) {
 
   /* Dodge check */
   const dodgeRoll = Math.random();
-  const dodgeChance = gameState.enemy.agi ? gameState.enemy.agi / 200 : 0.05;
+  const dodgeChance = gameState.enemy.agi ? gameState.enemy.agi / DODGE_AGI_DIVISOR : 0.05;
   if (dodgeRoll < dodgeChance && sk.type !== 'heal' && sk.type !== 'buff' && sk.type !== 'regen') {
     hit = false;
   }
@@ -934,9 +941,9 @@ function useSkill(skillId) {
   } else {
     /* Damage calc */
     if (sk.type === 'physical') {
-      dmg = Math.round(st.str * sk.mult * (1 - Math.min(computeEnemyDef(gameState.enemy) / 300, 0.5)));
+      dmg = Math.round(st.str * sk.mult * (1 - Math.min(computeEnemyDef(gameState.enemy) / PHYSICAL_DEF_DIVISOR, MAX_DAMAGE_REDUCTION)));
     } else { /* magic */
-      dmg = Math.round(st.int * sk.mult * (1 - Math.min(computeEnemyDef(gameState.enemy) / 400, 0.5)));
+      dmg = Math.round(st.int * sk.mult * (1 - Math.min(computeEnemyDef(gameState.enemy) / MAGIC_DEF_DIVISOR, MAX_DAMAGE_REDUCTION)));
     }
     dmg = Math.max(1, dmg);
     dealDamageToEnemy(dmg);
@@ -1155,7 +1162,7 @@ function enemyTurn() {
 
   /* Player dodge */
   const st = computeStats();
-  const playerDodge = Math.random() < (st.agi / 200);
+  const playerDodge = Math.random() < (st.agi / DODGE_AGI_DIVISOR);
   if (playerDodge) {
     logMsg('miss', `${en.name} attacks — you dodge!`);
     updateBars();
@@ -1165,7 +1172,7 @@ function enemyTurn() {
 
   /* Damage */
   let dmg = rng(en.atkMin, en.atkMax);
-  dmg = Math.round(dmg * (1 - Math.min(st.def / 300, 0.5)));
+  dmg = Math.round(dmg * (1 - Math.min(st.def / PHYSICAL_DEF_DIVISOR, MAX_DAMAGE_REDUCTION)));
   dmg = Math.max(1, dmg);
 
   /* Lifesteal */
