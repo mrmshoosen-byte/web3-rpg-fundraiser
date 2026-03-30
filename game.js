@@ -55,48 +55,48 @@ const CHARACTERS = {
 /* All skills */
 const SKILLS = {
   /* ── Vibhu ── */
-  slash:          { id:'slash',          name:'Slash',            cost:15, type:'physical', mult:1.2, effect:null,
-                    desc:'Strike with your blade. Deals STR×1.2 physical damage.' },
+  slash:          { id:'slash',          name:'Slash',            cost:15, type:'physical', mult:0.96, effect:null,
+                    desc:'Strike with your blade. Deals STR×0.96 physical damage.' },
   defend:         { id:'defend',         name:'Defend',           cost:10, type:'buff',     mult:0,   effect:{type:'defBuff',amount:20,turns:2},
                     desc:'Raise shield. +20 DEF for 2 turns.' },
   holy_light:     { id:'holy_light',     name:'Holy Light',       cost:15, type:'heal',     mult:0,   effect:{type:'heal',amount:40},
                     desc:'Channel divine energy. Heal 40 HP.' },
-  shield_bash:    { id:'shield_bash',    name:'Shield Bash',      cost:20, type:'physical', mult:1.0, effect:{type:'stun',chance:0.30},
-                    desc:'Bash with shield. STR×1.0 damage + 30% stun chance.' },
+  shield_bash:    { id:'shield_bash',    name:'Shield Bash',      cost:20, type:'physical', mult:0.8, effect:{type:'stun',chance:0.30},
+                    desc:'Bash with shield. STR×0.8 damage + 30% stun chance.' },
   regenerate:     { id:'regenerate',     name:'Regenerate',       cost:12, type:'regen',    mult:0,   effect:{type:'regen',amount:25,turns:3},
                     desc:'Mend wounds. Heal 25 HP/turn for 3 turns.' },
-  whirlwind:      { id:'whirlwind',      name:'Whirlwind Strike', cost:25, type:'physical', mult:1.5, effect:null,
-                    desc:'Spinning attack. Deals STR×1.5 physical damage.' },
+  whirlwind:      { id:'whirlwind',      name:'Whirlwind Strike', cost:25, type:'physical', mult:1.2, effect:null,
+                    desc:'Spinning attack. Deals STR×1.2 physical damage.' },
   divine_shield:  { id:'divine_shield',  name:'Divine Shield',    cost:20, type:'buff',     mult:0,   effect:{type:'defBuff',amount:30,turns:2,healSelf:25},
                     desc:'+30 DEF + Heal 25 HP for 2 turns.' },
-  holy_judgment:  { id:'holy_judgment',  name:'Holy Judgment',    cost:30, type:'physical', mult:2.0, effect:null,
-                    desc:'Righteous smite. Deals STR×2.0 physical damage.' },
+  holy_judgment:  { id:'holy_judgment',  name:'Holy Judgment',    cost:30, type:'physical', mult:1.6, effect:null,
+                    desc:'Righteous smite. Deals STR×1.6 physical damage.' },
   counter_stance: { id:'counter_stance', name:'Counter Stance',   cost:18, type:'buff',     mult:0,   effect:{type:'agiBuff',amount:20,turns:3},
                     desc:'Ready to evade. +20 AGI for 3 turns.' },
-  divine_wrath:   { id:'divine_wrath',   name:'Divine Wrath',     cost:35, type:'physical', mult:2.5, effect:null,
-                    desc:'Devastating holy strike. Deals STR×2.5 physical damage.' },
+  divine_wrath:   { id:'divine_wrath',   name:'Divine Wrath',     cost:35, type:'physical', mult:2.0, effect:null,
+                    desc:'Devastating holy strike. Deals STR×2.0 physical damage.' },
 
   /* ── Cryptopher ── */
-  fireball:        { id:'fireball',        name:'Fireball',          cost:25, type:'magic', mult:1.5, effect:null,
-                     desc:'Hurl a blazing sphere. Deals INT×1.5 magic damage.' },
-  icy_shard:       { id:'icy_shard',       name:'Icy Shard',         cost:25, type:'magic', mult:1.5, effect:{type:'slow',chance:0.20,turns:2},
-                     desc:'Ice projectile. INT×1.5 damage + 20% slow chance (2 turns).' },
-  lightning:       { id:'lightning',       name:'Lightning Strike',  cost:25, type:'magic', mult:1.5, effect:{type:'stun',chance:0.30},
-                     desc:'Electric bolt. INT×1.5 damage + 30% stun chance.' },
+  fireball:        { id:'fireball',        name:'Fireball',          cost:25, type:'magic', mult:1.2, effect:null,
+                     desc:'Hurl a blazing sphere. Deals INT×1.2 magic damage.' },
+  icy_shard:       { id:'icy_shard',       name:'Icy Shard',         cost:25, type:'magic', mult:1.2, effect:{type:'slow',chance:0.20,turns:2},
+                     desc:'Ice projectile. INT×1.2 damage + 20% slow chance (2 turns).' },
+  lightning:       { id:'lightning',       name:'Lightning Strike',  cost:25, type:'magic', mult:1.2, effect:{type:'stun',chance:0.30},
+                     desc:'Electric bolt. INT×1.2 damage + 30% stun chance.' },
   healing_spell:   { id:'healing_spell',   name:'Healing Spell',     cost:20, type:'heal',  mult:0,   effect:{type:'heal',amount:40},
                      desc:'Arcane restoration. Heal 40 HP.' },
   mana_shield:     { id:'mana_shield',     name:'Mana Shield',       cost:18, type:'buff',  mult:0,   effect:{type:'shield',amount:0.30,turns:2},
                      desc:'Magic barrier. Reduce damage by 30% for 2 turns.' },
-  meteor_storm:    { id:'meteor_storm',    name:'Meteor Storm',      cost:40, type:'magic', mult:2.0, effect:null,
-                     desc:'Rains meteors. Deals INT×2.0 magic damage.' },
-  blizzard:        { id:'blizzard',        name:'Blizzard',          cost:35, type:'magic', mult:1.8, effect:{type:'slow',chance:1.0,turns:2},
-                     desc:'Blinding snowstorm. INT×1.8 damage + guaranteed slow (2 turns).' },
-  chain_lightning: { id:'chain_lightning', name:'Chain Lightning',   cost:38, type:'magic', mult:1.9, effect:null,
-                     desc:'Bouncing bolts. Deals INT×1.9 magic damage.' },
-  inferno:         { id:'inferno',         name:'Inferno',           cost:30, type:'magic', mult:1.2, effect:{type:'burn',amount:0,turns:3},
-                     desc:'Searing flames. INT×1.2 damage/turn for 3 turns (burn).' },
-  void_rupture:    { id:'void_rupture',    name:'Void Rupture',      cost:45, type:'magic', mult:2.5, effect:null,
-                     desc:'Rips void open. Deals INT×2.5 magic damage.' },
+  meteor_storm:    { id:'meteor_storm',    name:'Meteor Storm',      cost:40, type:'magic', mult:1.6, effect:null,
+                     desc:'Rains meteors. Deals INT×1.6 magic damage.' },
+  blizzard:        { id:'blizzard',        name:'Blizzard',          cost:35, type:'magic', mult:1.44, effect:{type:'slow',chance:1.0,turns:2},
+                     desc:'Blinding snowstorm. INT×1.44 damage + guaranteed slow (2 turns).' },
+  chain_lightning: { id:'chain_lightning', name:'Chain Lightning',   cost:38, type:'magic', mult:1.52, effect:null,
+                     desc:'Bouncing bolts. Deals INT×1.52 magic damage.' },
+  inferno:         { id:'inferno',         name:'Inferno',           cost:30, type:'magic', mult:0.96, effect:{type:'burn',amount:0,turns:3},
+                     desc:'Searing flames. INT×0.96 damage/turn for 3 turns (burn).' },
+  void_rupture:    { id:'void_rupture',    name:'Void Rupture',      cost:45, type:'magic', mult:2.0, effect:null,
+                     desc:'Rips void open. Deals INT×2.0 magic damage.' },
 };
 
 /* Enemies */
@@ -456,36 +456,42 @@ function renderBattle() {
         <div class="enemy-sprite-area" id="enemy-sprite">${enEmoji}</div>
       </div>
 
-      <div class="battle-log" id="battle-log">${logLines}</div>
+      <div class="battle-bottom">
+        <div class="battle-bottom-left">
+          <div class="battle-log" id="battle-log">${logLines}</div>
 
-      <div class="player-zone" id="player-zone">
-        <div class="player-row">
-          <div class="player-sprite-small">${ch.sprite}</div>
-          <div class="player-info">
-            <div class="player-name-row">
-              <span class="player-char-name">${ch.name}</span>
-              <span class="player-hp-text">HP: <span id="player-hp-val">${st.hp}</span>/${st.maxHp}</span>
+          <div class="player-zone" id="player-zone">
+            <div class="player-row">
+              <div class="player-sprite-small">${ch.sprite}</div>
+              <div class="player-info">
+                <div class="player-name-row">
+                  <span class="player-char-name">${ch.name}</span>
+                  <span class="player-hp-text">HP: <span id="player-hp-val">${st.hp}</span>/${st.maxHp}</span>
+                </div>
+                <div class="hp-bar-track">
+                  <div class="hp-bar-fill ${hpBarClass(st.hp,st.maxHp)}" id="player-hp-bar" style="width:${plHpPct}%"></div>
+                </div>
+              </div>
             </div>
-            <div class="hp-bar-track">
-              <div class="hp-bar-fill ${hpBarClass(st.hp,st.maxHp)}" id="player-hp-bar" style="width:${plHpPct}%"></div>
+            <div class="status-badges" id="player-status">${playerBadges}</div>
+            <div class="res-row">
+              <span class="res-label">${ch.resource}</span>
+              <span class="res-text" id="res-val">${gameState.resource}/${gameState.resourceMax}</span>
+            </div>
+            <div class="res-bar-track">
+              <div class="res-bar-fill ${ch.resourceColor}" id="res-bar" style="width:${resPct}%"></div>
             </div>
           </div>
         </div>
-        <div class="status-badges" id="player-status">${playerBadges}</div>
-        <div class="res-row">
-          <span class="res-label">${ch.resource}</span>
-          <span class="res-text" id="res-val">${gameState.resource}/${gameState.resourceMax}</span>
-        </div>
-        <div class="res-bar-track">
-          <div class="res-bar-fill ${ch.resourceColor}" id="res-bar" style="width:${resPct}%"></div>
-        </div>
-      </div>
 
-      <div class="action-bar" id="action-bar">
-        <button class="action-btn" id="btn-attack"  onclick="togglePanel('skill')">⚔ ATTACK</button>
-        <button class="action-btn" id="btn-item"    onclick="togglePanel('item')">🧪 ITEM</button>
-        <button class="action-btn" id="btn-stats"   onclick="togglePanel('stats')">📊 STATS</button>
-        <button class="action-btn" id="btn-defend"  onclick="playerDefend()">🛡 DEFEND</button>
+        <div class="battle-bottom-right">
+          <div class="action-bar" id="action-bar">
+            <button class="action-btn" id="btn-attack"  onclick="togglePanel('skill')">⚔ ATTACK</button>
+            <button class="action-btn" id="btn-item"    onclick="togglePanel('item')">🧪 ITEM</button>
+            <button class="action-btn" id="btn-stats"   onclick="togglePanel('stats')">📊 STATS</button>
+            <button class="action-btn" id="btn-defend"  onclick="playerDefend()">🛡 DEFEND</button>
+          </div>
+        </div>
       </div>
 
       <!-- Skill Panel -->
@@ -763,12 +769,12 @@ function startFloor(floor) {
 
   /* Build enemy */
   const template = ENEMIES[floor];
-  const hp = template.baseHp + (floor - 1) * 10;
+  const hp = Math.round(template.baseHp * floor);
   gameState.enemy = {
     name: template.name,
     emoji: template.emoji,
     hp, maxHp: hp,
-    def: 10 + floor * 3,
+    def: 10 + floor * 5,
     atkMin: 15 + floor * 4,
     atkMax: 25 + floor * 5,
     skills: template.skills,
@@ -1145,6 +1151,16 @@ function enemyTurn() {
     }
   } else {
     gameState.enemySlowCounter = 0;
+  }
+
+  /* Enemy strategic heal: when HP below 50%, 40% chance to heal instead of attack */
+  if (en.hp < en.maxHp * 0.5 && Math.random() < 0.40) {
+    const healAmount = Math.round(en.maxHp * 0.15);
+    en.hp = Math.min(en.maxHp, en.hp + healAmount);
+    logMsg('log-enemy', `${en.name} recovers! +${healAmount} HP.`);
+    updateBars();
+    enableActions();
+    return;
   }
 
   /* Pick skill */

@@ -526,7 +526,6 @@ body::before {
   font-size: .62rem;
   line-height: 1.75;
   color: var(--text-dim);
-  margin-bottom: .6rem;
   scrollbar-width: thin;
   scrollbar-color: var(--gold-dim) transparent;
 }
@@ -547,7 +546,6 @@ body::before {
   padding: 1.2rem;
   position: relative;
   overflow: hidden;
-  margin-bottom: .6rem;
 }
 .player-zone::before {
   content: '';
@@ -617,11 +615,29 @@ body::before {
 .res-bar-fill.str { background: linear-gradient(90deg, #DC2626, #EF4444); }
 
 /* Action Buttons */
+.battle-bottom {
+  display: flex;
+  gap: .6rem;
+  align-items: stretch;
+  margin-bottom: .6rem;
+}
+.battle-bottom-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  min-width: 0;
+}
+.battle-bottom-right {
+  width: 120px;
+  flex-shrink: 0;
+}
 .action-bar {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: .5rem;
-  margin-bottom: .6rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(4, 1fr);
+  gap: .4rem;
+  height: 100%;
 }
 .action-btn {
   padding: .7rem .4rem;
