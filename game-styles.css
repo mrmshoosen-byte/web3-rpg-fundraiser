@@ -1,31 +1,72 @@
-.dark-fantasy-theme {
-  background-color: #000000;
-  color: #FFD700;
+:root {
+    --bg-color: #1a1a1a;
+    --primary-color: #ffcc00;
+    --secondary-color: #cc0000;
+    --text-color: #e0e0e0;
+    --card-bg: #2a2a2a;
+    --highlight-color: #ff6600;
 }
 
-.dark-fantasy-theme .container {
-  background-color: #1a1a1a;
-  border: 1px solid #FFD700;
+/* Game Navigation Styles */
+.navigation {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem;
 }
 
-.dark-fantasy-theme .button {
-  background-color: #FFD700;
-  color: #000000;
-  border-radius: 5px;
-  padding: 10px 15px;
-  text-align: center;
-  text-decoration: none;
+/* Game Screens */
+.game-screen {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 20px;
 }
 
-.pokemon-gen2-battle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: url('battle-background.png');
+/* Battle Screen Layout */
+.battle-screen {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.enemy-zone, .player-zone {
+    width: 45%;
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 10px;
 }
 
-.pokemon-gen2-battle .battle-screen {
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 20px;
+/* Character and Item Cards */
+.character-card, .item-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+}
+
+/* Animations */
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .battle-screen {
+        flex-direction: column;
+    }
+    .enemy-zone, .player-zone {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .navigation {
+        flex-direction: column;
+        align-items: center;
+    }
 }
