@@ -6,20 +6,20 @@
 (function (global) {
   'use strict';
 
-  const SUPABASE_URL  = (global.SUPABASE_URL)      || '';
-  const SUPABASE_KEY  = (global.SUPABASE_ANON_KEY) || '';  /* global uses ANON_KEY suffix */
+  const SUPABASE_URL      = (global.SUPABASE_URL)      || '';
+  const SUPABASE_ANON_KEY = (global.SUPABASE_ANON_KEY) || '';
 
   let supabase = null;
 
   /* Lazy-init: only load Supabase SDK if credentials are provided */
   async function getClient() {
     if (supabase) return supabase;
-    if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
     try {
       const { createClient } = await import(
         'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
       );
-      supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       return supabase;
     } catch (e) {
       console.warn('[game-db] Supabase unavailable:', e.message);
