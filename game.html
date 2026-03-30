@@ -3,65 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Screen</title>
+    <title>Web3 RPG Fundraiser</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
         }
-        #battle-screen {
-            display: flex;
-            flex: 1;
-        }
-        #player-platform {
-            width: 50%;
-            background-color: lightblue;
+        #menu {
             display: flex;
             justify-content: center;
-            align-items: center;
+            margin: 20px;
         }
-        #enemy-platform {
-            width: 50%;
-            background-color: lightcoral;
+        .character {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
         }
-        #battle-log {
-            flex-basis: 30%;
-            background-color: lightgray;
-            padding: 10px;
+        #battleScreen {
+            display: none;
+            margin: 20px;
+            text-align: center;
+        }
+        #battleLog {
+            height: 100px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            background-color: #fff;
             overflow-y: auto;
         }
-        #action-bar {
-            flex-basis: 60px;
-            background-color: #333;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            color: white;
+        .platform {
+            width: 200px;
+            height: 200px;
+            display: inline-block;
+            border: 1px solid #000;
+            background-color: #e0e0e0;
+            vertical-align: top;
+        }
+        button {
+            margin: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Battle Screen</h1>
-    <div id="battle-screen">
-        <div id="player-platform">
-            <h2>Player</h2>
+    <h1>Welcome to the Web3 RPG Fundraiser</h1>
+    <div id="menu">
+        <button id="playButton">Play</button>
+    </div>
+    <div id="characterSelection">
+        <h2>Select Your Character</h2>
+        <div class="character">Character 1</div>
+        <div class="character">Character 2</div>
+        <div class="character">Character 3</div>
+        <div class="character">Character 4</div>
+        <div class="character">Character 5</div>
+        <div class="character">Character 6</div>
+        <div class="character">Character 7</div>
+        <div class="character">Character 8</div>
+        <div class="character">Character 9</div>
+        <div class="character">Character 10</div>
+    </div>
+    <div id="battleScreen">
+        <h2>Battle Screen</h2>
+        <div class="platform" id="playerPlatform">
+            <img src="player.png" alt="Player Sprite" />
+            <h3>Player</h3>
         </div>
-        <div id="enemy-platform">
-            <h2>Enemy</h2>
+        <div class="platform" id="enemyPlatform">
+            <img src="enemy.png" alt="Enemy Sprite" />
+            <h3>Enemy</h3>
         </div>
+        <div id="battleLog">
+            <p>Battle Log:</p>
+        </div>
+        <button id="attackButton">Attack</button>
+        <button id="defendButton">Defend</button>
+        <button id="runButton">Run</button>
     </div>
-    <div id="battle-log">
-        <h3>Battle Log</h3>
-        <p>Log of actions will appear here...</p>
-    </div>
-    <div id="action-bar">
-        <button>Attack</button>
-        <button>Defend</button>
-        <button>Use Item</button>
-    </div>
+    <script>
+        document.getElementById('playButton').onclick = function() {
+            document.getElementById('characterSelection').style.display = 'none';
+            document.getElementById('battleScreen').style.display = 'block';
+        };
+    </script>
 </body>
 </html>
