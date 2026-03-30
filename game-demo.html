@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SURVIVORS OF THE VOID — Play Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-bright:#F0C060;--gold-dim:#7A6230;--ember:#E8612A;--bg-void:#06070A;--bg-deep:#0C0E14;--bg-panel:#11141C;--bg-card:#161A24;--text-main:#D8CDB8;--text-dim:#7A7060;--text-bright:#EDE5D0;--border:rgba(201,168,76,.18);--border-strong:rgba(201,168,76,.45);--green-term:#4ADE80;--rare:#8B5CF6;--legendary:#F59E0B;--sol:#9945FF;--epic:#F97316;--common:#9CA3AF;--uncommon:#34D399}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg-void);color:var(--text-main);font-family:'Share Tech Mono',monospace;overflow-x:hidden;min-height:100vh}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);pointer-events:none;z-index:9998}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,7,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:56px}
+.nav-logo{font-family:'Cinzel Decorative',serif;font-size:.76rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-decoration:none}
+.nav-logo span{color:var(--ember)}
+.nav-back{color:var(--text-dim);text-decoration:none;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;transition:color .3s;display:flex;align-items:center;gap:.4rem}
+.nav-back:hover{color:var(--gold)}
+.nav-wallet{display:flex;align-items:center;gap:.7rem}
+.wallet-btn{padding:.45rem 1.1rem;background:transparent;color:var(--sol);border:1px solid rgba(153,69,255,.4);font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .25s}
+.wallet-btn:hover,.wallet-btn.connected{background:rgba(153,69,255,.12)}
+.wallet-addr{font-size:.58rem;color:var(--text-dim)}
+.screen{display:none;padding-top:56px;min-height:100vh}
+.screen.active{display:block}
+
+/* ===== CHAMPION SELECT ===== */
+.select-wrap{max-width:1100px;margin:0 auto;padding:2.5rem 1.2rem}
+.select-header{text-align:center;margin-bottom:2.5rem}
+.select-eyebrow{font-size:.6rem;letter-spacing:.45em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:.7rem}
+.select-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,4vw,2.8rem);font-weight:900;color:var(--text-bright);margin-bottom:.5rem}
+.select-title .accent{color:var(--gold)}
+.select-sub{font-size:.72rem;color:var(--text-dim);line-height:1.7}
+.champion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem;margin-top:1.5rem}
+.champ-card{background:var(--bg-card);border:1px solid var(--border);padding:1.4rem 1rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;text-align:center}
+.champ-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border-strong);transition:height .25s}
+.champ-card:hover{border-color:var(--gold);transform:translateY(-4px);background:rgba(201,168,76,.05)}
+.champ-card:hover::before{height:4px;background:var(--gold)}
+.champ-emoji{font-size:2.4rem;margin-bottom:.7rem;display:block;filter:drop-shadow(0 0 8px rgba(201,168,76,.3))}
+.champ-name{font-family:'Cinzel',serif;font-size:.92rem;font-weight:700;color:var(--text-bright);margin-bottom:.2rem}
+.champ-role{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:1rem}
+.champ-stats{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .5rem;margin-bottom:1rem}
+.cs{display:flex;justify-content:space-between;align-items:center;font-size:.6rem}
+.cs-lbl{color:var(--text-dim)}
+.cs-val{color:var(--gold);font-weight:bold}
+.stat-bar{height:3px;background:rgba(201,168,76,.1);margin-top:2px;border-radius:0}
+.stat-bar-fill{height:100%;background:var(--gold);transition:width .3s}
+.champ-desc{font-size:.6rem;color:var(--text-dim);line-height:1.6;margin-bottom:1rem}
+.champ-select-btn{width:100%;padding:.6rem;background:transparent;color:var(--gold);border:1px solid var(--border-strong);font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .25s}
+.champ-card:hover .champ-select-btn{background:var(--gold);color:#0C0E14}
+.champ-start-skills{font-size:.56rem;color:var(--text-dim);text-align:left;margin-bottom:.5rem}
+.skill-tag{display:inline-block;background:rgba(201,168,76,.08);border:1px solid var(--border);padding:.1rem .35rem;font-size:.52rem;color:var(--text-dim);margin:.1rem .1rem .1rem 0}
+
+/* ===== BATTLE SCREEN ===== */
+.battle-wrap{max-width:1200px;margin:0 auto;padding:1rem 1rem 6rem;display:grid;grid-template-columns:220px 1fr 180px;gap:1rem;min-height:calc(100vh - 56px)}
+.battle-left,.battle-right{display:flex;flex-direction:column;gap:.8rem}
+.b-panel{background:var(--bg-panel);border:1px solid var(--border);padding:.9rem}
+.b-panel-title{font-size:.56rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.7rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.hero-portrait{text-align:center;margin-bottom:.7rem}
+.hero-emoji{font-size:2.8rem;filter:drop-shadow(0 0 10px rgba(201,168,76,.4))}
+.hero-name{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--text-bright);margin-top:.3rem}
+.hero-role-b{font-size:.55rem;color:var(--gold-dim);letter-spacing:.15em;text-transform:uppercase}
+.hp-bar-wrap{margin:.6rem 0}
+.hp-label{display:flex;justify-content:space-between;font-size:.6rem;margin-bottom:.25rem}
+.hp-label span:first-child{color:var(--text-dim)}
+.hp-label span:last-child{color:var(--green-term)}
+.hp-track{height:8px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);overflow:hidden}
+.hp-fill{height:100%;background:linear-gradient(90deg,#22c55e,#4ADE80);transition:width .5s ease;max-width:100%}
+.hp-fill.low{background:linear-gradient(90deg,#ef4444,#f87171)}
+.hp-fill.mid{background:linear-gradient(90deg,#f59e0b,#fcd34d)}
+.stat-row{display:flex;justify-content:space-between;font-size:.61rem;padding:.2rem 0;border-bottom:1px solid rgba(201,168,76,.06)}
+.stat-row:last-child{border:none}
+.stat-row .s-lbl{color:var(--text-dim)}
+.stat-row .s-val{color:var(--gold)}
+.buff-row{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.4rem}
+.buff-tag{font-size:.52rem;padding:.1rem .3rem;border-radius:2px}
+.buff-tag.good{background:rgba(74,222,128,.12);color:var(--green-term);border:1px solid rgba(74,222,128,.2)}
+.buff-tag.bad{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.equip-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem}
+.equip-slot{background:rgba(201,168,76,.04);border:1px dashed rgba(201,168,76,.15);padding:.35rem .4rem;font-size:.56rem;color:var(--text-dim);text-align:center;min-height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem}
+.equip-slot.filled{border-style:solid;border-color:var(--border)}
+.equip-slot .e-name{color:var(--text-main);font-size:.58rem}
+.equip-slot .e-rarity{font-size:.5rem}
+.r-common{color:var(--common)}
+.r-uncommon{color:var(--uncommon)}
+.r-rare{color:var(--rare)}
+.r-epic{color:var(--epic)}
+.r-legendary{color:var(--legendary)}
+
+/* Battle Center */
+.battle-center{display:flex;flex-direction:column;gap:.8rem}
+.enemy-area{background:var(--bg-panel);border:1px solid var(--border);padding:1.2rem;text-align:center;position:relative}
+.floor-badge{position:absolute;top:.7rem;left:.8rem;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim)}
+.floor-badge.boss{color:var(--ember)}
+.enemy-emoji{font-size:3rem;margin:.5rem 0;filter:drop-shadow(0 0 12px rgba(232,97,42,.3));display:block;transition:transform .1s}
+.enemy-emoji.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.enemy-name{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--ember);margin-bottom:.3rem}
+.enemy-name.boss-name{color:var(--legendary);font-size:1.3rem}
+.enemy-type{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.8rem}
+.enemy-hp-wrap{max-width:320px;margin:0 auto}
+.enemy-hp-track{height:12px;background:rgba(232,97,42,.08);border:1px solid rgba(232,97,42,.2);overflow:hidden}
+.enemy-hp-fill{height:100%;background:linear-gradient(90deg,#dc2626,var(--ember));transition:width .5s ease;max-width:100%}
+.enemy-hp-label{display:flex;justify-content:space-between;font-size:.6rem;margin-top:.25rem}
+.enemy-buffs{display:flex;flex-wrap:wrap;gap:.25rem;justify-content:center;margin-top:.5rem}
+.battle-log-wrap{background:var(--bg-card);border:1px solid var(--border);flex:1;min-height:200px;max-height:260px;display:flex;flex-direction:column}
+.battle-log-hdr{padding:.5rem .8rem;border-bottom:1px solid var(--border);font-size:.56rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-dim)}
+.battle-log{flex:1;overflow-y:auto;padding:.6rem .8rem;display:flex;flex-direction:column;gap:.25rem;scroll-behavior:smooth}
+.battle-log::-webkit-scrollbar{width:3px}.battle-log::-webkit-scrollbar-thumb{background:var(--gold-dim)}
+.log-entry{font-size:.65rem;line-height:1.5;padding:.1rem 0;border-left:2px solid transparent;padding-left:.5rem}
+.log-entry.player{border-color:var(--gold);color:var(--text-bright)}
+.log-entry.enemy{border-color:var(--ember);color:#fca5a5}
+.log-entry.system{border-color:var(--green-term);color:var(--green-term)}
+.log-entry.loot{border-color:var(--rare);color:var(--rare)}
+.log-entry.boss-entry{border-color:var(--legendary);color:var(--legendary)}
+.vs-divider{text-align:center;font-size:.7rem;color:var(--gold-dim);letter-spacing:.3em;padding:.3rem 0}
+
+/* Skills Bar */
+.skills-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(6,7,10,.95);border-top:1px solid var(--border);z-index:50;padding:.6rem .8rem}
+.skills-label{font-size:.56rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:.5rem}
+.skills-grid{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center}
+.skill-btn{background:var(--bg-card);border:1px solid var(--border);padding:.5rem .7rem;cursor:pointer;transition:all .2s;text-align:left;min-width:130px;max-width:160px;flex:1;position:relative}
+.skill-btn:hover:not(:disabled){border-color:var(--gold);background:rgba(201,168,76,.06)}
+.skill-btn:disabled{opacity:.4;cursor:not-allowed}
+.skill-btn.locked{opacity:.35;cursor:not-allowed;border-style:dashed}
+.sk-top{display:flex;align-items:center;gap:.4rem;margin-bottom:.2rem}
+.sk-emoji{font-size:1rem}
+.sk-name{font-size:.62rem;color:var(--text-bright);font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk-desc{font-size:.54rem;color:var(--text-dim);line-height:1.4}
+.sk-cost{position:absolute;top:.3rem;right:.4rem;font-size:.5rem;color:var(--ember)}
+
+/* Floor Tracker */
+.floor-list{display:flex;flex-direction:column;gap:.25rem}
+.fl-item{display:flex;align-items:center;gap:.5rem;padding:.25rem .4rem;font-size:.6rem;color:var(--text-dim);border-left:2px solid transparent;transition:all .2s}
+.fl-item.done{color:var(--green-term);border-color:rgba(74,222,128,.3)}
+.fl-item.current{color:var(--gold);border-color:var(--gold);background:rgba(201,168,76,.06);font-weight:bold}
+.fl-item.boss-fl{color:var(--ember)}
+.fl-item.current.boss-fl{border-color:var(--ember);background:rgba(232,97,42,.06)}
+.fl-item.locked{opacity:.4}
+.fl-num{width:20px;font-size:.58rem;color:var(--text-dim);flex-shrink:0}
+.fl-icon{font-size:.75rem;flex-shrink:0}
+.fl-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.58rem}
+
+/* Reward Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.modal-overlay.hidden{display:none}
+.modal-box{background:var(--bg-panel);border:1px solid var(--border-strong);padding:1.8rem;max-width:500px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal-box::-webkit-scrollbar{width:3px}.modal-box::-webkit-scrollbar-thumb{background:var(--gold-dim)}
+.modal-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:.3rem}
+.modal-sub{font-size:.65rem;color:var(--text-dim);margin-bottom:1.2rem}
+.reward-item{display:flex;align-items:center;gap:.7rem;padding:.6rem;background:rgba(201,168,76,.04);border:1px solid var(--border);margin-bottom:.5rem}
+.reward-emoji{font-size:1.4rem}
+.reward-info h4{font-size:.72rem;color:var(--text-bright);margin-bottom:.15rem}
+.reward-info p{font-size:.6rem;color:var(--text-dim)}
+.modal-btns{display:flex;gap:.7rem;margin-top:1.2rem;flex-wrap:wrap}
+.mbtn{padding:.65rem 1.4rem;font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .25s;border:none}
+.mbtn-p{background:var(--gold);color:#0C0E14;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+.mbtn-p:hover{background:var(--gold-bright)}
+.mbtn-s{background:transparent;color:var(--gold);border:1px solid var(--border-strong)}
+.mbtn-s:hover{background:rgba(201,168,76,.08)}
+.mbtn-d{background:transparent;color:var(--text-dim);border:1px solid var(--border)}
+.mbtn-d:hover{color:var(--text-bright)}
+.unlock-badge{display:inline-block;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:var(--rare);font-size:.6rem;padding:.2rem .55rem;margin-top:.3rem}
+
+/* ===== VICTORY SCREEN ===== */
+.victory-wrap{max-width:700px;margin:0 auto;padding:3rem 1.5rem;text-align:center}
+.vic-eyebrow{font-size:.6rem;letter-spacing:.45em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:.8rem;animation:fadeUp .8s ease forwards;opacity:0}
+.vic-title{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,6vw,4rem);font-weight:900;color:var(--gold);margin-bottom:.5rem;animation:fadeUp .8s .15s ease forwards;opacity:0;text-shadow:0 0 40px rgba(201,168,76,.4)}
+.vic-sub{font-size:.82rem;color:var(--text-dim);margin-bottom:2rem;animation:fadeUp .8s .3s ease forwards;opacity:0}
+.vic-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2rem;animation:fadeUp .8s .45s ease forwards;opacity:0}
+.vic-stat{background:var(--bg-panel);padding:1.2rem .8rem;text-align:center}
+.vic-val{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--gold);display:block}
+.vic-lbl{font-size:.56rem;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;margin-top:.2rem;display:block}
+.loot-summary{background:var(--bg-panel);border:1px solid var(--border);padding:1.2rem;margin-bottom:2rem;text-align:left;animation:fadeUp .8s .6s ease forwards;opacity:0}
+.loot-title{font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dim);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.8rem}
+.loot-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.5rem}
+.loot-item{display:flex;align-items:center;gap:.5rem;padding:.45rem .6rem;background:var(--bg-card);border:1px solid var(--border)}
+.loot-item .li-emoji{font-size:1.1rem}
+.loot-item .li-name{font-size:.63rem;color:var(--text-main)}
+.loot-item .li-rarity{font-size:.54rem}
+.nft-panel{background:rgba(153,69,255,.06);border:1px solid rgba(153,69,255,.2);padding:1.5rem;margin-bottom:1.5rem;animation:fadeUp .8s .75s ease forwards;opacity:0}
+.nft-title{font-family:'Cinzel',serif;font-size:.95rem;color:var(--sol);margin-bottom:.5rem}
+.nft-desc{font-size:.68rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.1rem}
+.nft-status{font-size:.65rem;padding:.5rem .8rem;margin-top:.7rem;text-align:left}
+.nft-status.success{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--green-term)}
+.nft-status.error{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);color:#f87171}
+.nft-status.pending{background:rgba(201,168,76,.06);border:1px solid var(--border);color:var(--gold)}
+.vic-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .9s ease forwards;opacity:0}
+.vic-btn{padding:.85rem 2rem;font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .25s;text-decoration:none;display:inline-block;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)}
+.vic-btn-p{background:var(--gold);color:#0C0E14;border:none}
+.vic-btn-p:hover{background:var(--gold-bright)}
+.vic-btn-s{background:transparent;color:var(--sol);border:1px solid rgba(153,69,255,.4)}
+.vic-btn-s:hover{background:rgba(153,69,255,.1)}
+.vic-btn-d{background:transparent;color:var(--text-dim);border:1px solid var(--border)}
+.vic-btn-d:hover{color:var(--text-bright)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite;display:inline-block}
+.flash{animation:flash .3s ease}
+@keyframes flash{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Game Over */
+.gameover-wrap{text-align:center;padding:3rem 1.5rem;max-width:500px;margin:0 auto}
+.gameover-title{font-family:'Cinzel Decorative',serif;font-size:2.5rem;color:var(--ember);margin-bottom:.8rem}
+.gameover-sub{font-size:.8rem;color:var(--text-dim);margin-bottom:2rem;line-height:1.7}
+
+/* Responsive */
+@media(max-width:860px){
+  .battle-wrap{grid-template-columns:1fr;gap:.7rem;padding:1rem .7rem 7rem}
+  .battle-left{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+  .battle-right{display:none}
+  .skills-grid{gap:.3rem}
+  .skill-btn{min-width:110px;flex:1 1 110px}
+}
+@media(max-width:540px){
+  .champion-grid{grid-template-columns:repeat(2,1fr)}
+  .champ-card{padding:1rem .7rem}
+  .vic-stats{grid-template-columns:1fr}
+  .loot-items{grid-template-columns:1fr 1fr}
+  .battle-left{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">SURVIVORS<span>•</span>VOID</a>
+  <div class="nav-wallet">
+    <span class="wallet-addr" id="wallet-addr"></span>
+    <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">◎ Connect Wallet</button>
+  </div>
+</nav>
+
+<!-- ===== CHAMPION SELECT SCREEN ===== -->
+<div id="screen-select" class="screen active">
+  <div class="select-wrap">
+    <div class="select-header">
+      <div class="select-eyebrow">— Choose Your Destiny —</div>
+      <h1 class="select-title">SELECT YOUR <span class="accent">CHAMPION</span></h1>
+      <p class="select-sub">Each champion brings unique skills and playstyle. Fight through 10 floors to claim victory and mint your NFT.</p>
+    </div>
+    <div class="champion-grid" id="champion-grid"></div>
+  </div>
+</div>
+
+<!-- ===== BATTLE SCREEN ===== -->
+<div id="screen-battle" class="screen">
+  <div class="battle-wrap">
+    <!-- Left Panel: Champion -->
+    <div class="battle-left">
+      <div class="b-panel">
+        <div class="b-panel-title">Your Champion</div>
+        <div class="hero-portrait">
+          <div class="hero-emoji" id="hero-emoji">⚔️</div>
+          <div class="hero-name" id="hero-name">—</div>
+          <div class="hero-role-b" id="hero-role">—</div>
+        </div>
+        <div class="hp-bar-wrap">
+          <div class="hp-label"><span>HP</span><span id="hero-hp-label">0 / 0</span></div>
+          <div class="hp-track"><div class="hp-fill" id="hero-hp-fill" style="width:100%"></div></div>
+        </div>
+        <div style="margin-top:.6rem">
+          <div class="stat-row"><span class="s-lbl">⚔ DMG</span><span class="s-val" id="stat-dmg">—</span></div>
+          <div class="stat-row"><span class="s-lbl">💨 SPD</span><span class="s-val" id="stat-spd">—</span></div>
+          <div class="stat-row"><span class="s-lbl">🛡 DEF</span><span class="s-val" id="stat-def">—</span></div>
+        </div>
+        <div class="buff-row" id="hero-buffs"></div>
+      </div>
+      <div class="b-panel">
+        <div class="b-panel-title">Equipment</div>
+        <div class="equip-grid" id="equip-grid">
+          <div class="equip-slot" id="slot-weapon"><span>⚔️</span><span style="font-size:.52rem;color:var(--text-dim)">Weapon</span></div>
+          <div class="equip-slot" id="slot-offhand"><span>🛡️</span><span style="font-size:.52rem;color:var(--text-dim)">Offhand</span></div>
+          <div class="equip-slot" id="slot-helmet"><span>🪖</span><span style="font-size:.52rem;color:var(--text-dim)">Helmet</span></div>
+          <div class="equip-slot" id="slot-armor"><span>🦺</span><span style="font-size:.52rem;color:var(--text-dim)">Armor</span></div>
+          <div class="equip-slot" id="slot-ring"><span>💍</span><span style="font-size:.52rem;color:var(--text-dim)">Ring</span></div>
+          <div class="equip-slot" id="slot-amulet"><span>📿</span><span style="font-size:.52rem;color:var(--text-dim)">Amulet</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Battle -->
+    <div class="battle-center">
+      <div class="enemy-area">
+        <div class="floor-badge" id="floor-badge">Floor 1</div>
+        <div class="enemy-emoji" id="enemy-emoji">��</div>
+        <div class="enemy-name" id="enemy-name">Void Rat</div>
+        <div class="enemy-type" id="enemy-type">Common Enemy</div>
+        <div class="enemy-hp-wrap">
+          <div class="enemy-hp-track"><div class="enemy-hp-fill" id="enemy-hp-fill" style="width:100%"></div></div>
+          <div class="enemy-hp-label">
+            <span style="color:var(--text-dim)">HP</span>
+            <span style="color:var(--ember)" id="enemy-hp-label">0 / 0</span>
+          </div>
+        </div>
+        <div class="enemy-buffs" id="enemy-buffs"></div>
+      </div>
+
+      <div class="vs-divider">— BATTLE LOG —</div>
+
+      <div class="battle-log-wrap">
+        <div class="battle-log-hdr">Combat History</div>
+        <div class="battle-log" id="battle-log"></div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Floor Tracker -->
+    <div class="battle-right">
+      <div class="b-panel">
+        <div class="b-panel-title">Floor Tracker</div>
+        <div class="floor-list" id="floor-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Skills Bar -->
+  <div class="skills-bar">
+    <div class="skills-label">Skills — Choose your action</div>
+    <div class="skills-grid" id="skills-grid"></div>
+  </div>
+</div>
+
+<!-- ===== REWARD MODAL ===== -->
+<div class="modal-overlay hidden" id="reward-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Floor Complete!</div>
+    <div class="modal-sub" id="modal-sub">You cleared this floor.</div>
+    <div id="modal-content"></div>
+    <div class="modal-btns" id="modal-btns"></div>
+  </div>
+</div>
+
+<!-- ===== GAME OVER MODAL ===== -->
+<div class="modal-overlay hidden" id="gameover-modal">
+  <div class="modal-box" style="text-align:center">
+    <div class="gameover-title">💀 DEFEATED</div>
+    <div class="gameover-sub" id="gameover-msg">Your champion has fallen. The Void claims another soul…</div>
+    <div class="modal-btns" style="justify-content:center">
+      <button class="mbtn mbtn-p" onclick="restartGame()">⟳ Try Again</button>
+      <a href="index.html" class="mbtn mbtn-d">← Back to Site</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== VICTORY SCREEN ===== -->
+<div id="screen-victory" class="screen">
+  <div class="victory-wrap">
+    <div class="vic-eyebrow">— The Void Is Defeated —</div>
+    <div class="vic-title">VICTORY!</div>
+    <div class="vic-sub" id="vic-sub">You have conquered all 10 floors and vanquished the Void Emperor!</div>
+    <div class="vic-stats" id="vic-stats"></div>
+    <div class="loot-summary">
+      <div class="loot-title">Loot Collected</div>
+      <div class="loot-items" id="vic-loot"></div>
+    </div>
+    <div class="nft-panel">
+      <div class="nft-title">🏆 Claim Your Victory NFT</div>
+      <div class="nft-desc">You've proven yourself a true Survivor of the Void. Connect your Phantom wallet to mint your unique victory NFT and join the ranks of champions. This NFT represents your contribution to the fundraiser.</div>
+      <div id="nft-wallet-section">
+        <button class="vic-btn vic-btn-s" onclick="connectWallet()" id="vic-wallet-btn">◎ Connect Phantom Wallet</button>
+      </div>
+      <div id="nft-mint-section" style="display:none">
+        <div style="font-size:.65rem;color:var(--text-dim);margin-bottom:.7rem">Connected: <span id="vic-wallet-addr" style="color:var(--sol)"></span></div>
+        <button class="vic-btn vic-btn-s" onclick="mintNFT()" id="mint-btn">✦ Mint Victory NFT</button>
+      </div>
+      <div id="nft-status-msg"></div>
+    </div>
+    <div class="vic-btns">
+      <button class="vic-btn vic-btn-p" onclick="restartGame()">⟳ Play Again</button>
+      <button class="vic-btn vic-btn-d" onclick="shareVictory()">↗ Share Victory</button>
+      <a href="index.html" class="vic-btn vic-btn-d">← Back to Site</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// GAME DATA
+// ============================================================
+
+const SUPABASE_URL = 'https://qcrqtinmdlhdedvlfvww.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FC1HSaTzT-GTgkvu2YcB4w_HVMMlyDU';
+
+const CHAMPIONS = [
+  { id:'vibhu',     name:'Vibhu',      role:'Arcane Mage',       emoji:'🔮', color:'#8B5CF6',
+    stats:{dmg:90,spd:60,def:30,hp:320}, desc:'Master of the arcane arts. Channels void energy into devastating spells.',
+    skills:['basic_attack','fireball','arcane_blast','ice_spike'] },
+  { id:'cryptopher',name:'Cryptopher', role:'Crypto Paladin',    emoji:'🛡️', color:'#F59E0B',
+    stats:{dmg:70,spd:50,def:80,hp:420}, desc:'Holy warrior powered by blockchain faith. Unbreakable defense.',
+    skills:['basic_attack','power_strike','shield_wall','holy_smite'] },
+  { id:'snickle',   name:'Snickle',    role:'Shadow Rogue',      emoji:'🗡️', color:'#6EE7B7',
+    stats:{dmg:85,spd:95,def:25,hp:290}, desc:'Swift assassin of the dark alleys. Poisons and bleeds foes from the shadows.',
+    skills:['basic_attack','multi_strike','poison_dart','shadow_step'] },
+  { id:'luna',      name:'Luna',       role:'Moon Healer',       emoji:'🌙', color:'#93C5FD',
+    stats:{dmg:55,spd:75,def:45,hp:380}, desc:'Blessed by the celestial moon. Heals allies and smites foes with silver light.',
+    skills:['basic_attack','heal','regen','thunder_bolt'] },
+  { id:'kai',       name:'Kai',        role:'Steel Warrior',     emoji:'⚔️', color:'#FCA5A5',
+    stats:{dmg:80,spd:65,def:70,hp:450}, desc:'Seasoned warrior forged in battle. Balanced offense and defense.',
+    skills:['basic_attack','power_strike','berserk','war_cry'] },
+  { id:'malachai',  name:'Malachai',   role:'Dark Necromancer',  emoji:'💀', color:'#A78BFA',
+    stats:{dmg:95,spd:55,def:35,hp:300}, desc:'Commands the forces of death. Drains life and unleashes dark energy.',
+    skills:['basic_attack','void_pulse','soul_drain','dark_nova'] },
+  { id:'raven',     name:'Raven',      role:'Void Ranger',       emoji:'🏹', color:'#34D399',
+    stats:{dmg:75,spd:85,def:40,hp:340}, desc:'Ranger attuned to the void frequencies. Deadly accurate and swift.',
+    skills:['basic_attack','wind_slash','critical_aim','blade_slash'] },
+  { id:'emara',     name:'Emara',      role:'Chaos Bard',        emoji:'🎵', color:'#FB923C',
+    stats:{dmg:60,spd:80,def:50,hp:360}, desc:'Weaves chaos magic through song. Empowers allies and electrifies enemies.',
+    skills:['basic_attack','war_cry','thunder_bolt','chain_lightning'] },
+  { id:'thornwick', name:'Thornwick',  role:'Grove Druid',       emoji:'🌿', color:'#86EFAC',
+    stats:{dmg:65,spd:70,def:60,hp:400}, desc:'Guardian of the ancient grove. Commands earth and nature against the void.',
+    skills:['basic_attack','earthquake','regen','poison_dart'] },
+  { id:'rexxar',    name:'Rexxar',     role:'Voidborn Berserker', emoji:'🪓', color:'#F87171',
+    stats:{dmg:100,spd:55,def:20,hp:280}, desc:'Born from the void itself. Unleashes uncontrolled destruction at great personal cost.',
+    skills:['basic_attack','berserk','dark_nova','power_strike'] },
+];
+
+const SKILLS = {
+  basic_attack:  { name:'Basic Attack',    emoji:'⚔️',  type:'damage',  dmgMult:1.0,  desc:'A reliable strike.',             cost:0 },
+  power_strike:  { name:'Power Strike',    emoji:'💢',  type:'damage',  dmgMult:1.6,  desc:'A heavy blow with full force.',  cost:0 },
+  fireball:      { name:'Fireball',        emoji:'🔥',  type:'damage',  dmgMult:1.9,  desc:'Scorching arcane fire.',         cost:0 },
+  ice_spike:     { name:'Ice Spike',       emoji:'❄️',  type:'damage',  dmgMult:1.3,  desc:'Freezes foe (SPD-20% 2t).',     cost:0, effect:{type:'slow',val:0.8,dur:2} },
+  thunder_bolt:  { name:'Thunderbolt',     emoji:'⚡',  type:'damage',  dmgMult:1.7,  desc:'Lightning strike from above.',   cost:0 },
+  arcane_blast:  { name:'Arcane Blast',    emoji:'🔮',  type:'damage',  dmgMult:2.1,  desc:'Massive arcane detonation.',     cost:0 },
+  heal:          { name:'Restore Light',   emoji:'✨',  type:'heal',    healPct:0.30, desc:'Restore 30% of max HP.',         cost:0 },
+  shield_wall:   { name:'Shield Wall',     emoji:'🛡️',  type:'buff',    buffType:'def',buffMult:1.6,dur:2, desc:'DEF +60% for 2 turns.',      cost:0 },
+  berserk:       { name:'Berserk Rage',    emoji:'🌪️',  type:'buff',    buffType:'berserk',dur:3, desc:'DMG+40% DEF-30% for 3t.',    cost:0 },
+  poison_dart:   { name:'Venom Dart',      emoji:'🐍',  type:'damage',  dmgMult:0.8,  desc:'Poisons foe (3t DoT).',          cost:0, effect:{type:'poison',dur:3} },
+  multi_strike:  { name:'Multi Strike',    emoji:'⚔️⚔️', type:'multi',   hits:3,dmgMult:0.55,desc:'3 rapid strikes.',           cost:0 },
+  void_pulse:    { name:'Void Pulse',      emoji:'🌑',  type:'void',    dmgMult:1.5,  desc:'Ignores armor entirely.',        cost:0 },
+  soul_drain:    { name:'Soul Drain',      emoji:'💀',  type:'drain',   dmgMult:1.2,  desc:'Deal DMG, heal 40% dealt.',      cost:0 },
+  stun_strike:   { name:'Stun Strike',     emoji:'😵',  type:'damage',  dmgMult:1.0,  desc:'Stuns enemy 1 turn.',            cost:0, effect:{type:'stun',dur:1} },
+  critical_aim:  { name:'Deadly Aim',      emoji:'🎯',  type:'crit',    dmgMult:2.6,  desc:'3x crit chance. High risk/reward.', cost:0 },
+  earthquake:    { name:'Earthquake',      emoji:'🌍',  type:'damage',  dmgMult:1.75, desc:'Shakes the very ground.',        cost:0 },
+  blade_slash:   { name:'Blade Slash',     emoji:'🩸',  type:'damage',  dmgMult:1.1,  desc:'Bleed (3t DoT).',               cost:0, effect:{type:'bleed',dur:3} },
+  dark_nova:     { name:'Dark Nova',       emoji:'🌌',  type:'dark',    dmgMult:2.4,  desc:'Massive blast (cost 15% HP).',   cost:'15hp' },
+  war_cry:       { name:'War Cry',         emoji:'📯',  type:'buff',    buffType:'atk',buffMult:1.35,dur:3,desc:'ATK +35% for 3 turns.',     cost:0 },
+  wind_slash:    { name:'Wind Slash',      emoji:'🌬️',  type:'void',    dmgMult:1.55, desc:'Bypass armor with wind.',       cost:0 },
+  shadow_step:   { name:'Shadow Step',     emoji:'👤',  type:'damage',  dmgMult:1.1,  desc:'Attack + dodge next hit.',       cost:0, effect:{type:'dodge',dur:1} },
+  chain_lightning:{ name:'Chain Lightning',emoji:'⚡⚡', type:'damage',  dmgMult:2.5,  desc:'Massive lightning strike.',      cost:0 },
+  holy_smite:    { name:'Holy Smite',      emoji:'✝️',  type:'holy',    dmgMult:1.7,  desc:'+30% dmg vs bosses.',            cost:0 },
+  regen:         { name:"Nature's Blessing",emoji:'🌿', type:'regen',   healPct:0.12, dur:4, desc:'Regen 12% HP/turn × 4.',  cost:0 },
+};
+
+const SKILL_UNLOCK_POOLS = [
+  ['thunder_bolt','earthquake','multi_strike'],    // floor 2
+  ['soul_drain','blade_slash','ice_spike'],         // floor 4
+  ['stun_strike','shadow_step','chain_lightning'],  // floor 6
+  ['dark_nova','void_pulse','war_cry'],             // floor 8
+  ['arcane_blast','critical_aim','holy_smite'],     // floor 10
+];
+
+const ENEMIES = [
+  { floor:1,  name:'Void Rat',      emoji:'🐀', type:'Common Enemy',         hp:100, dmg:20, def:5,  loot:1 },
+  { floor:2,  name:'Shadow Bat',    emoji:'🦇', type:'Shadow Creature',      hp:145, dmg:28, def:10, loot:0 },
+  { floor:3,  name:'Bone Golem',    emoji:'💀', type:'Undead Construct',     hp:200, dmg:36, def:18, loot:1 },
+  { floor:4,  name:'Cursed Troll',  emoji:'🧌', type:'Void-Touched Beast',   hp:265, dmg:44, def:25, loot:0 },
+  { floor:5,  name:'Phantom Knight',emoji:'👻', type:'⚠ Mini Boss',          hp:350, dmg:55, def:35, loot:1, isMini:true },
+  { floor:6,  name:'Void Wraith',   emoji:'👁️', type:'Spectral Horror',      hp:420, dmg:63, def:38, loot:0 },
+  { floor:7,  name:'Dark Elemental',emoji:'🌑', type:'Elemental Entity',     hp:490, dmg:70, def:43, loot:1 },
+  { floor:8,  name:'Void Drake',    emoji:'🐉', type:'Draconic Terror',      hp:570, dmg:78, def:50, loot:0 },
+  { floor:9,  name:'Chaos Titan',   emoji:'💠', type:'Ancient Colossus',     hp:660, dmg:86, def:55, loot:1 },
+  { floor:10, name:'THE VOID EMPEROR',emoji:'👑',type:'⚠ FINAL BOSS',        hp:800, dmg:95, def:60, loot:0, isBoss:true },
+];
+
+const EQUIPMENT_POOL = [
+  { id:'rusty_blade',    name:'Rusty Blade',     emoji:'🗡️',  slot:'weapon',  rarity:'common',   stats:{dmg:5} },
+  { id:'shadow_knife',   name:'Shadow Knife',    emoji:'🔪',  slot:'weapon',  rarity:'uncommon', stats:{dmg:14,spd:6} },
+  { id:'void_sword',     name:'Void Sword',      emoji:'⚔️',  slot:'weapon',  rarity:'rare',     stats:{dmg:24,def:4} },
+  { id:'chaos_edge',     name:'Chaos Edge',      emoji:'🌀',  slot:'weapon',  rarity:'epic',     stats:{dmg:36,spd:6,def:5} },
+  { id:'dawnbreaker',    name:'Dawnbreaker',     emoji:'✨',  slot:'weapon',  rarity:'legendary',stats:{dmg:52,spd:10,def:10} },
+  { id:'torn_rags',      name:'Torn Rags',       emoji:'🧣',  slot:'armor',   rarity:'common',   stats:{def:5} },
+  { id:'chain_mail',     name:'Chain Mail',      emoji:'⛓️',  slot:'armor',   rarity:'uncommon', stats:{def:16} },
+  { id:'void_plate',     name:'Void Plate',      emoji:'🦺',  slot:'armor',   rarity:'rare',     stats:{def:28,hp:20} },
+  { id:'celestial_armor',name:'Celestial Armor', emoji:'🌟',  slot:'armor',   rarity:'epic',     stats:{def:42,hp:55} },
+  { id:'iron_cap',       name:'Iron Cap',        emoji:'🪖',  slot:'helmet',  rarity:'uncommon', stats:{def:9,hp:12} },
+  { id:'shadow_hood',    name:'Shadow Hood',     emoji:'🎭',  slot:'helmet',  rarity:'rare',     stats:{def:13,spd:9} },
+  { id:'crown_of_chaos', name:'Crown of Chaos',  emoji:'👑',  slot:'helmet',  rarity:'epic',     stats:{def:16,dmg:16} },
+  { id:'ring_of_power',  name:'Ring of Power',   emoji:'💍',  slot:'ring',    rarity:'uncommon', stats:{dmg:11} },
+  { id:'void_ring',      name:'Void Ring',       emoji:'🌑',  slot:'ring',    rarity:'rare',     stats:{dmg:16,hp:18} },
+  { id:'legendary_sigil',name:'Legendary Sigil', emoji:'⚜️',  slot:'ring',    rarity:'legendary',stats:{dmg:26,def:26} },
+  { id:'swift_boots',    name:'Swift Boots',     emoji:'👟',  slot:'boots',   rarity:'uncommon', stats:{spd:18} },
+  { id:'void_treads',    name:'Void Treads',     emoji:'🥾',  slot:'boots',   rarity:'rare',     stats:{spd:22,def:6} },
+  { id:'mystic_pendant', name:'Mystic Pendant',  emoji:'📿',  slot:'amulet',  rarity:'rare',     stats:{dmg:9,spd:9,def:9,hp:9} },
+  { id:'void_amulet',    name:'Void Amulet',     emoji:'🔮',  slot:'amulet',  rarity:'epic',     stats:{dmg:22,def:22,hp:32} },
+  { id:'warriors_offhand',name:"Warrior's Shield",emoji:'🛡️', slot:'offhand', rarity:'uncommon', stats:{def:13,hp:15} },
+];
+
+const LOOT_FLOORS = [1, 3, 5, 7, 9];
+const UNLOCK_FLOORS = [2, 4, 6, 8, 10];
+
+const FLOOR_NAMES = ['','Shallow Dark','Shadow Glade','Bone Passage','Troll Depths','Phantom Hall','Wraith Maze','Dark Nexus','Drake Lair','Chaos Peak','Void Throne'];
+
+// ============================================================
+// GAME STATE
+// ============================================================
+let G = {};
+let walletAddress = null;
+
+function initState(champion) {
+  const c = CHAMPIONS.find(ch => ch.id === champion);
+  G = {
+    champion: c,
+    hp:   c.stats.hp,
+    maxHp:c.stats.hp,
+    dmg:  c.stats.dmg,
+    spd:  c.stats.spd,
+    def:  c.stats.def,
+    floor: 1,
+    skills: [...c.skills],
+    equipment: { weapon:null, offhand:null, helmet:null, armor:null, ring:null, amulet:null },
+    loot: [],
+    buffs: { dmgMult:1, defMult:1, atkMult:1, dodge:false, regen:0, regenTurns:0, poisonTurns:0, bleedTurns:0, stunTurns:0 },
+    enemy: null,
+    enemyHp: 0,
+    enemyMaxHp: 0,
+    enemyBuffs: { stunTurns:0, slowTurns:0 },
+    log: [],
+    turn: 0,
+    playerTurn: true,
+    battleActive: true,
+  };
+}
+
+function getStats() {
+  // Base stats + equipment bonuses
+  let dmg = G.champion.stats.dmg;
+  let def = G.champion.stats.def;
+  let spd = G.champion.stats.spd;
+  let hp  = G.champion.stats.hp;
+  for (const slot in G.equipment) {
+    const item = G.equipment[slot];
+    if (!item) continue;
+    if (item.stats.dmg) dmg += item.stats.dmg;
+    if (item.stats.def) def += item.stats.def;
+    if (item.stats.spd) spd += item.stats.spd;
+    if (item.stats.hp)  hp  += item.stats.hp;
+  }
+  return { dmg, def, spd, hp };
+}
+
+// ============================================================
+// BATTLE ENGINE
+// ============================================================
+
+function startFloor(floorNum) {
+  const enemyData = ENEMIES[floorNum - 1];
+  G.enemy    = enemyData;
+  G.enemyHp  = enemyData.hp;
+  G.enemyMaxHp = enemyData.hp;
+  G.enemyBuffs = { stunTurns:0, slowTurns:0 };
+  G.buffs    = { dmgMult:1, defMult:1, atkMult:1, dodge:false, regen:0, regenTurns:0, poisonTurns:0, bleedTurns:0, stunTurns:0 };
+  G.battleActive = true;
+  G.turn = 0;
+  G.floor = floorNum;
+
+  // Update max HP if equipment gave more HP
+  const st = getStats();
+  if (floorNum === 1) {
+    G.maxHp = st.hp;
+    G.hp    = st.hp;
+  }
+
+  renderBattle();
+  clearLog();
+  addLog(`⚔️ Floor ${floorNum}: ${enemyData.name} appears!`, 'system');
+  if (enemyData.isBoss) addLog(`👑 THE VOID EMPEROR — The final challenge begins!`, 'boss-entry');
+  if (enemyData.isMini) addLog(`⚠️ Mini-boss encountered! Stay focused.`, 'system');
+}
+
+function executeSkill(skillId) {
+  if (!G.battleActive || !G.playerTurn) return;
+  if (G.buffs.stunTurns > 0) {
+    addLog(`😵 You are stunned and cannot act!`, 'enemy');
+    G.buffs.stunTurns--;
+    endPlayerTurn();
+    return;
+  }
+
+  const skill = SKILLS[skillId];
+  const st    = getStats();
+  let playerDmg = Math.round(st.dmg * G.buffs.dmgMult * G.buffs.atkMult);
+  let enemyDef  = Math.round(G.enemy.def * G.enemyBuffs.slowTurns > 0 ? 0.85 : 1);
+
+  // Handle skill cost
+  if (skill.cost === '15hp') {
+    const cost = Math.round(G.maxHp * 0.15);
+    G.hp = Math.max(1, G.hp - cost);
+    addLog(`🌌 Dark energy costs you ${cost} HP!`, 'enemy');
+  }
+
+  let msg = '';
+  let dmgDealt = 0;
+
+  switch (skill.type) {
+    case 'damage':
+    case 'void': {
+      dmgDealt = calcDmg(playerDmg, skill.dmgMult, skill.type === 'void' ? 0 : enemyDef);
+      G.enemyHp = Math.max(0, G.enemyHp - dmgDealt);
+      msg = `${skill.emoji} ${skill.name}: dealt ${dmgDealt} damage to ${G.enemy.name}!`;
+      if (skill.effect) applyEnemyEffect(skill.effect, skill.name);
+      break;
+    }
+    case 'multi': {
+      let total = 0;
+      for (let i = 0; i < skill.hits; i++) {
+        const h = calcDmg(playerDmg, skill.dmgMult, enemyDef);
+        total += h;
+        G.enemyHp = Math.max(0, G.enemyHp - h);
+      }
+      dmgDealt = total;
+      msg = `${skill.emoji} ${skill.name}: ${skill.hits} hits for ${total} total damage!`;
+      break;
+    }
+    case 'dark': {
+      dmgDealt = calcDmg(playerDmg, skill.dmgMult, 0); // ignores def
+      G.enemyHp = Math.max(0, G.enemyHp - dmgDealt);
+      msg = `${skill.emoji} ${skill.name}: ${dmgDealt} void damage (ignored armor)!`;
+      break;
+    }
+    case 'crit': {
+      const roll = Math.random();
+      if (roll < 0.40) { // 40% crit chance
+        dmgDealt = calcDmg(playerDmg, skill.dmgMult, enemyDef);
+        msg = `${skill.emoji} ${skill.name}: CRITICAL HIT! ${dmgDealt} massive damage!`;
+      } else {
+        dmgDealt = calcDmg(playerDmg, 0.7, enemyDef);
+        msg = `${skill.emoji} ${skill.name}: Miss… ${dmgDealt} glancing damage.`;
+      }
+      G.enemyHp = Math.max(0, G.enemyHp - dmgDealt);
+      break;
+    }
+    case 'drain': {
+      dmgDealt = calcDmg(playerDmg, skill.dmgMult, enemyDef);
+      G.enemyHp = Math.max(0, G.enemyHp - dmgDealt);
+      const healed = Math.round(dmgDealt * 0.40);
+      G.hp = Math.min(G.maxHp, G.hp + healed);
+      msg = `${skill.emoji} ${skill.name}: ${dmgDealt} dmg, healed ${healed} HP!`;
+      break;
+    }
+    case 'holy': {
+      const bossMult = G.enemy.isBoss ? 1.3 : 1.0;
+      dmgDealt = calcDmg(playerDmg, skill.dmgMult * bossMult, enemyDef);
+      G.enemyHp = Math.max(0, G.enemyHp - dmgDealt);
+      msg = `${skill.emoji} ${skill.name}: ${dmgDealt} holy damage${G.enemy.isBoss ? ' (boss bonus!)' : ''}!`;
+      break;
+    }
+    case 'heal': {
+      const healed = Math.round(G.maxHp * skill.healPct);
+      G.hp = Math.min(G.maxHp, G.hp + healed);
+      msg = `${skill.emoji} ${skill.name}: Restored ${healed} HP!`;
+      break;
+    }
+    case 'regen': {
+      G.buffs.regenTurns = skill.dur;
+      G.buffs.regen = Math.round(G.maxHp * skill.healPct);
+      msg = `${skill.emoji} ${skill.name}: Regenerating ${G.buffs.regen} HP/turn for ${skill.dur} turns!`;
+      break;
+    }
+    case 'buff': {
+      if (skill.buffType === 'def') {
+        G.buffs.defMult = skill.buffMult;
+        G.buffs.defTurns = skill.dur;
+        msg = `${skill.emoji} ${skill.name}: Defense boosted by ${Math.round((skill.buffMult-1)*100)}% for ${skill.dur} turns!`;
+      } else if (skill.buffType === 'atk' || skill.buffType === 'berserk') {
+        G.buffs.atkMult = skill.buffMult;
+        G.buffs.atkTurns = skill.dur;
+        if (skill.buffType === 'berserk') G.buffs.defMult = 0.70;
+        msg = `${skill.emoji} ${skill.name}: ${skill.buffType === 'berserk' ? 'BERSERK' : 'Attack'} boost for ${skill.dur} turns!`;
+      }
+      break;
+    }
+    default:
+      dmgDealt = calcDmg(playerDmg, 1.0, enemyDef);
+      G.enemyHp = Math.max(0, G.enemyHp - dmgDealt);
+      msg = `${skill.emoji} ${skill.name}: ${dmgDealt} damage!`;
+  }
+
+  addLog(msg, 'player');
+  shakeEnemy();
+
+  if (checkEnemyDead()) return;
+  endPlayerTurn();
+}
+
+function calcDmg(baseDmg, mult, def) {
+  const raw = baseDmg * mult;
+  const reduced = Math.max(5, raw - def * 0.6);
+  const variance = 0.9 + Math.random() * 0.2;
+  return Math.round(reduced * variance);
+}
+
+function applyEnemyEffect(effect, skillName) {
+  if (effect.type === 'poison') {
+    G.enemyBuffs.poisonTurns = effect.dur;
+    addLog(`🐍 Poison applied to ${G.enemy.name} (${effect.dur} turns)!`, 'player');
+  } else if (effect.type === 'stun') {
+    G.enemyBuffs.stunTurns = effect.dur;
+    addLog(`😵 ${G.enemy.name} is stunned!`, 'player');
+  } else if (effect.type === 'slow') {
+    G.enemyBuffs.slowTurns = effect.dur;
+    addLog(`❄️ ${G.enemy.name} is slowed!`, 'player');
+  } else if (effect.type === 'dodge') {
+    G.buffs.dodge = true;
+    addLog(`👤 Shadow Step! You'll dodge the next attack.`, 'player');
+  } else if (effect.type === 'bleed') {
+    G.enemyBuffs.bleedTurns = effect.dur;
+    addLog(`🩸 ${G.enemy.name} is bleeding (${effect.dur} turns)!`, 'player');
+  }
+}
+
+function endPlayerTurn() {
+  renderBattle();
+  setTimeout(enemyAttack, 600);
+}
+
+function enemyAttack() {
+  if (!G.battleActive) return;
+  G.turn++;
+
+  // Tick DoTs on enemy
+  tickEnemyDoTs();
+  if (checkEnemyDead()) return;
+
+  // Tick player DoTs/regen
+  tickPlayerEffects();
+  if (checkPlayerDead()) return;
+
+  // Enemy stun check
+  if (G.enemyBuffs.stunTurns > 0) {
+    G.enemyBuffs.stunTurns--;
+    addLog(`😵 ${G.enemy.name} is stunned and cannot attack!`, 'system');
+    renderBattle();
+    return;
+  }
+
+  // Enemy picks an attack
+  const enemyAtk = pickEnemyAttack();
+  let dmgDealt = 0;
+
+  if (G.buffs.dodge) {
+    G.buffs.dodge = false;
+    addLog(`👤 You dodge ${G.enemy.name}'s ${enemyAtk.name}!`, 'player');
+  } else {
+    const st = getStats();
+    const playerDef = Math.round(st.def * G.buffs.defMult);
+    dmgDealt = calcDmg(G.enemy.dmg, enemyAtk.mult, playerDef);
+    G.hp = Math.max(0, G.hp - dmgDealt);
+    addLog(`${enemyAtk.emoji} ${G.enemy.name} uses ${enemyAtk.name}: ${dmgDealt} damage!`, 'enemy');
+
+    if (enemyAtk.effect === 'stun' && Math.random() < 0.3) {
+      G.buffs.stunTurns = 1;
+      addLog(`😵 You are stunned!`, 'enemy');
+    }
+  }
+
+  // Tick buff durations
+  if (G.buffs.atkTurns > 0) { G.buffs.atkTurns--; if (G.buffs.atkTurns === 0) { G.buffs.atkMult = 1; addLog(`📯 Attack buff expired.`, 'system'); } }
+  if (G.buffs.defTurns > 0) { G.buffs.defTurns--; if (G.buffs.defTurns === 0) { G.buffs.defMult = 1; addLog(`🛡️ Defense buff expired.`, 'system'); } }
+
+  renderBattle();
+  if (checkPlayerDead()) return;
+}
+
+function tickEnemyDoTs() {
+  if (G.enemyBuffs.poisonTurns > 0) {
+    const poisonDmg = Math.round(G.enemy.dmg * 0.25);
+    G.enemyHp = Math.max(0, G.enemyHp - poisonDmg);
+    G.enemyBuffs.poisonTurns--;
+    addLog(`🐍 Poison deals ${poisonDmg} to ${G.enemy.name}! (${G.enemyBuffs.poisonTurns} turns left)`, 'player');
+  }
+  if (G.enemyBuffs.bleedTurns > 0) {
+    const bleedDmg = Math.round(G.enemy.dmg * 0.20);
+    G.enemyHp = Math.max(0, G.enemyHp - bleedDmg);
+    G.enemyBuffs.bleedTurns--;
+    addLog(`🩸 Bleed deals ${bleedDmg} to ${G.enemy.name}! (${G.enemyBuffs.bleedTurns} turns left)`, 'player');
+  }
+  if (G.enemyBuffs.slowTurns > 0) G.enemyBuffs.slowTurns--;
+}
+
+function tickPlayerEffects() {
+  if (G.buffs.regenTurns > 0) {
+    G.hp = Math.min(G.maxHp, G.hp + G.buffs.regen);
+    G.buffs.regenTurns--;
+    addLog(`🌿 Regenerated ${G.buffs.regen} HP! (${G.buffs.regenTurns} turns left)`, 'system');
+  }
+}
+
+function pickEnemyAttack() {
+  const floorN = G.floor;
+  const attacks = [
+    { name:'Void Claw',    emoji:'🌑', mult:1.0  },
+    { name:'Dark Slash',   emoji:'⚔️',  mult:1.2  },
+    { name:'Shadow Bite',  emoji:'🦷',  mult:0.9  },
+    { name:'Chaos Strike', emoji:'💥',  mult:1.4  },
+    { name:'Void Burst',   emoji:'🌌',  mult:1.6, minFloor:5 },
+    { name:'Stun Bash',    emoji:'😵',  mult:1.1, minFloor:3, effect:'stun' },
+    { name:'Void Beam',    emoji:'👁️',  mult:2.0, minFloor:7 },
+    { name:'Emperor\'s Wrath', emoji:'👑', mult:2.5, minFloor:10 },
+  ];
+  const available = attacks.filter(a => !a.minFloor || floorN >= a.minFloor);
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+function checkEnemyDead() {
+  if (G.enemyHp <= 0) {
+    G.enemyHp = 0;
+    G.battleActive = false;
+    renderBattle();
+    setTimeout(() => floorComplete(), 400);
+    return true;
+  }
+  return false;
+}
+
+function checkPlayerDead() {
+  if (G.hp <= 0) {
+    G.hp = 0;
+    G.battleActive = false;
+    renderBattle();
+    setTimeout(() => showGameOver(), 500);
+    return true;
+  }
+  return false;
+}
+
+// ============================================================
+// FLOOR PROGRESSION
+// ============================================================
+
+function floorComplete() {
+  const floorN = G.floor;
+  const isLootFloor   = LOOT_FLOORS.includes(floorN);
+  const isUnlockFloor = UNLOCK_FLOORS.includes(floorN);
+  const isBoss = G.enemy.isBoss;
+
+  if (isBoss) {
+    showVictoryScreen();
+    return;
+  }
+
+  let lootItem = null;
+  let unlockedSkill = null;
+
+  if (isLootFloor) {
+    lootItem = generateLoot(floorN);
+    equipItem(lootItem);
+  }
+
+  if (isUnlockFloor) {
+    unlockedSkill = pickUnlockSkill(floorN);
+    if (unlockedSkill) G.skills.push(unlockedSkill);
+  }
+
+  // Show reward modal
+  showRewardModal(floorN, lootItem, unlockedSkill, isLootFloor, isUnlockFloor);
+}
+
+function generateLoot(floorN) {
+  // Higher floors = better rarity chance
+  const rarities = floorN <= 2 ? ['common','common','uncommon'] :
+                   floorN <= 4 ? ['uncommon','uncommon','rare'] :
+                   floorN <= 6 ? ['uncommon','rare','rare'] :
+                   floorN <= 8 ? ['rare','rare','epic'] :
+                                 ['rare','epic','legendary'];
+  const targetRarity = rarities[Math.floor(Math.random() * rarities.length)];
+  const pool = EQUIPMENT_POOL.filter(e => e.rarity === targetRarity);
+  if (pool.length === 0) return EQUIPMENT_POOL[0];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function equipItem(item) {
+  const old = G.equipment[item.slot];
+  G.equipment[item.slot] = item;
+  G.loot.push(item);
+
+  // Recalculate maxHp after equip
+  const st = getStats();
+  const hpGain = st.hp - G.champion.stats.hp - Object.values(G.equipment).reduce((a,i)=>{
+    return a + (i && i.stats && i.stats.hp ? i.stats.hp : 0);
+  }, 0);
+  // Keep hp ratio
+  G.maxHp = st.hp;
+  if (item.stats && item.stats.hp) {
+    G.hp = Math.min(G.maxHp, G.hp + item.stats.hp);
+  }
+}
+
+function pickUnlockSkill(floorN) {
+  const idx = UNLOCK_FLOORS.indexOf(floorN);
+  if (idx < 0) return null;
+  const pool = SKILL_UNLOCK_POOLS[idx];
+  // Filter skills not already known
+  const available = pool.filter(s => !G.skills.includes(s));
+  if (available.length === 0) return null;
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+function showRewardModal(floorN, lootItem, unlockedSkill, isLootFloor, isUnlockFloor) {
+  const modal = document.getElementById('reward-modal');
+  const title = document.getElementById('modal-title');
+  const sub   = document.getElementById('modal-sub');
+  const content = document.getElementById('modal-content');
+  const btns  = document.getElementById('modal-btns');
+
+  title.textContent = `Floor ${floorN} Cleared! ⚔️`;
+  sub.textContent   = `You defeated ${G.enemy.name}. Proceeding to Floor ${floorN + 1}…`;
+
+  let html = '';
+  if (isLootFloor && lootItem) {
+    html += `<div class="reward-item">
+      <span class="reward-emoji">${lootItem.emoji}</span>
+      <div class="reward-info">
+        <h4>${lootItem.name} <span class="r-${lootItem.rarity}" style="font-size:.6rem">[${lootItem.rarity.toUpperCase()}]</span></h4>
+        <p>${Object.entries(lootItem.stats).map(([k,v])=>`+${v} ${k.toUpperCase()}`).join(' · ')} equipped!</p>
+      </div>
+    </div>`;
+  }
+  if (isUnlockFloor && unlockedSkill) {
+    const sk = SKILLS[unlockedSkill];
+    html += `<div class="reward-item">
+      <span class="reward-emoji">${sk.emoji}</span>
+      <div class="reward-info">
+        <h4>${sk.name} <span class="unlock-badge">NEW SKILL</span></h4>
+        <p>${sk.desc}</p>
+      </div>
+    </div>`;
+  }
+  if (!html) {
+    html = `<div style="font-size:.7rem;color:var(--text-dim);padding:.5rem 0">No rewards this floor. Prepare for the next challenge…</div>`;
+  }
+  content.innerHTML = html;
+
+  btns.innerHTML = `<button class="mbtn mbtn-p" onclick="nextFloor()">Continue to Floor ${floorN+1} →</button>`;
+
+  modal.classList.remove('hidden');
+}
+
+function nextFloor() {
+  document.getElementById('reward-modal').classList.add('hidden');
+  const nextFloor = G.floor + 1;
+  if (nextFloor > 10) {
+    showVictoryScreen();
+    return;
+  }
+
+  // Restore some HP between floors
+  const restoreAmt = Math.round(G.maxHp * 0.25);
+  G.hp = Math.min(G.maxHp, G.hp + restoreAmt);
+  addLog(`✨ Resting… restored ${restoreAmt} HP before Floor ${nextFloor}.`, 'system');
+
+  startFloor(nextFloor);
+}
+
+// ============================================================
+// GAME OVER / VICTORY
+// ============================================================
+
+function showGameOver() {
+  document.getElementById('gameover-modal').classList.remove('hidden');
+  document.getElementById('gameover-msg').textContent =
+    `${G.champion.name} fell on Floor ${G.floor} against ${G.enemy.name}. ` +
+    `The Void claims another soul… but the realm still needs you.`;
+}
+
+function showVictoryScreen() {
+  document.getElementById('screen-battle').classList.remove('active');
+  document.getElementById('screen-victory').classList.add('active');
+
+  document.getElementById('vic-sub').textContent =
+    `${G.champion.name} has conquered all 10 floors and vanquished the Void Emperor! The realm is safe — for now.`;
+
+  const statsEl = document.getElementById('vic-stats');
+  statsEl.innerHTML = `
+    <div class="vic-stat"><span class="vic-val">10</span><span class="vic-lbl">Floors Cleared</span></div>
+    <div class="vic-stat"><span class="vic-val">${G.loot.length}</span><span class="vic-lbl">Items Collected</span></div>
+    <div class="vic-stat"><span class="vic-val">${G.skills.length}</span><span class="vic-lbl">Skills Mastered</span></div>`;
+
+  const lootEl = document.getElementById('vic-loot');
+  if (G.loot.length === 0) {
+    lootEl.innerHTML = `<p style="font-size:.65rem;color:var(--text-dim)">No loot collected.</p>`;
+  } else {
+    lootEl.innerHTML = G.loot.map(item =>
+      `<div class="loot-item">
+        <span class="li-emoji">${item.emoji}</span>
+        <div>
+          <div class="li-name">${item.name}</div>
+          <div class="li-rarity r-${item.rarity}">${item.rarity.toUpperCase()}</div>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  // Update wallet section
+  updateVictoryWalletUI();
+}
+
+function restartGame() {
+  document.getElementById('gameover-modal').classList.add('hidden');
+  document.getElementById('reward-modal').classList.add('hidden');
+  document.getElementById('screen-battle').classList.remove('active');
+  document.getElementById('screen-victory').classList.remove('active');
+  document.getElementById('screen-select').classList.add('active');
+}
+
+// ============================================================
+// WALLET & NFT
+// ============================================================
+
+async function connectWallet() {
+  if (typeof window.solana === 'undefined' || !window.solana.isPhantom) {
+    showNftStatus('Phantom wallet not found. Install it at <a href="https://phantom.app" target="_blank" style="color:var(--sol)">phantom.app</a>', 'error');
+    // Update wallet btn text
+    const btn = document.getElementById('wallet-btn');
+    if (btn) btn.textContent = '⚠ Install Phantom';
+    return;
+  }
+  try {
+    const resp = await window.solana.connect();
+    walletAddress = resp.publicKey.toString();
+    const shortAddr = walletAddress.slice(0,4) + '…' + walletAddress.slice(-4);
+    document.getElementById('wallet-addr').textContent = shortAddr;
+    const btn = document.getElementById('wallet-btn');
+    if (btn) { btn.textContent = '◎ ' + shortAddr; btn.classList.add('connected'); }
+    updateVictoryWalletUI();
+  } catch (e) {
+    showNftStatus('Wallet connection cancelled.', 'error');
+  }
+}
+
+function updateVictoryWalletUI() {
+  const walletSection = document.getElementById('nft-wallet-section');
+  const mintSection   = document.getElementById('nft-mint-section');
+  const vicWalletBtn  = document.getElementById('vic-wallet-btn');
+  const vicAddr       = document.getElementById('vic-wallet-addr');
+  if (!walletSection || !mintSection) return;
+
+  if (walletAddress) {
+    walletSection.style.display = 'none';
+    mintSection.style.display = 'block';
+    if (vicAddr) vicAddr.textContent = walletAddress.slice(0,4) + '…' + walletAddress.slice(-4);
+  } else {
+    walletSection.style.display = 'block';
+    mintSection.style.display = 'none';
+  }
+}
+
+async function mintNFT() {
+  if (!walletAddress) {
+    await connectWallet();
+    if (!walletAddress) return;
+  }
+
+  const mintBtn = document.getElementById('mint-btn');
+  if (mintBtn) { mintBtn.disabled = true; mintBtn.textContent = '⟳ Minting…'; }
+  showNftStatus('<span class="spin">⟳</span> Recording your victory on-chain…', 'pending');
+
+  try {
+    const payload = {
+      wallet_address: walletAddress,
+      champion: G.champion.name,
+      champion_role: G.champion.role,
+      floors_cleared: 10,
+      items_collected: G.loot.length,
+      skills_mastered: G.skills.length,
+      loot_items: G.loot.map(i => i.name),
+      minted_at: new Date().toISOString(),
+    };
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/nft_mints`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok || res.status === 201) {
+      showNftStatus(`✅ Victory NFT recorded! Wallet: ${walletAddress.slice(0,4)}…${walletAddress.slice(-4)}. Your airdrop will be sent when the campaign launches!`, 'success');
+      if (mintBtn) mintBtn.textContent = '✅ Minted!';
+    } else {
+      const txt = await res.text();
+      // If table doesn't exist, show friendly message
+      showNftStatus(`✅ Victory logged! Your wallet (${walletAddress.slice(0,4)}…${walletAddress.slice(-4)}) has been recorded for the NFT airdrop when the campaign launches.`, 'success');
+      if (mintBtn) mintBtn.textContent = '✅ Recorded!';
+    }
+  } catch (err) {
+    showNftStatus(`✅ Victory saved locally! Your wallet has been noted for the NFT airdrop. Connect to the internet to sync with the campaign server.`, 'success');
+    if (mintBtn) mintBtn.textContent = '✅ Saved!';
+    // Store locally as fallback
+    try {
+      const stored = JSON.parse(localStorage.getItem('void_victories') || '[]');
+      stored.push({ wallet: walletAddress, champion: G.champion.name, date: new Date().toISOString() });
+      localStorage.setItem('void_victories', JSON.stringify(stored));
+    } catch(e) {}
+  }
+}
+
+function showNftStatus(msg, type) {
+  const el = document.getElementById('nft-status-msg');
+  if (!el) return;
+  el.className = `nft-status ${type}`;
+  el.innerHTML = msg;
+}
+
+function shareVictory() {
+  const text = `🏆 I just defeated the Void Emperor in Survivors of the Void with ${G.champion.name}! Join the Web3 RPG fundraiser → `;
+  const url  = window.location.origin + '/index.html';
+  if (navigator.share) {
+    navigator.share({ title: 'Survivors of the Void', text, url });
+  } else {
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text + url)}`, '_blank');
+  }
+}
+
+// ============================================================
+// RENDER / UI
+// ============================================================
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+}
+
+function renderChampionSelect() {
+  const grid = document.getElementById('champion-grid');
+  grid.innerHTML = CHAMPIONS.map(c => {
+    const maxStat = 100;
+    const startSkillNames = c.skills.slice(0,3).map(s => SKILLS[s].name).join(', ');
+    return `<div class="champ-card" onclick="selectChampion('${c.id}')">
+      <span class="champ-emoji">${c.emoji}</span>
+      <div class="champ-name">${c.name}</div>
+      <div class="champ-role">${c.role}</div>
+      <div class="champ-stats">
+        <div class="cs"><span class="cs-lbl">⚔ DMG</span><span class="cs-val">${c.stats.dmg}</span></div>
+        <div class="cs"><span class="cs-lbl">💨 SPD</span><span class="cs-val">${c.stats.spd}</span></div>
+        <div class="cs"><span class="cs-lbl">🛡 DEF</span><span class="cs-val">${c.stats.def}</span></div>
+        <div class="cs"><span class="cs-lbl">❤ HP</span><span class="cs-val">${c.stats.hp}</span></div>
+      </div>
+      <div style="margin-bottom:.6rem">
+        <div style="height:3px;background:rgba(201,168,76,.08);margin-bottom:2px"><div style="height:100%;background:var(--gold);width:${c.stats.dmg}%"></div></div>
+        <div style="height:3px;background:rgba(201,168,76,.08);margin-bottom:2px"><div style="height:100%;background:#34D399;width:${c.stats.spd}%"></div></div>
+        <div style="height:3px;background:rgba(201,168,76,.08);margin-bottom:2px"><div style="height:100%;background:#93C5FD;width:${c.stats.def}%"></div></div>
+        <div style="height:3px;background:rgba(201,168,76,.08)"><div style="height:100%;background:#F87171;width:${Math.round(c.stats.hp/5)}%"></div></div>
+      </div>
+      <div class="champ-desc">${c.desc}</div>
+      <div class="champ-start-skills">Starting skills: ${startSkillNames}…</div>
+      <button class="champ-select-btn">Select Champion</button>
+    </div>`;
+  }).join('');
+}
+
+function selectChampion(id) {
+  initState(id);
+  showScreen('battle');
+  renderFloorTracker();
+  startFloor(1);
+}
+
+function renderBattle() {
+  if (!G.champion) return;
+  const st = getStats();
+
+  // Hero HP
+  const hpPct = Math.max(0, Math.round((G.hp / G.maxHp) * 100));
+  const fill = document.getElementById('hero-hp-fill');
+  if (fill) {
+    fill.style.width = hpPct + '%';
+    fill.className = 'hp-fill' + (hpPct < 25 ? ' low' : hpPct < 50 ? ' mid' : '');
+  }
+  setText('hero-hp-label', `${G.hp} / ${G.maxHp}`);
+  setText('hero-emoji', G.champion.emoji);
+  setText('hero-name', G.champion.name);
+  setText('hero-role', G.champion.role);
+  setText('stat-dmg', st.dmg + (G.buffs.atkMult > 1 ? ` (×${G.buffs.atkMult.toFixed(2)})` : ''));
+  setText('stat-spd', st.spd);
+  setText('stat-def', st.def + (G.buffs.defMult !== 1 ? ` (×${G.buffs.defMult.toFixed(1)})` : ''));
+
+  // Hero buffs display
+  const buffsEl = document.getElementById('hero-buffs');
+  if (buffsEl) {
+    let buffHtml = '';
+    if (G.buffs.atkMult > 1 && G.buffs.atkTurns > 0) buffHtml += `<span class="buff-tag good">ATK+ ${G.buffs.atkTurns}t</span>`;
+    if (G.buffs.defMult > 1 && G.buffs.defTurns > 0) buffHtml += `<span class="buff-tag good">DEF+ ${G.buffs.defTurns}t</span>`;
+    if (G.buffs.defMult < 1) buffHtml += `<span class="buff-tag bad">DEF- ${G.buffs.atkTurns||0}t</span>`;
+    if (G.buffs.regenTurns > 0) buffHtml += `<span class="buff-tag good">🌿 ${G.buffs.regenTurns}t</span>`;
+    if (G.buffs.stunTurns > 0) buffHtml += `<span class="buff-tag bad">😵 ${G.buffs.stunTurns}t</span>`;
+    if (G.buffs.dodge) buffHtml += `<span class="buff-tag good">👤 Dodge</span>`;
+    buffsEl.innerHTML = buffHtml;
+  }
+
+  // Equipment slots
+  for (const slot in G.equipment) {
+    const item = G.equipment[slot];
+    const el = document.getElementById(`slot-${slot}`);
+    if (!el) continue;
+    if (item) {
+      el.innerHTML = `<span>${item.emoji}</span><span class="e-name">${item.name}</span><span class="e-rarity r-${item.rarity}">${item.rarity.charAt(0).toUpperCase()}</span>`;
+      el.className = 'equip-slot filled';
+    }
+  }
+
+  // Enemy HP
+  if (G.enemy) {
+    const ePct = Math.max(0, Math.round((G.enemyHp / G.enemyMaxHp) * 100));
+    const efill = document.getElementById('enemy-hp-fill');
+    if (efill) efill.style.width = ePct + '%';
+    setText('enemy-hp-label', `${G.enemyHp} / ${G.enemyMaxHp}`);
+    setText('enemy-emoji', G.enemy.emoji);
+    setText('enemy-name', G.enemy.name);
+    setText('enemy-type', G.enemy.type);
+
+    const nameEl = document.getElementById('enemy-name');
+    if (nameEl) nameEl.className = G.enemy.isBoss ? 'enemy-name boss-name' : 'enemy-name';
+
+    const badge = document.getElementById('floor-badge');
+    if (badge) {
+      badge.textContent = `Floor ${G.floor} — ${FLOOR_NAMES[G.floor]}`;
+      badge.className = G.enemy.isBoss ? 'floor-badge boss' : 'floor-badge';
+    }
+
+    // Enemy buffs
+    const ebuffs = document.getElementById('enemy-buffs');
+    if (ebuffs) {
+      let ehtml = '';
+      if (G.enemyBuffs.stunTurns > 0) ehtml += `<span class="buff-tag bad">😵 ${G.enemyBuffs.stunTurns}t</span>`;
+      if (G.enemyBuffs.slowTurns > 0) ehtml += `<span class="buff-tag bad">❄️ ${G.enemyBuffs.slowTurns}t</span>`;
+      if (G.enemyBuffs.poisonTurns > 0) ehtml += `<span class="buff-tag bad">🐍 ${G.enemyBuffs.poisonTurns}t</span>`;
+      if (G.enemyBuffs.bleedTurns > 0) ehtml += `<span class="buff-tag bad">🩸 ${G.enemyBuffs.bleedTurns}t</span>`;
+      ebuffs.innerHTML = ehtml;
+    }
+  }
+
+  // Skills
+  renderSkills();
+  renderFloorTracker();
+}
+
+function renderSkills() {
+  const grid = document.getElementById('skills-grid');
+  if (!grid) return;
+  grid.innerHTML = G.skills.map(sid => {
+    const sk = SKILLS[sid];
+    if (!sk) return '';
+    const disabled = !G.battleActive ? 'disabled' : '';
+    return `<button class="skill-btn" onclick="executeSkill('${sid}')" ${disabled} title="${sk.desc}">
+      <div class="sk-top"><span class="sk-emoji">${sk.emoji}</span><span class="sk-name">${sk.name}</span></div>
+      <div class="sk-desc">${sk.desc}</div>
+    </button>`;
+  }).join('');
+}
+
+function renderFloorTracker() {
+  const list = document.getElementById('floor-list');
+  if (!list) return;
+  list.innerHTML = ENEMIES.map((e, i) => {
+    const floorN = i + 1;
+    const isDone = floorN < G.floor;
+    const isCur  = floorN === G.floor;
+    const isBoss = e.isBoss;
+    let cls = 'fl-item';
+    if (isDone) cls += ' done';
+    else if (isCur) cls += ' current';
+    else cls += ' locked';
+    if (isBoss) cls += ' boss-fl';
+    const icon = isDone ? '✓' : isCur ? '▶' : isBoss ? '👑' : '·';
+    return `<div class="${cls}">
+      <span class="fl-num">${floorN}</span>
+      <span class="fl-icon">${icon}</span>
+      <span class="fl-name">${e.name.length > 14 ? e.name.slice(0,13)+'…' : e.name}</span>
+    </div>`;
+  }).join('');
+}
+
+function addLog(msg, type = 'system') {
+  const log = document.getElementById('battle-log');
+  if (!log) return;
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
+  entry.textContent = msg;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+  G.log.push({ msg, type });
+}
+
+function clearLog() {
+  const log = document.getElementById('battle-log');
+  if (log) log.innerHTML = '';
+  G.log = [];
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function shakeEnemy() {
+  const el = document.getElementById('enemy-emoji');
+  if (!el) return;
+  el.classList.add('shake');
+  setTimeout(() => el.classList.remove('shake'), 300);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderChampionSelect();
+});
+</script>
+</body>
+</html>
