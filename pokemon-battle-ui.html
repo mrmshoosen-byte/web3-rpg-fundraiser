@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Battle UI</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }
+        .battle-area { width: 80%; height: 50%; border: 2px solid #000; display: flex; }
+        .enemy-area { flex: 1; border-right: 2px solid #000; display: flex; align-items: center; justify-content: center; }
+        .log-area { flex: 2; display: flex; align-items: flex-start; justify-content: center; flex-direction: column; padding: 10px; }
+        .player-area { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .menu-area { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px; }
+        .action-button { margin: 5px; padding: 10px; border: 1px solid #000; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="battle-area">
+        <div class="enemy-area">
+            <h2>Enemy</h2>
+            <div class="enemy-sprite" style="width:100%; height:80%; background-color: #eaeaea; text-align: center;">
+                <p>Enemy Sprite Area</p>
+            </div>
+        </div>
+        <div class="log-area">
+            <h3>Battle Log</h3>
+            <div class="log-content" style="min-height: 100%;">
+                <p>Log will appear here...</p>
+            </div>
+        </div>
+        <div class="player-area">
+            <h2>Player</h2>
+            <div class="player-stats" style="margin-bottom: auto;">
+                <p>HP: <span id="player-hp">100</span>/100</p>
+                <p>Attack: <span id="player-attack">50</span></p>
+            </div>
+            <div class="menu-area">
+                <button class="action-button">ATTACK</button>
+                <button class="action-button">ITEM</button>
+                <button class="action-button">STATS</button>
+                <button class="action-button">DEFEND</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
