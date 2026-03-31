@@ -89,6 +89,7 @@ a{color:var(--gold);text-decoration:none}
 .cp-stats{display:flex;gap:.3rem;flex-wrap:wrap}
 .cp-stat{font-size:.6rem;color:var(--text-dim)}
 .cp-stat span{color:var(--text-bright)}
+.cp-skills{font-size:.55rem;color:var(--text-dim);margin-top:.3rem;padding-top:.3rem;border-top:1px solid var(--border);line-height:1.4}
 
 .stat-num-row{display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-dim);margin-bottom:.35rem}
 .stat-num-row span{color:var(--text-bright)}
@@ -523,53 +524,201 @@ a{color:var(--gold);text-decoration:none}
 // ═══════════════════════════════════════════════════════
 
 const SKILLS = [
-  // Starter (always available)
+  // ─── Legacy shared skills (kept for backward compatibility) ──────────────
   { id:'slash',    name:'Power Slash',     icon:'⚔',  cost:0,  unlockFloor:0, type:'physical', dmgMult:1.4, desc:'A heavy blow. 40% more damage.',         effect:null },
   { id:'defend',   name:'Guard Stance',    icon:'🛡',  cost:0,  unlockFloor:0, type:'buff',     dmgMult:0,   desc:'Reduce incoming damage by 50% next hit.', effect:'defend' },
   { id:'focus',    name:'Focus',           icon:'🎯',  cost:8,  unlockFloor:0, type:'buff',     dmgMult:0,   desc:'Guarantee critical on next attack.',       effect:'focus' },
-
-  // Floor 2 unlocks
   { id:'fireball', name:'Fireball',        icon:'🔥',  cost:15, unlockFloor:2, type:'magical',  dmgMult:1.8, desc:'Magical fire. 80% more damage. Burns.',    effect:'burn' },
-  { id:'heal',     name:'Void Mend',       icon:'💚',  cost:20, unlockFloor:2, type:'heal',     dmgMult:0,   desc:'Restore 35% of max HP.',                  effect:null },
+  { id:'heal',     name:'Void Mend',       icon:'💚',  cost:20, unlockFloor:2, type:'heal',     dmgMult:0,   desc:'Restore 35% of max HP.',                  effect:null,    healPct:0.35 },
   { id:'regen',    name:'Regenerate',      icon:'♻',   cost:12, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Regen 10% HP for 3 turns.',               effect:'regen' },
-
-  // Floor 4 unlocks
   { id:'ice',      name:'Blizzard',        icon:'❄',   cost:18, unlockFloor:4, type:'magical',  dmgMult:1.6, desc:'Freezes target, skips their next turn.',   effect:'freeze' },
   { id:'poison',   name:'Venom Strike',    icon:'🐍',  cost:14, unlockFloor:4, type:'physical', dmgMult:1.1, desc:'Poisons enemy — 8% max HP per turn.',     effect:'poison' },
   { id:'shield',   name:'Arcane Shield',   icon:'💠',  cost:16, unlockFloor:4, type:'buff',     dmgMult:0,   desc:'Absorb 30% of your max HP in damage.',    effect:'shield' },
-
-  // Floor 6 unlocks
   { id:'thunder',  name:'Thunder Bolt',    icon:'⚡',  cost:22, unlockFloor:6, type:'magical',  dmgMult:2.0, desc:'2× magic damage. 25% stun chance.',        effect:'stun' },
   { id:'drain',    name:'Soul Drain',      icon:'💜',  cost:20, unlockFloor:6, type:'magical',  dmgMult:1.5, desc:'Steal HP equal to 50% of damage dealt.',   effect:'drain' },
   { id:'power',    name:'Void Surge',      icon:'⬆',   cost:18, unlockFloor:6, type:'buff',     dmgMult:0,   desc:'Boost ATK by 40% for 3 turns.',           effect:'power' },
-
-  // Floor 8 unlocks
   { id:'quake',    name:'Earthquake',      icon:'🌋',  cost:26, unlockFloor:8, type:'physical', dmgMult:2.2, desc:'Devastating earth strike. 2.2× ATK.',     effect:null },
   { id:'bleed',    name:'Rend Armor',      icon:'🗡',   cost:16, unlockFloor:8, type:'physical', dmgMult:1.3, desc:'Reduce enemy DEF by 40% for 3 turns.',   effect:'bleed' },
   { id:'mp-burn',  name:'Mana Surge',      icon:'💫',  cost:0,  unlockFloor:8, type:'physical', dmgMult:1.6, desc:'Deal bonus damage equal to your MP/3.',   effect:'mpburn' },
-
-  // Floor 10 bonus
   { id:'void',     name:'Void Rend',       icon:'🌀',  cost:30, unlockFloor:10,type:'magical',  dmgMult:3.0, desc:'Channel the Void. 3× magical devastation.',effect:'void' },
   { id:'phoenix',  name:'Phoenix Rise',    icon:'🔥',  cost:35, unlockFloor:10,type:'heal',     dmgMult:0,   desc:'Revive at full HP once per battle.',      effect:'phoenix' },
   { id:'counter',  name:'Counter Strike',  icon:'⚡',  cost:10, unlockFloor:10,type:'physical', dmgMult:1.0, desc:'Next physical hit is countered for 2× damage.',effect:'counter' },
-
-  // Extra skills (18-20)
   { id:'cleave',   name:'Void Cleave',     icon:'🌑',  cost:18, unlockFloor:2, type:'physical', dmgMult:1.5, desc:'Heavy cleave ignores 30% enemy DEF.',     effect:'pierce' },
   { id:'dispel',   name:'Dispel',          icon:'✨',  cost:14, unlockFloor:4, type:'support',  dmgMult:0,   desc:'Remove all negative status effects.',     effect:'dispel' },
   { id:'sacrifice',name:'Blood Pact',      icon:'🩸',  cost:0,  unlockFloor:6, type:'physical', dmgMult:2.5, desc:'Spend 20% HP to deal 2.5× ATK damage.',  effect:'sacrifice' },
+
+  // ─── Snickle (Rogue) ─────────────────────────────────────────────────────
+  { id:'r_jab',      name:'Quick Jab',          icon:'🗡', cost:0,  unlockFloor:0, type:'physical', dmgMult:1.3, desc:'Swift dagger strike. 30% more damage.',             effect:null },
+  { id:'r_dodge',    name:'Shadow Dodge',        icon:'💨', cost:8,  unlockFloor:0, type:'buff',     dmgMult:0,   desc:'Dodge next hit, reduce incoming damage 50%.',       effect:'defend' },
+  { id:'r_pfang',    name:'Poison Fang',         icon:'🐍', cost:14, unlockFloor:2, type:'physical', dmgMult:1.1, desc:'Venom-coated blade. Poisons enemy 8% HP/turn.',     effect:'poison' },
+  { id:'r_sroll',    name:'Shadow Roll',         icon:'🌑', cost:10, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Set counter — next hit returns 2× damage.',         effect:'counter' },
+  { id:'r_bstab',    name:'Backstab',            icon:'🔪', cost:18, unlockFloor:4, type:'physical', dmgMult:2.0, desc:'Backstab ignores 30% DEF. Devastating blow.',       effect:'pierce' },
+  { id:'r_bflurry',  name:'Blade Flurry',        icon:'⚡', cost:15, unlockFloor:4, type:'physical', dmgMult:1.4, desc:'Rapid cuts reduce enemy DEF by 40%.',               effect:'bleed' },
+  { id:'r_dance',    name:'Blade Dance',         icon:'🌀', cost:20, unlockFloor:6, type:'physical', dmgMult:1.6, desc:'Whirling blades. 60% more damage + bleed.',         effect:'bleed' },
+  { id:'r_smoke',    name:'Smoke Bomb',          icon:'💭', cost:16, unlockFloor:6, type:'buff',     dmgMult:0,   desc:'Vanish in smoke. ATK +40% for 3 turns.',            effect:'power' },
+  { id:'r_venom',    name:'Deadly Venom',        icon:'☠', cost:22, unlockFloor:8, type:'physical', dmgMult:1.5, desc:'Lethal toxin. Powerful poison stacks.',              effect:'poison' },
+  { id:'r_exec',     name:'Death Strike',        icon:'💀', cost:0,  unlockFloor:8, type:'physical', dmgMult:2.5, desc:'Spend 20% HP for a 2.5× killing blow.',             effect:'sacrifice' },
+  { id:'r_ult',      name:'Shadow Execution',    icon:'👤', cost:30, unlockFloor:10,type:'physical', dmgMult:3.5, desc:'⭐ ULTIMATE — Annihilate from the shadows.',          effect:'pierce' },
+
+  // ─── Vibhu (Knight) ──────────────────────────────────────────────────────
+  { id:'k_sbash',    name:'Shield Bash',         icon:'🛡', cost:0,  unlockFloor:0, type:'physical', dmgMult:1.2, desc:'Slam with shield. Sturdy opening strike.',          effect:null },
+  { id:'k_hward',    name:'Holy Ward',           icon:'✝', cost:8,  unlockFloor:0, type:'buff',     dmgMult:0,   desc:'Divine protection. Reduce next hit by 50%.',        effect:'defend' },
+  { id:'k_dsmite',   name:'Divine Smite',        icon:'☀', cost:15, unlockFloor:2, type:'magical',  dmgMult:1.5, desc:'Holy light strikes. Deals magic damage.',            effect:null },
+  { id:'k_fortify',  name:'Fortify',             icon:'🏰', cost:16, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Iron shield: absorb 30% max HP in damage.',         effect:'shield' },
+  { id:'k_hcleave',  name:'Holy Cleave',         icon:'⚔', cost:18, unlockFloor:4, type:'physical', dmgMult:1.8, desc:'Righteous sweep ignores 30% enemy DEF.',             effect:'pierce' },
+  { id:'k_bregen',   name:'Blessed Regen',       icon:'💚', cost:12, unlockFloor:4, type:'buff',     dmgMult:0,   desc:'Holy energy: regen 10% HP per turn for 3 turns.',   effect:'regen' },
+  { id:'k_consec',   name:'Consecrate',          icon:'🌟', cost:20, unlockFloor:6, type:'magical',  dmgMult:1.6, desc:'Sanctify ground. Magic blast + burn damage.',        effect:'burn' },
+  { id:'k_dheal',    name:'Divine Healing',      icon:'💊', cost:22, unlockFloor:6, type:'heal',     dmgMult:0,   desc:'Holy light restores 30% of max HP.',                 effect:null,   healPct:0.30 },
+  { id:'k_lstand',   name:'Last Stand',          icon:'💪', cost:18, unlockFloor:8, type:'buff',     dmgMult:0,   desc:'Desperate power: ATK +40% for 3 turns.',            effect:'power' },
+  { id:'k_unbrkbl',  name:'Unbreakable',         icon:'🔒', cost:24, unlockFloor:8, type:'buff',     dmgMult:0,   desc:'Iron will: Guard stance active. Reduce next hit 50%.', effect:'defend' },
+  { id:'k_hjudge',   name:'Holy Judgment',       icon:'⚡', cost:35, unlockFloor:10,type:'magical',  dmgMult:3.0, desc:'⭐ ULTIMATE — Radiant judgment from above.',           effect:'burn' },
+
+  // ─── Cryptopher (Mage) ───────────────────────────────────────────────────
+  { id:'m_fireball', name:'Fireball',            icon:'🔥', cost:15, unlockFloor:0, type:'magical',  dmgMult:1.8, desc:'Hurls a fireball. Burns enemy for 3 turns.',         effect:'burn' },
+  { id:'m_fbolt',    name:'Frost Bolt',          icon:'❄', cost:12, unlockFloor:0, type:'magical',  dmgMult:1.4, desc:'Freezing bolt — enemy skips next turn.',             effect:'freeze' },
+  { id:'m_mshield',  name:'Mana Shield',         icon:'🔵', cost:16, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Arcane barrier: absorb 30% max HP in damage.',      effect:'shield' },
+  { id:'m_asurge',   name:'Arcane Surge',        icon:'📈', cost:18, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Channel arcane power: ATK +40% for 3 turns.',       effect:'power' },
+  { id:'m_blizzard', name:'Blizzard',            icon:'🌨', cost:18, unlockFloor:4, type:'magical',  dmgMult:1.6, desc:'Arctic storm freezes enemy — skips next turn.',      effect:'freeze' },
+  { id:'m_meteor',   name:'Meteor Fall',         icon:'☄', cost:22, unlockFloor:4, type:'magical',  dmgMult:2.0, desc:'Summon a meteor. Massive magical damage.',           effect:null },
+  { id:'m_amissiles',name:'Arcane Missiles',     icon:'✨', cost:20, unlockFloor:6, type:'magical',  dmgMult:1.5, desc:'Rapid magic bolts. 25% chance to stun.',            effect:'stun' },
+  { id:'m_tstop',    name:'Time Stop',           icon:'⏰', cost:18, unlockFloor:6, type:'magical',  dmgMult:0.5, desc:'Freeze time. Enemy unable to act for 2 turns.',      effect:'freeze' },
+  { id:'m_overload', name:'Arcane Overload',     icon:'💥', cost:26, unlockFloor:8, type:'magical',  dmgMult:2.2, desc:'Overcharge magic core. Devastating blast.',          effect:null },
+  { id:'m_vsiphon',  name:'Void Siphon',         icon:'💜', cost:20, unlockFloor:8, type:'magical',  dmgMult:1.8, desc:'Drain the void: steal HP equal to 50% of damage.',  effect:'drain' },
+  { id:'m_chaos',    name:'Chaos Eruption',      icon:'🌋', cost:35, unlockFloor:10,type:'magical',  dmgMult:3.5, desc:'⭐ ULTIMATE — Reality-shattering eruption.',           effect:'burn' },
+
+  // ─── Rexxar (Berserker) ──────────────────────────────────────────────────
+  { id:'b_hblow',    name:'Heavy Blow',          icon:'⚡', cost:0,  unlockFloor:0, type:'physical', dmgMult:1.6, desc:'Crushing strike. 60% more damage.',                 effect:null },
+  { id:'b_bcry',     name:'Battle Cry',          icon:'📣', cost:10, unlockFloor:0, type:'buff',     dmgMult:0,   desc:'War cry boosts ATK +40% for 3 turns.',              effect:'power' },
+  { id:'b_bstrike',  name:'Blood Strike',        icon:'🩸', cost:15, unlockFloor:2, type:'physical', dmgMult:1.8, desc:'Savage strike reduces enemy DEF by 40%.',           effect:'bleed' },
+  { id:'b_wrage',    name:'War Rage',            icon:'😤', cost:18, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Berserker rage: ATK +40% for 3 turns.',             effect:'power' },
+  { id:'b_skuller',  name:'Skull Crusher',       icon:'💀', cost:20, unlockFloor:4, type:'physical', dmgMult:2.0, desc:'Skull-crushing blow ignores 30% DEF.',               effect:'pierce' },
+  { id:'b_frenzy',   name:'Frenzy',              icon:'🔄', cost:12, unlockFloor:4, type:'buff',     dmgMult:0,   desc:'Blood frenzy: regen 10% HP per turn for 3 turns.',   effect:'regen' },
+  { id:'b_rampage',  name:'Rampage',             icon:'🐂', cost:20, unlockFloor:6, type:'physical', dmgMult:1.8, desc:'Unstoppable charge. 80% more damage.',               effect:null },
+  { id:'b_srend',    name:'Soul Rend',           icon:'💜', cost:22, unlockFloor:6, type:'magical',  dmgMult:1.6, desc:'Tear at the enemy soul. Drain HP = 50% of damage.', effect:'drain' },
+  { id:'b_proar',    name:'Primal Roar',         icon:'🦁', cost:18, unlockFloor:8, type:'buff',     dmgMult:0,   desc:'Primordial roar: ATK +40% for 3 turns.',            effect:'power' },
+  { id:'b_bpact',    name:'Blood Pact',          icon:'🔴', cost:0,  unlockFloor:8, type:'physical', dmgMult:2.5, desc:'Spend 20% HP to deal 2.5× savage damage.',          effect:'sacrifice' },
+  { id:'b_twrath',   name:"Titan's Wrath",       icon:'⚰', cost:35, unlockFloor:10,type:'physical', dmgMult:4.0, desc:'⭐ ULTIMATE — Unleash primordial fury.',               effect:'bleed' },
+
+  // ─── Luna (Ranger) ───────────────────────────────────────────────────────
+  { id:'ra_arrow',   name:'Arrow Shot',          icon:'🏹', cost:0,  unlockFloor:0, type:'physical', dmgMult:1.4, desc:'Precise arrow strike. 40% more damage.',            effect:null },
+  { id:'ra_rfire',   name:'Rapid Fire',          icon:'⚡', cost:12, unlockFloor:0, type:'physical', dmgMult:1.2, desc:'Unleash rapid arrows. 20% more damage.',            effect:null },
+  { id:'ra_mbless',  name:'Moon Blessing',       icon:'🌙', cost:14, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Lunar energy: regen 10% HP per turn for 3 turns.',  effect:'regen' },
+  { id:'ra_snare',   name:'Snare Trap',          icon:'🕸', cost:16, unlockFloor:2, type:'magical',  dmgMult:0.6, desc:'Spring a trap. Freezes enemy — skips next turn.',    effect:'freeze' },
+  { id:'ra_pierce',  name:'Piercing Arrow',      icon:'🔩', cost:18, unlockFloor:4, type:'physical', dmgMult:1.8, desc:'Steel tip ignores 30% enemy DEF.',                  effect:'pierce' },
+  { id:'ra_rain',    name:'Rain of Arrows',      icon:'🌧', cost:20, unlockFloor:4, type:'physical', dmgMult:1.4, desc:'Volley of arrows reduces enemy DEF by 40%.',         effect:'bleed' },
+  { id:'ra_lstrike', name:'Lunar Strike',        icon:'🌕', cost:22, unlockFloor:6, type:'magical',  dmgMult:2.0, desc:'Moon-powered magical strike. Heavy damage.',         effect:null },
+  { id:'ra_smeld',   name:'Shadow Meld',         icon:'🌑', cost:14, unlockFloor:6, type:'buff',     dmgMult:0,   desc:'Meld with shadows. Reduce next hit by 50%.',         effect:'defend' },
+  { id:'ra_mprey',   name:'Marked Prey',         icon:'🎯', cost:20, unlockFloor:8, type:'physical', dmgMult:1.6, desc:'Mark target. Reduces enemy DEF by 40% for 3 turns.', effect:'bleed' },
+  { id:'ra_moarrow', name:'Moon Arrow',          icon:'🌠', cost:24, unlockFloor:8, type:'magical',  dmgMult:2.0, desc:'Moonlit arrow: freezes enemy for 2 turns.',          effect:'freeze' },
+  { id:'ra_eclipse', name:'Eclipse Shot',        icon:'🌑', cost:35, unlockFloor:10,type:'physical', dmgMult:3.5, desc:'⭐ ULTIMATE — Arrow darkens the sun itself.',          effect:'pierce' },
+
+  // ─── Kai (Monk) ──────────────────────────────────────────────────────────
+  { id:'mo_ifist',   name:'Iron Fist',           icon:'👊', cost:0,  unlockFloor:0, type:'physical', dmgMult:1.4, desc:'Hardened strike. 40% more damage.',                 effect:null },
+  { id:'mo_cfocus',  name:'Chi Focus',           icon:'🎯', cost:8,  unlockFloor:0, type:'buff',     dmgMult:0,   desc:'Focus chi energy. Next attack guaranteed critical.', effect:'focus' },
+  { id:'mo_dkick',   name:'Dragon Kick',         icon:'🦵', cost:15, unlockFloor:2, type:'physical', dmgMult:1.6, desc:'Powerful kick reduces enemy DEF by 40%.',           effect:'bleed' },
+  { id:'mo_med',     name:'Meditate',            icon:'🧘', cost:18, unlockFloor:2, type:'heal',     dmgMult:0,   desc:'Deep meditation restores 35% of max HP.',           effect:null,   healPct:0.35 },
+  { id:'mo_tpalm',   name:'Tiger Palm',          icon:'🐯', cost:16, unlockFloor:4, type:'physical', dmgMult:1.5, desc:'Strike through defenses. Ignores 30% DEF.',         effect:'pierce' },
+  { id:'mo_skick',   name:'Spinning Kick',       icon:'🌀', cost:18, unlockFloor:4, type:'physical', dmgMult:1.3, desc:'Sweeping kick reduces enemy DEF by 40%.',           effect:'bleed' },
+  { id:'mo_cburst',  name:'Chi Burst',           icon:'💫', cost:22, unlockFloor:6, type:'magical',  dmgMult:2.0, desc:'Explosive chi wave. Releases inner energy.',         effect:null },
+  { id:'mo_ipeace',  name:'Inner Peace',         icon:'☯', cost:14, unlockFloor:6, type:'buff',     dmgMult:0,   desc:'Serenity: regen 10% HP per turn for 3 turns.',      effect:'regen' },
+  { id:'mo_transc',  name:'Transcendence',       icon:'🌅', cost:24, unlockFloor:8, type:'buff',     dmgMult:0,   desc:'Peak chi mastery: arcane shield absorbs damage.',    effect:'shield' },
+  { id:'mo_1kfists', name:'Thousand Fists',      icon:'⚡', cost:26, unlockFloor:8, type:'physical', dmgMult:1.8, desc:'Relentless barrage. Overwhelming might.',            effect:null },
+  { id:'mo_storm',   name:'Perfect Storm',       icon:'⛈', cost:35, unlockFloor:10,type:'physical', dmgMult:3.5, desc:'⭐ ULTIMATE — The fist of enlightenment.',             effect:null },
+
+  // ─── Malachai (Paladin) ──────────────────────────────────────────────────
+  { id:'p_hsmite',   name:'Holy Smite',          icon:'✨', cost:12, unlockFloor:0, type:'magical',  dmgMult:1.4, desc:'Sacred light burns the unholy.',                    effect:null },
+  { id:'p_dshield',  name:'Divine Shield',       icon:'💛', cost:8,  unlockFloor:0, type:'buff',     dmgMult:0,   desc:'Divine ward. Reduce next hit by 50%.',               effect:'defend' },
+  { id:'p_consec',   name:'Consecrate',          icon:'🌟', cost:16, unlockFloor:2, type:'magical',  dmgMult:1.6, desc:'Sanctified ground scorches enemies + burn.',         effect:'burn' },
+  { id:'p_lhands',   name:'Lay on Hands',        icon:'🙏', cost:20, unlockFloor:2, type:'heal',     dmgMult:0,   desc:'Divine touch restores 40% of max HP.',              effect:null,   healPct:0.40 },
+  { id:'p_aura',     name:'Aura of Light',       icon:'☀', cost:14, unlockFloor:4, type:'buff',     dmgMult:0,   desc:'Holy aura: ATK +40% for 3 turns.',                  effect:'power' },
+  { id:'p_zstrike',  name:'Zealous Strike',      icon:'⚡', cost:20, unlockFloor:4, type:'magical',  dmgMult:2.0, desc:'Fanatical holy strike. Double magic power.',         effect:null },
+  { id:'p_hradiance',name:'Holy Radiance',       icon:'💖', cost:22, unlockFloor:6, type:'heal',     dmgMult:0,   desc:'Radiant light restores 25% max HP.',                 effect:null,   healPct:0.25 },
+  { id:'p_dwrath',   name:'Divine Wrath',        icon:'💥', cost:24, unlockFloor:6, type:'magical',  dmgMult:2.2, desc:'Heaven\'s fury. Massive holy damage.',               effect:null },
+  { id:'p_harmor',   name:'Holy Armor',          icon:'🔒', cost:22, unlockFloor:8, type:'buff',     dmgMult:0,   desc:'Blessed armor: absorb 30% max HP in damage.',       effect:'shield' },
+  { id:'p_judgment', name:'Judgment',            icon:'⚖', cost:26, unlockFloor:8, type:'magical',  dmgMult:2.5, desc:'Holy fire judgment: scorches the target.',           effect:'burn' },
+  { id:'p_jlight',   name:'Judgment of Light',   icon:'🌈', cost:35, unlockFloor:10,type:'magical',  dmgMult:3.5, desc:'⭐ ULTIMATE — The Holy Light passes judgment.',        effect:'burn' },
+
+  // ─── Raven (Reaper) ──────────────────────────────────────────────────────
+  { id:'re_dstrike', name:'Death Strike',        icon:'⚰', cost:0,  unlockFloor:0, type:'physical', dmgMult:1.4, desc:'Cold strike of death. 40% more damage.',            effect:null },
+  { id:'re_stap',    name:'Soul Tap',            icon:'💜', cost:12, unlockFloor:0, type:'magical',  dmgMult:1.2, desc:'Sip from the soul. Drain HP = 50% of damage.',      effect:'drain' },
+  { id:'re_gchill',  name:'Grave Chill',         icon:'❄', cost:16, unlockFloor:2, type:'magical',  dmgMult:1.5, desc:'Freezing death aura — enemy skips next turn.',       effect:'freeze' },
+  { id:'re_rshroud', name:"Reaper's Shroud",     icon:'🌑', cost:10, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Death\'s cloak. Reduce next hit by 50%.',            effect:'defend' },
+  { id:'re_pslash',  name:'Phantom Slash',       icon:'👻', cost:18, unlockFloor:4, type:'physical', dmgMult:1.8, desc:'Ethereal blade ignores 30% enemy DEF.',             effect:'pierce' },
+  { id:'re_srip',    name:'Soul Rip',            icon:'🩸', cost:20, unlockFloor:4, type:'magical',  dmgMult:1.6, desc:'Rip the soul. Drain HP equal to 50% of damage.',    effect:'drain' },
+  { id:'re_wform',   name:'Wraith Form',         icon:'👁', cost:18, unlockFloor:6, type:'buff',     dmgMult:0,   desc:'Phase into wraith. ATK +40% for 3 turns.',           effect:'power' },
+  { id:'re_sharvest',name:'Soul Harvest',        icon:'💀', cost:22, unlockFloor:6, type:'magical',  dmgMult:2.0, desc:'Harvest multiple souls. Drain HP = 50% of damage.',  effect:'drain' },
+  { id:'re_vreap',   name:'Void Reap',           icon:'🌀', cost:26, unlockFloor:8, type:'magical',  dmgMult:2.5, desc:'Tear through reality. Devastating void magic.',      effect:null },
+  { id:'re_dcoil',   name:'Death Coil',          icon:'🐍', cost:24, unlockFloor:8, type:'physical', dmgMult:1.8, desc:'Coil of death reduces enemy DEF by 40%.',           effect:'bleed' },
+  { id:'re_dsentence',name:'Death Sentence',     icon:'⚔', cost:35, unlockFloor:10,type:'physical', dmgMult:4.0, desc:'⭐ ULTIMATE — Sentence the enemy to oblivion.',        effect:'pierce' },
+
+  // ─── Emara (Sorceress) ───────────────────────────────────────────────────
+  { id:'so_cbolt',   name:'Chaos Bolt',          icon:'🌪', cost:12, unlockFloor:0, type:'magical',  dmgMult:1.5, desc:'Wild bolt of chaos fire. Burns enemy.',             effect:'burn' },
+  { id:'so_ablast',  name:'Arcane Blast',        icon:'💥', cost:10, unlockFloor:0, type:'magical',  dmgMult:1.3, desc:'Raw arcane energy. 30% more magic damage.',         effect:null },
+  { id:'so_wsurge',  name:'Wild Surge',          icon:'🎲', cost:14, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Channel chaos: ATK +40% for 3 turns.',              effect:'power' },
+  { id:'so_blink',   name:'Blink',               icon:'🚀', cost:10, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Teleport away: reduce next hit by 50%.',            effect:'defend' },
+  { id:'so_scall',   name:'Storm Call',          icon:'⛈', cost:20, unlockFloor:4, type:'magical',  dmgMult:2.0, desc:'Call down thunder. 25% chance to stun enemy.',       effect:'stun' },
+  { id:'so_vmagic',  name:'Volatile Magic',      icon:'🔮', cost:18, unlockFloor:4, type:'magical',  dmgMult:1.6, desc:'Unstable spell burns enemy for 3 turns.',            effect:'burn' },
+  { id:'so_hex',     name:'Hexcurse',            icon:'🎭', cost:18, unlockFloor:6, type:'magical',  dmgMult:0.8, desc:'Hex and freeze — enemy unable to act next turn.',    effect:'freeze' },
+  { id:'so_mstorm',  name:'Mana Storm',          icon:'🌊', cost:22, unlockFloor:6, type:'magical',  dmgMult:1.8, desc:'Arcane storm drains HP = 50% of damage dealt.',     effect:'drain' },
+  { id:'so_cnova',   name:'Chaos Nova',          icon:'💫', cost:26, unlockFloor:8, type:'magical',  dmgMult:2.5, desc:'Chaos explosion burns and devastates.',               effect:'burn' },
+  { id:'so_aovld',   name:'Arcane Overload',     icon:'🌌', cost:18, unlockFloor:8, type:'buff',     dmgMult:0,   desc:'Overload mana: ATK +40% for 3 turns.',              effect:'power' },
+  { id:'so_apoc',    name:'Arcane Apocalypse',   icon:'🌠', cost:35, unlockFloor:10,type:'magical',  dmgMult:3.5, desc:'⭐ ULTIMATE — The end of reality itself.',            effect:'burn' },
+
+  // ─── Thornwick (Druid) ───────────────────────────────────────────────────
+  { id:'d_tstrike',  name:'Thorn Strike',        icon:'🌿', cost:0,  unlockFloor:0, type:'physical', dmgMult:1.3, desc:'Nature\'s thorns pierce skin. Poisons enemy.',       effect:'poison' },
+  { id:'d_wgrowth',  name:'Wild Growth',         icon:'🌱', cost:14, unlockFloor:0, type:'heal',     dmgMult:0,   desc:'Nature\'s gift restores 25% of max HP.',             effect:null,   healPct:0.25 },
+  { id:'d_entangle', name:'Entangle',            icon:'🌾', cost:16, unlockFloor:2, type:'magical',  dmgMult:0.6, desc:'Vines root enemy — skips their next turn.',          effect:'freeze' },
+  { id:'d_barkskin', name:'Barkskin',            icon:'🌳', cost:14, unlockFloor:2, type:'buff',     dmgMult:0,   desc:'Tree bark armor: absorb 30% max HP in damage.',     effect:'shield' },
+  { id:'d_pwrath',   name:'Primal Wrath',        icon:'🐻', cost:20, unlockFloor:4, type:'physical', dmgMult:2.0, desc:'Raw nature fury. Double ATK damage.',                effect:null },
+  { id:'d_eward',    name:'Earthen Ward',        icon:'🗿', cost:14, unlockFloor:4, type:'buff',     dmgMult:0,   desc:'Stone shield. Reduce next hit by 50%.',              effect:'defend' },
+  { id:'d_nregen',   name:"Nature's Regen",      icon:'♻', cost:14, unlockFloor:6, type:'buff',     dmgMult:0,   desc:'Verdant healing: regen 10% HP per turn for 3.',     effect:'regen' },
+  { id:'d_tspores',  name:'Toxic Spores',        icon:'🍄', cost:18, unlockFloor:6, type:'physical', dmgMult:1.4, desc:'Mushroom spores poison enemy 8% HP per turn.',       effect:'poison' },
+  { id:'d_sbeam',    name:'Solar Beam',          icon:'☀', cost:26, unlockFloor:8, type:'magical',  dmgMult:2.5, desc:'Concentrated sunlight. Burns enemy for 3 turns.',    effect:'burn' },
+  { id:'d_lthorns',  name:'Living Thorns',       icon:'🌵', cost:18, unlockFloor:8, type:'buff',     dmgMult:0,   desc:'Thorn armor: next hit is countered for 2× damage.',  effect:'counter' },
+  { id:'d_wcall',    name:'Call of the Wild',    icon:'🦅', cost:35, unlockFloor:10,type:'physical', dmgMult:3.5, desc:'⭐ ULTIMATE — Nature\'s wrath unleashed.',             effect:'poison' },
 ];
 
 const CHAMPS = [
-  {name:'Snickle',    role:'Rogue',     desc:"Once the kingdom's most notorious gambler.",       stats:{dmg:85,spd:95,def:60,hp:120}, sprite:'https://i.imgur.com/xzdBwTg.png'},
-  {name:'Vibhu',      role:'Knight',    desc:'Sworn protector of Solania.',                      stats:{dmg:75,spd:60,def:95,hp:160}, sprite:'https://i.imgur.com/6PW269O.png'},
-  {name:'Cryptopher', role:'Mage',      desc:'Void Sage. Commands the fabric of reality.',       stats:{dmg:100,spd:80,def:50,hp:100},sprite:'https://i.imgur.com/6fq9zML.png'},
-  {name:'Rexxar',     role:'Berserker', desc:'Strength incarnate. Insatiable hunger.',           stats:{dmg:110,spd:70,def:70,hp:180},sprite:'https://i.imgur.com/ErgZiF9.png'},
-  {name:'Luna',       role:'Ranger',    desc:"Swift as night wind. Arrows never miss.",          stats:{dmg:90,spd:92,def:65,hp:110}, sprite:'https://i.imgur.com/s0Djzjy.png'},
-  {name:'Kai',        role:'Monk',      desc:'Balanced between yin and yang.',                   stats:{dmg:80,spd:88,def:75,hp:130}, sprite:'https://i.imgur.com/QcIEICc.png'},
-  {name:'Malachai',   role:'Paladin',   desc:'Clad in holy gold. Divine protector.',             stats:{dmg:70,spd:65,def:100,hp:175},sprite:'https://i.imgur.com/AyPCPY2.png'},
-  {name:'Raven',      role:'Reaper',    desc:'Collector of final breaths.',                      stats:{dmg:105,spd:85,def:55,hp:115},sprite:'https://i.imgur.com/ozqxvph.png'},
-  {name:'Emara',      role:'Sorceress', desc:'Chaos and order. Bends magic to will.',            stats:{dmg:95,spd:82,def:48,hp:105}, sprite:'https://i.imgur.com/sU1RKCL.png'},
-  {name:'Thornwick',  role:'Druid',     desc:"One with nature's fury.",                          stats:{dmg:75,spd:70,def:80,hp:150}, sprite:'https://i.imgur.com/aElBzhW.png'},
+  {
+    name:'Snickle', role:'Rogue', desc:"Once the kingdom's most notorious gambler.", stats:{dmg:85,spd:95,def:60,hp:120}, sprite:'https://i.imgur.com/xzdBwTg.png',
+    skills:['r_jab','r_dodge','r_pfang','r_sroll','r_bstab','r_bflurry','r_dance','r_smoke','r_venom','r_exec','r_ult']
+  },
+  {
+    name:'Vibhu', role:'Knight', desc:'Sworn protector of Solania.', stats:{dmg:75,spd:60,def:95,hp:160}, sprite:'https://i.imgur.com/6PW269O.png',
+    skills:['k_sbash','k_hward','k_dsmite','k_fortify','k_hcleave','k_bregen','k_consec','k_dheal','k_lstand','k_unbrkbl','k_hjudge']
+  },
+  {
+    name:'Cryptopher', role:'Mage', desc:'Void Sage. Commands the fabric of reality.', stats:{dmg:100,spd:80,def:50,hp:100}, sprite:'https://i.imgur.com/6fq9zML.png',
+    skills:['m_fireball','m_fbolt','m_mshield','m_asurge','m_blizzard','m_meteor','m_amissiles','m_tstop','m_overload','m_vsiphon','m_chaos']
+  },
+  {
+    name:'Rexxar', role:'Berserker', desc:'Strength incarnate. Insatiable hunger.', stats:{dmg:110,spd:70,def:70,hp:180}, sprite:'https://i.imgur.com/ErgZiF9.png',
+    skills:['b_hblow','b_bcry','b_bstrike','b_wrage','b_skuller','b_frenzy','b_rampage','b_srend','b_proar','b_bpact','b_twrath']
+  },
+  {
+    name:'Luna', role:'Ranger', desc:"Swift as night wind. Arrows never miss.", stats:{dmg:90,spd:92,def:65,hp:110}, sprite:'https://i.imgur.com/s0Djzjy.png',
+    skills:['ra_arrow','ra_rfire','ra_mbless','ra_snare','ra_pierce','ra_rain','ra_lstrike','ra_smeld','ra_mprey','ra_moarrow','ra_eclipse']
+  },
+  {
+    name:'Kai', role:'Monk', desc:'Balanced between yin and yang.', stats:{dmg:80,spd:88,def:75,hp:130}, sprite:'https://i.imgur.com/QcIEICc.png',
+    skills:['mo_ifist','mo_cfocus','mo_dkick','mo_med','mo_tpalm','mo_skick','mo_cburst','mo_ipeace','mo_transc','mo_1kfists','mo_storm']
+  },
+  {
+    name:'Malachai', role:'Paladin', desc:'Clad in holy gold. Divine protector.', stats:{dmg:70,spd:65,def:100,hp:175}, sprite:'https://i.imgur.com/AyPCPY2.png',
+    skills:['p_hsmite','p_dshield','p_consec','p_lhands','p_aura','p_zstrike','p_hradiance','p_dwrath','p_harmor','p_judgment','p_jlight']
+  },
+  {
+    name:'Raven', role:'Reaper', desc:'Collector of final breaths.', stats:{dmg:105,spd:85,def:55,hp:115}, sprite:'https://i.imgur.com/ozqxvph.png',
+    skills:['re_dstrike','re_stap','re_gchill','re_rshroud','re_pslash','re_srip','re_wform','re_sharvest','re_vreap','re_dcoil','re_dsentence']
+  },
+  {
+    name:'Emara', role:'Sorceress', desc:'Chaos and order. Bends magic to will.', stats:{dmg:95,spd:82,def:48,hp:105}, sprite:'https://i.imgur.com/sU1RKCL.png',
+    skills:['so_cbolt','so_ablast','so_wsurge','so_blink','so_scall','so_vmagic','so_hex','so_mstorm','so_cnova','so_aovld','so_apoc']
+  },
+  {
+    name:'Thornwick', role:'Druid', desc:"One with nature's fury.", stats:{dmg:75,spd:70,def:80,hp:150}, sprite:'https://i.imgur.com/aElBzhW.png',
+    skills:['d_tstrike','d_wgrowth','d_entangle','d_barkskin','d_pwrath','d_eward','d_nregen','d_tspores','d_sbeam','d_lthorns','d_wcall']
+  },
 ];
 
 const ENEMIES = [
@@ -649,8 +798,14 @@ function defaultState(champ){
     statuses:{},
     potions:3,
     kills:0,
-    unlockedSkills:['slash','defend','focus'],
-    selectedSkill:'slash',
+    championSkillPool: c.skills || SKILLS.map(s=>s.id),
+    unlockedSkills: (c.skills || ['slash','defend','focus']).filter(id => {
+      const sk = SKILLS.find(s=>s.id===id); return sk && sk.unlockFloor===0;
+    }),
+    selectedSkill: (() => {
+      const starters = (c.skills || ['slash']).filter(id => { const sk = SKILLS.find(s=>s.id===id); return sk && sk.unlockFloor===0; });
+      return starters[0] || 'slash';
+    })(),
     phoenixUsed:false,
 
     // Enemy
@@ -702,6 +857,10 @@ function buildChampionPicker(){
     const card = document.createElement('div');
     card.className='cp-card'+(i===0?' selected':'');
     card.id='cp-card-'+i;
+    // Build a preview of the champion's starting skills
+    const starterSkills = (c.skills || []).slice(0,2).map(id => {
+      const sk = SKILLS.find(s=>s.id===id); return sk ? `${sk.icon} ${sk.name}` : '';
+    }).filter(Boolean).join(' · ');
     card.innerHTML=`
       <img class="cp-img" src="${c.sprite}" alt="${c.name}" loading="lazy">
       <div class="cp-info">
@@ -713,6 +872,7 @@ function buildChampionPicker(){
           <div class="cp-stat">SPD <span>${c.stats.spd}</span></div>
           <div class="cp-stat">HP <span>${c.stats.hp}</span></div>
         </div>
+        ${starterSkills ? `<div class="cp-skills">${starterSkills}</div>` : ''}
       </div>`;
     card.onclick=()=>selectChampion(c, i);
     grid.appendChild(card);
@@ -887,16 +1047,17 @@ function useSkillById(skillId){
     applyDmgToEnemy(dmg);
     if(!G.battleEnded) applySkillEffect(skill.effect, dmg);
   } else if(skill.type==='heal'){
-    if(skill.id==='heal'){
-      const healAmt = Math.floor(G.maxHp*0.35);
-      G.hp = Math.min(G.maxHp, G.hp+healAmt);
-      log(`${skill.icon} ${skill.name}: Restored ${healAmt} HP!`,'heal');
-      floatDmg(`+${healAmt}`, 'heal-dmg');
-    } else if(skill.id==='phoenix'){
+    if(skill.id==='phoenix'){
       if(G.phoenixUsed){ notify('Phoenix Rise already used!','warn'); G.mp+=skill.cost; setActionsEnabled(true); return; }
       G.statuses.phoenix = {turns:1};
       G.phoenixUsed = true;
       log(`🔥 Phoenix Rise: Will revive at full HP if defeated!`,'heal');
+    } else {
+      const pct = skill.healPct !== undefined ? skill.healPct : 0.35;
+      const healAmt = Math.floor(G.maxHp * pct);
+      G.hp = Math.min(G.maxHp, G.hp+healAmt);
+      log(`${skill.icon} ${skill.name}: Restored ${healAmt} HP!`,'heal');
+      floatDmg(`+${healAmt}`, 'heal-dmg');
     }
     applySkillEffect(skill.effect);
   } else if(skill.type==='buff'){
@@ -931,12 +1092,12 @@ function applySkillEffect(effect, dmg=0){
 function applyBuff(skill){
   const s = G.statuses;
   switch(skill.effect){
-    case 'defend': s.defend = {turns:1}; log(`🛡 Guard Stance: Damage reduced 50% next hit!`,'player'); break;
-    case 'focus':  s.focus  = {turns:1}; log(`🎯 Focus: Next attack is guaranteed critical!`,'player'); break;
-    case 'regen':  s.regen  = {turns:3,val:Math.floor(G.maxHp*0.10)}; log(`♻ Regen: Healing 10% HP per turn for 3 turns!`,'heal'); break;
-    case 'shield': { const shield=Math.floor(G.maxHp*0.3); s.shield={turns:3,val:shield}; log(`💠 Arcane Shield: Absorbs ${shield} damage!`,'player'); break; }
-    case 'power':  s.power  = {turns:3}; log(`⬆ Void Surge: ATK +40% for 3 turns!`,'player'); recalcStats(); break;
-    case 'counter':s.counter= {turns:1}; log(`⚡ Counter Strike ready — next hit returns 2× damage!`,'player'); break;
+    case 'defend': s.defend = {turns:1}; log(`${skill.icon} ${skill.name}: Damage reduced 50% next hit!`,'player'); break;
+    case 'focus':  s.focus  = {turns:1}; log(`${skill.icon} ${skill.name}: Next attack is guaranteed critical!`,'player'); break;
+    case 'regen':  s.regen  = {turns:3,val:Math.floor(G.maxHp*0.10)}; log(`${skill.icon} ${skill.name}: Healing 10% HP per turn for 3 turns!`,'heal'); break;
+    case 'shield': { const shield=Math.floor(G.maxHp*0.3); s.shield={turns:3,val:shield}; log(`${skill.icon} ${skill.name}: Absorbs ${shield} damage!`,'player'); break; }
+    case 'power':  s.power  = {turns:3}; log(`${skill.icon} ${skill.name}: ATK +40% for 3 turns!`,'player'); recalcStats(); break;
+    case 'counter':s.counter= {turns:1}; log(`${skill.icon} ${skill.name}: Next hit returns 2× damage!`,'player'); break;
   }
   renderPlayerStatuses();
 }
@@ -1231,7 +1392,8 @@ function skipLoot(){
 }
 
 function getUnlockableSkills(floor){
-  return SKILLS.filter(s=>s.unlockFloor===floor && !G.unlockedSkills.includes(s.id));
+  const pool = G.championSkillPool || SKILLS.map(s=>s.id);
+  return SKILLS.filter(s => pool.includes(s.id) && s.unlockFloor===floor && !G.unlockedSkills.includes(s.id));
 }
 
 function showUnlockScreen(floor, newSkills){
@@ -1267,7 +1429,7 @@ function showVictory(){
   document.getElementById('vic-name').textContent = G.name;
   document.getElementById('vic-kills').textContent = G.totalKills;
   document.getElementById('vic-hp').textContent = `${G.hp}/${G.maxHp}`;
-  document.getElementById('vic-skills').textContent = G.unlockedSkills.length + '/'+SKILLS.length;
+  document.getElementById('vic-skills').textContent = G.unlockedSkills.length + '/' + (G.championSkillPool ? G.championSkillPool.length : SKILLS.length);
   const eqList = SLOT_ORDER.map(s=>G.equipment[s]?G.equipment[s].name:'—').join(', ');
   document.getElementById('vic-eq').textContent = eqList;
   updateNFTWalletStatus();
@@ -1285,7 +1447,8 @@ function showGameOver(){
 // ═══════════════════════════════════════════════════════
 function openSkillPopup(){
   if(!G.playerTurn||G.battleEnded) return;
-  const available = SKILLS.filter(s=>G.unlockedSkills.includes(s.id));
+  const pool = G.championSkillPool || SKILLS.map(s=>s.id);
+  const available = SKILLS.filter(s => pool.includes(s.id) && G.unlockedSkills.includes(s.id));
   const list = document.getElementById('sp-list');
   list.innerHTML='';
   available.forEach(skill=>{
@@ -1372,8 +1535,10 @@ function renderEquipment(){
 function renderSkills(){
   const list = document.getElementById('skill-list');
   list.innerHTML='';
-  const unlocked = SKILLS.filter(s=>G.unlockedSkills.includes(s.id));
-  const locked   = SKILLS.filter(s=>!G.unlockedSkills.includes(s.id)).slice(0,3);
+  const pool = G.championSkillPool || SKILLS.map(s=>s.id);
+  const poolSkills = SKILLS.filter(s => pool.includes(s.id));
+  const unlocked = poolSkills.filter(s=>G.unlockedSkills.includes(s.id));
+  const locked   = poolSkills.filter(s=>!G.unlockedSkills.includes(s.id)).slice(0,3);
 
   unlocked.forEach(skill=>{
     const div = document.createElement('div');
@@ -1400,7 +1565,7 @@ function renderSkills(){
     `;
     list.appendChild(div);
   });
-  document.getElementById('skill-count').textContent=`(${unlocked.length}/${SKILLS.length})`;
+  document.getElementById('skill-count').textContent=`(${unlocked.length}/${poolSkills.length})`;
 }
 
 function renderPlayerStatuses(){
