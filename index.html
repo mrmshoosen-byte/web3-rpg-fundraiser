@@ -236,7 +236,6 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
   <div class="hero-btns">
     <a href="#fund" class="btn-p">Fund the Realm</a>
     <a href="game.html" class="btn-p" style="background:var(--gold-dim);border:1px solid var(--gold)">▶ Play Demo</a>
-    <a href="#fund" class="btn-s">Fund the Realm</a>
     <a href="#game" class="btn-s">How It Works</a>
   </div>
 </div>
@@ -427,11 +426,24 @@ footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
       <div class="m-field"><label>Full Name *</label><input class="m-inp" id="c-name" placeholder="Your name" type="text"></div>
       <div class="m-field"><label>Email Address *</label><input class="m-inp" id="c-email" placeholder="you@example.com" type="email"></div>
       <div class="m-field"><label>Discord Handle</label><input class="m-inp" id="c-discord" placeholder="YourName#0000" type="text"></div>
-      <div class="m-field"><label>Solana Wallet</label><input class="m-inp" id="c-wallet" placeholder="Auto-filled on wallet connect..." type="text"></div>
       <div class="m-field"><label>How did you find us?</label><input class="m-inp" id="c-source" placeholder="Twitter, Discord, friend..." type="text"></div>
       <div class="m-btns">
         <button class="m-cta sec" onclick="backPledge()" style="flex:1">← Back</button>
-        <button class="m-cta" onclick="connectWallet().then(() => submitPledge())" style="flex:2">Connect Wallet & Pledge →</button>
+        <button class="m-cta" onclick="submitPledge()" style="flex:2">Pledge →</button>
+      </div>
+    </div>
+    <div id="step-address" style="display:none">
+      <div style="text-align:center;padding:2rem 1rem;">
+        <div style="font-size:2rem;margin-bottom:1rem;color:var(--gold)">◎</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:0.6rem;">Send Your Pledge</div>
+        <div style="font-size:.72rem;color:var(--text-dim);line-height:1.8;margin-bottom:1.4rem;">We know scams are everywhere in Web3. To keep things as safe and transparent as possible, we <strong style="color:var(--text-bright)">never ask you to connect your wallet</strong>. Simply send your SOL directly to our verified address below.</div>
+        <div style="background:var(--surface2);border:1px solid var(--border-strong);padding:.9rem 1rem;margin-bottom:1.2rem;word-break:break-all;">
+          <div style="font-size:.6rem;color:var(--text-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.4rem">Our Solana Address</div>
+          <div id="sol-address-display" style="font-size:.78rem;color:var(--gold);font-family:monospace;cursor:pointer" onclick="copySolAddress()" title="Click to copy">5b5om8qu2WrLepZ9ooTZB3Fh4WJNH7gDkEieWyHSb3uU</div>
+          <div style="font-size:.6rem;color:var(--text-dim);margin-top:.4rem">Click address to copy</div>
+        </div>
+        <div style="font-size:.68rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.5rem;">After sending, email us at <span style="color:var(--gold-dim)">support@survivorsofthevoid.com</span> with your transaction ID and the details you submitted so we can confirm your backer rewards.</div>
+        <button class="m-cta" onclick="closeModal()" style="width:100%;max-width:300px;">Done — Return to the Realm</button>
       </div>
     </div>
     <div id="step-success" style="display:none">
@@ -463,6 +475,7 @@ function openTierModal(tier, amt) {
   document.getElementById('step-pledge').style.display = 'block';
   document.getElementById('step-contact').style.display = 'none';
   document.getElementById('step-success').style.display = 'none';
+  document.getElementById('step-address').style.display = 'none';
   document.getElementById('modal').classList.add('open');
 }
 
@@ -484,102 +497,27 @@ function backPledge() {
   document.getElementById('step-contact').style.display = 'none';
 }
 
-async function connectWallet() {
-  try {
-    const phantom = window.solana;
-    if (!phantom || !phantom.isPhantom) {
-      alert('Phantom wallet not found. Install it from phantom.app');
-      return null;
-    }
-    const response = await phantom.connect();
-    const walletAddress = response.publicKey.toString();
-    document.getElementById('c-wallet').value = walletAddress;
-    console.log('Connected:', walletAddress);
-    return walletAddress;
-  } catch (error) {
-    console.error('Wallet connection failed:', error);
-    alert('Failed to connect wallet: ' + error.message);
-    return null;
-  }
-}
-
 async function submitPledge() {
   const name = document.getElementById('c-name').value;
   const email = document.getElementById('c-email').value;
-  const discord = document.getElementById('c-discord').value;
-  const wallet = document.getElementById('c-wallet').value;
-  const source = document.getElementById('c-source').value;
-  const amount = document.getElementById('m-amt').value;
 
   if (!name || !email) {
     alert('Name and email are required');
     return;
   }
 
-  try {
-    const phantom = window.solana;
-    if (!phantom || !phantom.isPhantom) {
-      alert('Phantom wallet not found');
-      return;
-    }
-
-    const solAmount = amount / 200;
-    const lamports = Math.floor(solAmount * 1000000000);
-
-    const connection = new window.solanaWeb3.Connection('https://api.devnet.solana.com');
-    const userPublicKey = new window.solanaWeb3.PublicKey(wallet);
-    const recipientPublicKey = new window.solanaWeb3.PublicKey('5b5om8qu2WrLepZ9ooTZB3Fh4WJNH7gDkEieWyHSb3uU');
-
-    const transaction = new window.solanaWeb3.Transaction().add(
-      window.solanaWeb3.SystemProgram.transfer({
-        fromPubkey: userPublicKey,
-        toPubkey: recipientPublicKey,
-        lamports: lamports
-      })
-    );
-
-    transaction.feePayer = userPublicKey;
-    transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-
-    const signedTransaction = await phantom.signAndSendTransaction(transaction);
-
-   console.log('Transaction signature:', signedTransaction.signature);
-showModalMessage('Success!', `Payment of $${amount} received!<br><br>Tx: ${signedTransaction.signature}`, 'success');
-
-document.getElementById('step-contact').style.display = 'none';
-document.getElementById('step-success').style.display = 'block';
- } catch (e) {
-  console.error('Transaction error:', e);
-  showModalMessage('Transaction Failed', `Error: ${e.message}`, 'error');
-}
+  document.getElementById('step-contact').style.display = 'none';
+  document.getElementById('step-address').style.display = 'block';
 }
 
-function showModalMessage(title, message, type) {
-  const modal = document.getElementById('modal');
-  const mb = document.querySelector('.mb');
-  
-  let icon = '✦';
-  let color = 'var(--gold)';
-  
-  if (type === 'success') {
-    icon = '✦';
-    color = 'var(--green-term)';
-  } else if (type === 'error') {
-    icon = '✕';
-    color = 'var(--ember)';
-  }
-  
-  const messageHTML = `
-    <div style="text-align:center;padding:2.5rem 1.5rem;">
-      <div style="font-size:2.5rem;margin-bottom:1.5rem;color:${color};">${icon}</div>
-      <div style="font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:var(--gold);margin-bottom:0.8rem;">${title}</div>
-      <div style="font-size:.75rem;color:var(--text-dim);line-height:1.8;margin-bottom:2rem;">${message}</div>
-      <button class="m-cta" onclick="closeModal()" style="width:100%;max-width:300px;">Close</button>
-    </div>
-  `;
-  
-  mb.innerHTML = messageHTML;
-  modal.classList.add('open');
+function copySolAddress() {
+  const addr = '5b5om8qu2WrLepZ9ooTZB3Fh4WJNH7gDkEieWyHSb3uU';
+  navigator.clipboard.writeText(addr).then(() => {
+    const el = document.getElementById('sol-address-display');
+    const orig = el.textContent;
+    el.textContent = '✓ Copied!';
+    setTimeout(() => { el.textContent = orig; }, 1500);
+  });
 }
 const CHAMPS = [
   {name:'Snickle',role:'Rogue',desc:'Once the kingdom\'s most notorious gambler.',stats:{dmg:85,spd:95,def:60,hp:120},sprite:'https://imgur.com/xzdBwTg.png'},
