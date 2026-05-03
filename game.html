@@ -862,7 +862,7 @@ function buildChampionPicker(){
       const sk = SKILLS.find(s=>s.id===id); return sk ? `${sk.icon} ${sk.name}` : '';
     }).filter(Boolean).join(' · ');
     card.innerHTML=`
-      <img class="cp-img" src="${c.sprite}" alt="${c.name}" loading="lazy">
+      <img class="cp-img" src="${c.sprite}" alt="${c.name}" loading="lazy" width="130" height="110">
       <div class="cp-info">
         <div class="cp-name">${c.name}</div>
         <div class="cp-role">${c.role}</div>
