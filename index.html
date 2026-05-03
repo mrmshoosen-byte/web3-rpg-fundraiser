@@ -573,7 +573,7 @@ function renderChamps() {
   const grid = document.getElementById('champ-grid');
   grid.innerHTML = CHAMPS.map((c,i) => `
     <div class="e-card reveal" style="transition-delay:${i*0.05}s">
-      <div class="e-art"><img src="${c.sprite}" alt="${c.name}" style="width:165px; height:165px; object-fit:cover; object-position:center;"></div>
+      <div class="e-art"><img src="${c.sprite}" alt="${c.name}" loading="lazy" width="165" height="165" style="width:165px; height:165px; object-fit:cover; object-position:center;"></div>
       <div class="e-name">${c.name}<span class="esub">${c.role}</span></div>
       <div class="e-info">
         <div class="e-iname">${c.name}</div>
@@ -593,7 +593,7 @@ function renderMons() {
   const grid = document.getElementById('mon-grid');
   grid.innerHTML = MONS.map((m,i) => `
     <div class="e-card reveal" style="transition-delay:${i*0.05}s">
-     <div class="e-art"><img src="${m.sprite}" alt="${m.name}" style="width:165px; height:165px; object-fit:cover; object-position:center;"></div>
+     <div class="e-art"><img src="${m.sprite}" alt="${m.name}" loading="lazy" width="165" height="165" style="width:165px; height:165px; object-fit:cover; object-position:center;"></div>
       <div class="e-name">${m.name}<span class="esub">${m.role}</span></div>
       <div class="e-info">
         <div class="e-iname">${m.name}</div>
@@ -613,7 +613,7 @@ function renderItems() {
   grid.innerHTML = ITEMS.map((it,i) => `
     <div class="e-card reveal" style="transition-delay:${i*0.05}s">
       <div class="e-art">
-<img src="${it.sprite}" alt="${it.name}" style="width:165px; height:165px; object-fit:cover; object-position:center;">
+<img src="${it.sprite}" alt="${it.name}" loading="lazy" width="165" height="165" style="width:165px; height:165px; object-fit:cover; object-position:center;">
       </div>
       <div class="e-name">${it.name}<span class="esub">${it.rarity}</span></div>
       <div class="e-info">
@@ -637,7 +637,7 @@ function renderItems() {
   grid.innerHTML = SKILLS.map((sk,i) => `
     <div class="e-card reveal" style="transition-delay:${i*0.05}s">
       <div class="e-art">
-        <img src="${sk.sprite}" alt="${sk.name}" style="width:165px; height:165px; object-fit:cover; object-position:center;">
+        <img src="${sk.sprite}" alt="${sk.name}" loading="lazy" width="165" height="165" style="width:165px; height:165px; object-fit:cover; object-position:center;">
       </div>
       <div class="e-name">${sk.name}<span class="esub">${sk.type}</span></div>
       <div class="e-info">
